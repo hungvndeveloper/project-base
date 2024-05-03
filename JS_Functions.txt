@@ -1,0 +1,211 @@
+JavaScript Function Definitions
+    - Self-Invoking Functions:
+        - Function expressions can be made "self-invoking".
+        - A self-invoking expression is invoked (started) automatically, without being called.
+        - Function expressions will execute automatically if the expression is followed by ().
+        - You cannot self-invoke a function declaration.
+        - You have to add parentheses around the function to indicate that it is a function expression:
+        - Example
+            (function () {
+                let x = "Hello!!";  // I will invoke myself
+            })();
+            - The function above is actually an anonymous self-invoking function (function without name).
+    - The typeof operator in JavaScript returns "function" for functions.
+    - But, JavaScript functions can best be described as objects.
+#####################################
+JavaScript Function Parameters
+    - Function Rest Parameter
+        - The rest parameter (...) allows a function to treat an indefinite number of arguments as an array:
+            function sum(...args) {
+            let sum = 0;
+            for (let arg of args) sum += arg;
+                return sum;
+            }
+            let x = sum(4, 9, 16, 25, 29, 100, 66, 77);
+    - The Arguments Object
+        - JavaScript functions have a built-in object called the arguments object.
+        - The argument object contains an array of the arguments used when the function was called (invoked).
+        - This way you can simply use a function to find (for instance) the highest value in a list of numbers:
+            x = findMax(1, 123, 500, 115, 44, 88);
+            function findMax() {
+                let max = -Infinity;
+                for (let i = 0; i < arguments.length; i++) {
+                    if (arguments[i] > max) {
+                    max = arguments[i];
+                    }
+                }
+                return max;
+            }
+    - If a function is called with too many arguments (more than declared), these arguments can be reached using the arguments object.
+#######################################
+JavaScript Function call()
+    - Method Reuse:
+        - With the call() method, you can write a method that can be used on different objects.
+    - All Functions are Methods:
+        - In JavaScript all functions are object methods.
+        - If a function is not a method of a JavaScript object, it is a function of the global object (see previous chapter).
+        - The example below creates an object with 3 properties, firstName, lastName, fullName.
+        - Example
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            // This will return "John Doe":
+            person.fullName();
+        - In the example above, this refers to the person object.
+        - this.firstName means the firstName property of this.
+        - Same as: this.firstName means the firstName property of person.
+    - The JavaScript call() Method:
+        - The call() method is a predefined JavaScript method.
+        - It can be used to invoke (call) a method with an owner object as an argument (parameter).
+        - With call(), an object can use a method belonging to another object.
+        - This example calls the fullName method of person, using it on person1:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            const person2 = {
+                firstName:"Mary",
+                lastName: "Doe"
+            }
+            // This will return "John Doe":
+            person.fullName.call(person1);
+        - This example calls the fullName method of person, using it on person2:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            const person2 = {
+                firstName:"Mary",
+                lastName: "Doe"
+            }
+            // This will return "Mary Doe"
+            person.fullName.call(person2);
+        - The call() Method with Arguments:
+            - The call() method can accept arguments:
+                const person = {
+                    fullName: function(city, country) {
+                        return this.firstName + " " + this.lastName + "," + city + "," + country;
+                    }
+                }
+                const person1 = {
+                    firstName:"John",
+                    lastName: "Doe"
+                }
+                person.fullName.call(person1, "Oslo", "Norway");
+#############################################
+JavaScript Function apply()
+    - Method Reuse
+        - With the apply() method, you can write a method that can be used on different objects.
+    - The JavaScript apply() Method
+        - The apply() method is similar to the call() method (previous chapter).
+        - In this example the fullName method of person is applied on person1:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName: "Mary",
+                lastName: "Doe"
+            }
+            // This will return "Mary Doe":
+            person.fullName.apply(person1);
+    - The Difference Between call() and apply()
+        - The call() method takes arguments separately.
+        - The apply() method takes arguments as an array.
+        - The apply() method is very handy if you want to use an array instead of an argument list.
+    - The apply() Method with Arguments:
+        - The apply() method accepts arguments in an array:
+            const person = {
+                fullName: function(city, country) {
+                    return this.firstName + " " + this.lastName + "," + city + "," + country;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            person.fullName.apply(person1, ["Oslo", "Norway"]);
+        - Compared with the call() method:
+            const person = {
+                fullName: function(city, country) {
+                    return this.firstName + " " + this.lastName + "," + city + "," + country;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            person.fullName.call(person1, "Oslo", "Norway");
+######################################
+JavaScript Function bind()
+    - Function Borrowing
+        - With the bind() method, an object can borrow a method from another object.
+        - The example below creates 2 objects (person and member).
+        - The member object borrows the fullname method from the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const member = {
+                firstName:"Hege",
+                lastName: "Nilsen",
+            }
+            let fullName = person.fullName.bind(member);
+    - Preserving this:
+        - Sometimes the bind() method has to be used to prevent losing this.
+        - In the following example, the person object has a display method. In the display method, this refers to the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+            person.display();
+        - When a function is used as a callback, this is lost.
+        - This example will try to display the person name after 3 seconds, but it will display undefined instead:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+            setTimeout(person.display, 3000);
+            -> result: undefined undefined
+        - The bind() method solves this problem.
+        - In the following example, the bind() method is used to bind person.display to person.
+        - This example will display the person name after 3 seconds:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+
+            let display = person.display.bind(person);
+            setTimeout(display, 3000);
+############################################
+

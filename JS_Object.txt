@@ -1,0 +1,581 @@
+- Declare Objects with const
+        - Declaring objects with const will prevent any accidental change of type:
+            let car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Changes object to string
+
+            const car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Not possible
+            car.newProperty = "newValue"; // it's ok
+            car['newProperty1'] = "newValue1"; // it's ok
+    - Declare Arrays with const:
+        - Declaring arrays with const will prevent any accidential change of type:
+            let cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Changes array to number
+
+            const cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Not possible
+            cars.push("newValue") // It's ok
+            cars[4] = "Toyota"; // It's ok
+######################################################
+JavaScript Objects
+    - In JavaScript, almost "everything" is an object.
+        - Booleans can be objects (if defined with the new keyword)
+        - Numbers can be objects (if defined with the new keyword)
+        - Strings can be objects (if defined with the new keyword)
+        - Dates are always objects
+        - Maths are always objects
+        - Regular expressions are always objects
+        - Arrays are always objects
+        - Functions are always objects
+        - Objects are always objects
+    - All JavaScript values, except primitives, are objects.
+    - JavaScript Primitives:
+        - A primitive value is a value that has no properties or methods.
+        - 3.14 is a primitive value
+        - A primitive data type is data that has a primitive value.
+        - JavaScript defines 7 types of primitive data types:
+            - string
+            - number
+            - boolean
+            - null
+            - undefined
+            - symbol
+            - bigint
+    - A JavaScript object is a collection of named values
+    - It is a common practice to declare objects with the const keyword:
+        const person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+    - JavaScript Objects are Mutable:
+        - Objects are mutable: They are addressed by reference, not by value.
+        - If person is an object, the following statement will not create a copy of person:
+            const x = person;  // Will not create a copy of person.
+        - The object x is not a copy of person. It is person. Both x and person are the same object.
+          Any changes to x will also change person, because x and person are the same object.
+            const person = {
+                firstName:"John",
+                lastName:"Doe",
+                age:50, eyeColor:"blue"
+            }
+            const x = person;
+            x.age = 10;      // Will change both x.age and person.age
+###############################################
+JavaScript Object Properties
+    - JavaScript Properties
+        - Properties are the values associated with a JavaScript object.
+        - A JavaScript object is a collection of unordered properties.
+        - Properties can usually be changed, added, and deleted, but some are read only.
+    - Accessing JavaScript Properties:
+        - The syntax for accessing the property of an object is:
+            - objectName.property      // person.age
+            or
+            - objectName["property"]   // person["age"]
+            or
+            - objectName[expression]   // x = "age"; person[x]
+        - The expression must evaluate to a property name.
+    - Property Attributes:
+        - All properties have a name. In addition they also have a value.
+        - The value is one of the property's attributes.
+        - Other attributes are: enumerable, configurable, and writable.
+        - These attributes define how the property can be accessed (is it readable?, is it writable?)
+        - In JavaScript, all attributes can be read, but only the value attribute can be changed (and only if the property is writable).
+        - ( ECMAScript 5 has methods for both getting and setting all property attributes)
+################################################
+JavaScript Display Objects
+    - How to Display JavaScript Objects?
+    - Displaying a JavaScript object will output [object Object].
+        const person = {
+            name: "John",
+            age: 30,
+            city: "New York"
+        };
+        document.getElementById("demo").innerHTML = person;
+    - Some common solutions to display JavaScript objects are:
+        - Displaying the Object Properties by name
+        - Displaying the Object Properties in a Loop
+        - Displaying the Object using Object.values()
+        - Displaying the Object using JSON.stringify()
+    - Displaying Object Properties
+        - The properties of an object can be displayed as a string:
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+            document.getElementById("demo").innerHTML =
+            person.name + "," + person.age + "," + person.city;
+    - Displaying the Object in a Loop:
+        - The properties of an object can be collected in a loop:
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+            let txt = "";
+            for (let x in person) {
+                txt += person[x] + " ";
+            };
+            document.getElementById("demo").innerHTML = txt;
+        - You must use person[x] in the loop.
+        - person.x will not work (Because x is a variable).
+    - Using Object.values()
+        - Any JavaScript object can be converted to an array using Object.values():
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+            const myArray = Object.values(person);
+        - myArray is now a JavaScript array, ready to be displayed:
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+            const myArray = Object.values(person);
+            document.getElementById("demo").innerHTML = myArray;
+    - Using JSON.stringify():
+        - Any JavaScript object can be stringified (converted to a string) with the JavaScript function JSON.stringify():
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+            let myString = JSON.stringify(person);
+        - myString is now a JavaScript string, ready to be displayed:
+            const person = {
+                name: "John",
+                age: 30,
+                city: "New York"
+            };
+
+            let myString = JSON.stringify(person);
+            document.getElementById("demo").innerHTML = myString;
+        -> The result will be a string following the JSON notation:
+            {"name":"John","age":50,"city":"New York"}
+        - Stringify Functions:
+            - JSON.stringify will not stringify functions:
+                const person = {
+                    name: "John",
+                    age: function () {return 30;}
+                };
+                let myString = JSON.stringify(person);
+                document.getElementById("demo").innerHTML = myString;
+            -> result: {"name":"John"}
+            -> This can be "fixed" if you convert the functions into strings before stringifying.
+                const person = {
+                    name: "John",
+                    age: function () {return 30;}
+                };
+                person.age = person.age.toString();
+                let myString = JSON.stringify(person);
+                document.getElementById("demo").innerHTML = myString;
+                -> result: {"name":"John","age":"function () {return 30;}"}
+        - Stringify Arrays
+            - It is also possible to stringify JavaScript arrays:
+                const arr = ["John", "Peter", "Sally", "Jane"];
+                let myString = JSON.stringify(arr);
+                document.getElementById("demo").innerHTML = myString;
+            - The result will be a string following the JSON notation:
+                ["John","Peter","Sally","Jane"]
+################################################
+JavaScript Object Accessors
+    - Object.defineProperty()
+        - Getters and setters allow you to define Object Accessors (Computed Properties).
+        - JavaScript Getter (The get Keyword):
+            - This example uses a lang property to get the value of the language property.
+                // Create an object:
+                const person = {
+                    firstName: "John",
+                    lastName: "Doe",
+                    language: "en",
+                    get lang() {
+                        return this.language;
+                    }
+                };
+                // Display data from the object using a getter:
+                document.getElementById("demo").innerHTML = person.lang;
+        - JavaScript Setter (The set Keyword):
+            - This example uses a lang property to set the value of the language property.
+                const person = {
+                    firstName: "John",
+                    lastName: "Doe",
+                    language: "",
+                    set lang(lang) {
+                        this.language = lang;
+                    }
+                };
+                // Set an object property using a setter:
+                person.lang = "en";
+                // Display data from the object:
+                document.getElementById("demo").innerHTML = person.language;
+        - JavaScript Function or Getter?
+            - What is the differences between these two examples?
+                - Example 1:
+                    const person = {
+                        firstName: "John",
+                        lastName: "Doe",
+                        fullName: function() {
+                            return this.firstName + " " + this.lastName;
+                        }
+                    };
+                    // Display data from the object using a method:
+                    document.getElementById("demo").innerHTML = person.fullName();
+                - Example 2
+                    const person = {
+                        firstName: "John",
+                        lastName: "Doe",
+                        get fullName() {
+                            return this.firstName + " " + this.lastName;
+                        }
+                    };
+                    // Display data from the object using a getter:
+                    document.getElementById("demo").innerHTML = person.fullName;
+                - Example 1 access fullName as a function: person.fullName().
+                - Example 2 access fullName as a property: person.fullName.
+                - The second example provides a simpler syntax.
+        - Why Using Getters and Setters?
+            - It gives simpler syntax
+            - It allows equal syntax for properties and methods
+            - It can secure better data quality
+            - It is useful for doing things behind-the-scenes
+        - Object.defineProperty()
+            - The Object.defineProperty() method can also be used to add Getters and Setters:
+                - A Counter Example
+                    // Define object
+                    const obj = {counter : 0};
+
+                    // Define setters and getters
+                    Object.defineProperty(obj, "reset", {
+                        get : function () {this.counter = 0;}
+                    });
+                    Object.defineProperty(obj, "increment", {
+                        get : function () {this.counter++;}
+                    });
+                    Object.defineProperty(obj, "decrement", {
+                        get : function () {this.counter--;}
+                    });
+                    Object.defineProperty(obj, "add", {
+                        set : function (value) {this.counter += value;}
+                    });
+                    Object.defineProperty(obj, "subtract", {
+                        set : function (value) {this.counter -= value;}
+                    });
+
+                    // Play with the counter:
+                    obj.reset;
+                    obj.add = 5;
+                    obj.subtract = 1;
+                    obj.increment;
+                    obj.decrement;
+#####################################################
+Object.defineProperties()
+    - The Object.defineProperties() static method defines new or modifies existing properties directly on an object, returning the object.
+        const object1 = {};
+        Object.defineProperties(object1, {
+        property1: {
+            value: 42,
+            writable: true,
+        },
+        property2: {},
+        });
+        console.log(object1.property1);
+        // Expected output: 42
+    - Syntax:
+        Object.defineProperties(obj, props)
+        - Parameters:
+            - obj
+                - The object on which to define or modify properties.
+            - props:
+                - An object whose keys represent the names of properties to be defined or
+                  modified and whose values are objects describing those properties.
+                  Each value in props must be either a data descriptor or an accessor descriptor;
+                  it cannot be both (see Object.defineProperty() for more details).
+                - Data descriptors and accessor descriptors may optionally contain the following keys:
+                    - configurable: 
+                        - true if and only if the type of this property descriptor may be changed
+                          and if the property may be deleted from the corresponding object. Defaults to false.
+                    - enumerable:
+                        - true if and only if this property shows up during enumeration
+                          of the properties on the corresponding object. Defaults to false.
+                - A data descriptor also has the following optional keys:
+                    - value
+                        - The value associated with the property. 
+                          Can be any valid JavaScript value (number, object, function, etc.). 
+                          Defaults to undefined.
+                    - writable
+                        - true if and only if the value associated with the property may be changed
+                          with an assignment operator. Defaults to false.
+                - An accessor descriptor also has the following optional keys:
+                    - get
+                        - A function which serves as a getter for the property, or undefined if there is no getter.
+                          The function's return value will be used as the value of the property. 
+                          Defaults to undefined.
+
+                    - set
+                        - A function which serves as a setter for the property, or undefined if there is no setter.
+                          The function will receive as its only argument the new value being assigned to the property. 
+                          Defaults to undefined.
+                - If a descriptor has neither of value, writable, get and set keys, it is treated as a data descriptor.
+                  If a descriptor has both value or writable and get or set keys, an exception is thrown.
+                - Return value:
+                    - The object that was passed to the function.
+                        const obj = {};
+                        Object.defineProperties(obj, {
+                            property1: {
+                                value: true,
+                                writable: true,
+                            },
+                            property2: {
+                                value: "Hello",
+                                writable: false,
+                            },
+                            // etc. etc.
+                        });
+#####################################################
+Object.defineProperty()
+    - The Object.defineProperty() static method defines a new property directly on an object, 
+      or modifies an existing property on an object, and returns the object.
+        const object1 = {};
+        Object.defineProperty(object1, 'property1', {
+            value: 42,
+            writable: false,
+        });
+        object1.property1 = 77;
+        // Throws an error in strict mode
+        console.log(object1.property1);
+        // Expected output: 42
+    - Syntax:
+        Object.defineProperty(obj, prop, descriptor)
+        - Parameters:
+            - obj
+                The object on which to define the property.
+            - prop
+                A string or Symbol specifying the key of the property to be defined or modified.
+            - descriptor
+                The descriptor for the property being defined or modified.
+    - Return value:
+        - The object that was passed to the function, with the specified property added or modified.
+    - Description:
+        - Object.defineProperty() allows a precise addition to or modification of a property on an object.
+          Normal property addition through assignment creates properties which show up during
+          property enumeration (for...in, Object.keys(), etc.), whose values may be changed and which may be deleted.
+          This method allows these extra details to be changed from their defaults. 
+          By default, properties added using Object.defineProperty() are not writable, 
+          not enumerable, and not configurable. In addition, Object.defineProperty() uses the [[DefineOwnProperty]] internal method,
+          instead of [[Set]], so it does not invoke setters, even when the property is already present.
+        - Property descriptors present in objects come in two main flavors: 
+          data descriptors and accessor descriptors. A data descriptor is a property with a value that may or may not be writable.
+          An accessor descriptor is a property described by a getter-setter pair of functions. 
+          A descriptor must be one of these two flavors; it cannot be both.
+        - Both data and accessor descriptors are objects. They share the following optional keys
+          (please note: the defaults mentioned here are in the case of defining properties using Object.defineProperty()):
+            - configurable:
+                - the type of this property cannot be changed between data property and accessor property, and
+                - the property may not be deleted, and
+                - other attributes of its descriptor cannot be changed (however, if it's a data descriptor with writable: true,
+                  the value can be changed, and writable can be changed to false).
+                - Defaults to false.
+            - enumerable:
+                - true if and only if this property shows up during enumeration of the properties on the corresponding object. 
+                - Defaults to false.
+        - A data descriptor also has the following optional keys:
+            - value
+                - The value associated with the property. Can be any valid JavaScript value (number, object, function, etc.). 
+                  Defaults to undefined.
+            - writable
+                - true if the value associated with the property may be changed with an assignment operator. 
+                  Defaults to false.
+        - An accessor descriptor also has the following optional keys:
+            - get
+                - A function which serves as a getter for the property, or undefined if there is no getter.
+                  When the property is accessed, this function is called without arguments and with this set
+                  to the object through which the property is accessed (this may not be the object on which the property is defined due to inheritance).
+                  The return value will be used as the value of the property. 
+                - Defaults to undefined.
+            - set
+                - A function which serves as a setter for the property, or undefined if there is no setter.
+                  When the property is assigned, this function is called with one argument (the value being assigned to the property)
+                  and with this set to the object through which the property is assigned. 
+                - Defaults to undefined.
+        - If a descriptor doesn't have any of the value, writable, get, and set keys, it is treated as a data descriptor. 
+          If a descriptor has both [value or writable] and [get or set] keys, an exception is thrown.
+        - These attributes are not necessarily the descriptor's own properties. 
+          Inherited properties will be considered as well. In order to ensure these defaults are
+          preserved, you might freeze existing objects in the descriptor object's prototype chain upfront,
+          specify all options explicitly, or create a null-prototype object.
+        - Creating a property
+            - example:
+                const o = {}; // Creates a new object
+
+                // Example of an object property added
+                // with defineProperty with a data property descriptor
+                Object.defineProperty(o, "a", {
+                    value: 37,
+                    writable: true,
+                    enumerable: true,
+                    configurable: true,
+                });
+                // 'a' property exists in the o object and its value is 37
+        - Modifying a property
+            - Writable attribute:
+                - When the writable property attribute is false, the property is said to be "non-writable". 
+                  It cannot be reassigned. Trying to write to a non-writable property doesn't change it
+                  and results in an error in strict mode.
+                - example:
+                    const o = {}; // Creates a new object
+                    Object.defineProperty(o, "a", {
+                        value: 37,
+                        writable: false,
+                    });
+                    console.log(o.a); // 37
+                    o.a = 25; // No error thrown
+                    // (it would throw in strict mode,
+                    // even if the value had been the same)
+                    console.log(o.a); // 37; the assignment didn't work
+                    // strict mode
+                    (() => {
+                        "use strict";
+                        const o = {};
+                        Object.defineProperty(o, "b", {
+                            value: 2,
+                            writable: false,
+                        });
+                        o.b = 3; // throws TypeError: "b" is read-only
+                        return o.b; // returns 2 without the line above
+                    })();
+#########################################
+JavaScript Object Prototypes
+    - All JavaScript objects inherit properties and methods from a prototype.
+    - Prototype Inheritance
+        - All JavaScript objects inherit properties and methods from a prototype:
+            - Date objects inherit from Date.prototype
+            - Array objects inherit from Array.prototype
+            - Person objects inherit from Person.prototype     
+        - The Object.prototype is on the top of the prototype inheritance chain:
+        - Date objects, Array objects, and Person objects inherit from Object.prototype.  
+    - Adding Properties and Methods to Objects
+        - Sometimes you want to add new properties (or methods) to all existing objects of a given type.
+        - Sometimes you want to add new properties (or methods) to an object constructor. 
+    - Using the prototype Property:
+        - The JavaScript prototype property allows you to add new properties to object constructors:
+            function Person(first, last, age, eyecolor) {
+                this.firstName = first;
+                this.lastName = last;
+                this.age = age;
+                this.eyeColor = eyecolor;
+            }
+            Person.prototype.nationality = "English";
+        - The JavaScript prototype property also allows you to add new methods to objects constructors:
+            function Person(first, last, age, eyecolor) {
+                this.firstName = first;
+                this.lastName = last;
+                this.age = age;
+                this.eyeColor = eyecolor;
+            }
+            Person.prototype.name = function() {
+                return this.firstName + " " + this.lastName;
+            };
+    - Only modify your own prototypes. Never modify the prototypes of standard JavaScript objects.
+############################################
+JavaScript Iterables
+    - Iterable objects are objects that can be iterated over with for..of.
+    - Technically, iterables must implement the Symbol.iterator method.
+    - JavaScript Iterators
+        - The iterator protocol defines how to produce a sequence of values from an object.
+            An object becomes an iterator when it implements a next() method.
+            The next() method must return an object with two properties:
+                - value (the next value): The value returned by the iterator Can be omitted if done is true)
+                - done (true or false): true if the iterator has completed. false if the iterator has produced a new value
+    - Home Made Iterable:
+        This iterable returns never ending: 10,20,30,40,.... Everytime next() is called:
+            // Home Made Iterable
+            function myNumbers() {
+            let n = 0;
+            return {
+                next: function() {
+                n += 10;
+                return {value:n, done:false};
+                }
+            };
+            }
+
+            // Create Iterable
+            const n = myNumbers();
+            n.next(); // Returns 10
+            n.next(); // Returns 20
+            n.next(); // Returns 30
+        - The problem with a home made iterable:
+        - It does not support the JavaScript for..of statement.
+        - A JavaScript iterable is an object that has a Symbol.iterator.
+        - The Symbol.iterator is a function that returns a next() function.
+        - An iterable can be iterated over with the code: for (const x of iterable) { }
+        - Example:
+            // Create an Object
+            myNumbers = {};
+            // Make it Iterable
+            myNumbers[Symbol.iterator] = function() {
+                let n = 0;
+                done = false;
+                return {
+                    next() {
+                    n += 10;
+                    if (n == 100) {done = true}
+                    return {value:n, done:done};
+                    }
+                };
+            }
+            Now you can use for..of
+            for (const num of myNumbers) {
+                // Any Code Here
+            }
+        - The Symbol.iterator method is called automatically by for..of.
+        - But we can also do it "manually":
+        - Example
+            let iterator = myNumbers[Symbol.iterator]();
+
+            while (true) {
+                const result = iterator.next();
+                if (result.done) break;
+                // Any Code Here
+            }
+#######################################
+JavaScript Sets
+    - A JavaScript Set is a collection of unique values.
+    - Each value can only occur once in a Set.
+    - A Set can hold any value of any data type.
+    - Set Methods:
+        - new Set(): Creates a new Set
+        - add(): Adds a new element to the Set
+        - delete(): Removes an element from a Set
+        - has(): Returns true if a value exists
+        - clear(): Removes all elements from a Set
+        - forEach(): Invokes a callback for each element
+        - values(): Returns an Iterator with all the values in a Set
+        - keys(): Same as values()
+        - entries(): Returns an Iterator with the [value,value] pairs from a Set
+    - Property:
+        - size: Returns the number elements in a Set
+    - You can create a JavaScript Set by:
+        - Passing an Array to new Set()
+        - Create a new Set and use add() to add values
+        - Create a new Set and use add() to add variables
+##########################################
+JavaScript Maps
+    - A Map holds key-value pairs where the keys can be any datatype.
+    - A Map remembers the original insertion order of the keys.
+    - A Map has a property that represents the size of the map.
+    - Map Methods:
+        - new Map(): Creates a new Map object
+        - set(): Sets the value for a key in a Map
+        - get(): Gets the value for a key in a Map
+        - clear(): Removes all the elements from a Map
+        - delete(): Removes a Map element specified by a key
+        - has(): Returns true if a key exists in a Map
+        - forEach(): Invokes a callback for each key/value pair in a Map
+        - entries(): Returns an iterator object with the [key, value] pairs in a Map
+        - keys(): Returns an iterator object with the keys in a Map
+        - values(): Returns an iterator object of the values in a Map
+    - Property:
+        - size: Returns the number of Map elements
+    - You can create a JavaScript Map by:
+        - Passing an Array to new Map()
+        - Create a Map and use Map.set()

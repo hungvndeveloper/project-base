@@ -1,0 +1,358 @@
+The JavaScript this Keyword:
+    -Example
+        const person = {
+            firstName: "John",
+            lastName : "Doe",
+            id       : 5566,
+            fullName : function() {
+                return this.firstName + " " + this.lastName;
+            }
+        };
+    - What is this?
+        - In JavaScript, the this keyword refers to an object.
+        - Which object depends on how this is being invoked (used or called).
+        - The this keyword refers to different objects depending on how it is used:
+            - In an object method, this refers to the object.
+            - Alone, this refers to the global object.
+            - In a function, this refers to the global object.
+            - In a function, in strict mode, this is undefined.
+            - In an event, this refers to the element that received the event.
+            - Methods like call(), apply(), and bind() can refer this to any object.
+            - this is not a variable. It is a keyword. You cannot change the value of this.
+    - this in a Method:
+        - When used in an object method, this refers to the object.
+        - In the example on top of this page, this refers to the person object.
+        - Because the fullName method is a method of the person object.
+    - this Alone:
+        - When used alone, this refers to the global object.
+        - Because this is running in the global scope.
+        - In a browser window the global object is [object Window]:
+            let x = this;
+        - In strict mode, when used alone, this also refers to the global object:
+            "use strict";
+            let x = this;
+    - this in a Function (Default):
+        - In a function, the global object is the default binding for this.
+        - In a browser window the global object is [object Window]:
+            function myFunction() {
+                return this;
+            }
+    - this in a Function (Strict):
+        - JavaScript strict mode does not allow default binding.
+        - So, when used in a function, in strict mode, this is undefined.
+    - this in Event Handlers:
+        - In HTML event handlers, this refers to the HTML element that received the event:
+            ex: <button onclick="this.style.display='none'">Click to Remove Me!</button>
+    - Object Method Binding:
+        - In these examples, this is the person object:
+            const person = {
+                firstName  : "John",
+                lastName   : "Doe",
+                id         : 5566,
+                myFunction : function() {
+                    return this;
+                }
+            };
+
+            const person = {
+                firstName: "John",
+                lastName : "Doe",
+                id       : 5566,
+                fullName : function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            };
+            i.e. this.firstName is the firstName property of this (the person object).
+    - Explicit Function Binding:
+        - The call() and apply() methods are predefined JavaScript methods.
+        - They can both be used to call an object method with another object as argument.
+        - The example below calls person1.fullName with person2 as an argument,
+          this refers to person2, even if fullName is a method of person1:
+            const person1 = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person2 = {
+                firstName:"John",
+                lastName: "Doe",
+            }
+            // Return "John Doe"; object person2 call method fullName
+            person1.fullName.call(person2);
+    - Function Borrowing:
+        - With the bind() method, an object can borrow a method from another object.
+        - This example creates 2 objects (person and member).
+        - The member object borrows the fullname method from the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const member = {
+                firstName:"Hege",
+                lastName: "Nilsen",
+            }
+            let fullName = person.fullName.bind(member);
+##############################################################
+JavaScript Arrow Function
+    - Arrow functions were introduced in ES6.
+    - Arrow functions allow us to write shorter function syntax:
+        let myFunction = (a, b) => a * b;
+    - Before Arrow:
+        hello = function() {
+            return "Hello World!";
+        }
+    - With Arrow Function:
+        hello = () => {
+            return "Hello World!";
+        }
+    - It gets shorter! If the function has only one statement, and the statement returns a value, 
+      you can remove the brackets and the return keyword:
+        hello = () => "Hello World!";
+        - Note: This works only if the function has only one statement.\
+    - If you have parameters, you pass them inside the parentheses:
+        hello = (val) => "Hello " + val;
+    - In fact, if you have only one parameter, you can skip the parentheses as well:
+        hello = val => "Hello " + val;
+    - What About this?
+        - The handling of this is also different in arrow functions compared to regular functions.
+        - In short, with arrow functions there are no binding of this.
+        - In regular functions the this keyword represented the object that called the function, which could be the window,
+          the document, a button or whatever.
+        - With arrow functions the this keyword always represents the object that defined the arrow function.
+        - Let us take a look at two examples to understand the difference.
+        - Both examples call a method twice, first when the page loads, and once again when the user clicks a button.
+        - The first example uses a regular function, and the second example uses an arrow function.
+        - The result shows that the first example returns two different objects (window and button),
+          and the second example returns the window object twice, because the window object is the "owner" of the function.
+            - Example 1:
+                With a regular function this represents the object that calls the function:
+                // Regular Function:
+                hello = function() {
+                    document.getElementById("demo").innerHTML += this;
+                }
+                // The window object calls the function:
+                window.addEventListener("load", hello);
+                // A button object calls the function:
+                document.getElementById("btn").addEventListener("click", hello);
+            - Example 2:
+                With an arrow function this represents the owner of the function:
+                // Arrow Function:
+                hello = () => {
+                    document.getElementById("demo").innerHTML += this;
+                }
+                // The window object calls the function:
+                window.addEventListener("load", hello);
+                // A button object calls the function:
+                document.getElementById("btn").addEventListener("click", hello);
+        - Remember these differences when you are working with functions. 
+          Sometimes the behavior of regular functions is what you want, if not, use arrow functions.
+#####################################################
+JavaScript Classes
+    - ECMAScript 2015, also known as ES6, introduced JavaScript Classes.
+    - JavaScript Classes are templates for JavaScript Objects.
+    - JavaScript Class Syntax:
+        - Use the keyword class to create a class.
+        - Always add a method named constructor():
+        - Syntax:
+            class ClassName {
+                constructor() { ... }
+            }
+        - Example:
+            class Car {
+                constructor(name, year) {
+                    this.name = name;
+                    this.year = year;
+                }
+            }
+            - The example above creates a class named "Car".
+            - The class has two initial properties: "name" and "year".
+        - A JavaScript class is not an object.
+        - It is a template for JavaScript objects.
+    - Using a Class:
+        - When you have a class, you can use the class to create objects:
+            const myCar1 = new Car("Ford", 2014);
+            const myCar2 = new Car("Audi", 2019);
+        - The example above uses the Car class to create two Car objects.
+        - The constructor method is called automatically when a new object is created.
+    - The Constructor Method:
+        - The constructor method is a special method:
+            - It has to have the exact name "constructor"
+            - It is executed automatically when a new object is created
+            - It is used to initialize object properties
+        - If you do not define a constructor method, JavaScript will add an empty constructor method.
+    - Class Methods:
+        - Class methods are created with the same syntax as object methods.
+        - Use the keyword class to create a class.
+        - Always add a constructor() method.
+        - Then add any number of methods.
+        - Syntax
+            class ClassName {
+                constructor() { ... }
+                method_1() { ... }
+                method_2() { ... }
+                method_3() { ... }
+            }
+############################################
+JavaScript Modules
+    - JavaScript modules allow you to break up your code into separate files.
+    - This makes it easier to maintain a code-base.
+    - Modules are imported from external files with the import statement.
+    - Modules also rely on type="module" in the <script> tag.
+        <script type="module">
+            import message from "./message.js";
+        </script>
+    - Export:
+        - Modules with functions or variables can be stored in any external file.
+        - There are two types of exports: Named Exports and Default Exports.
+
+        - Named Exports:
+            - Let us create a file named person.js, and fill it with the things we want to export.
+            - You can create named exports two ways. In-line individually, or all at once at the bottom.
+            - In-line individually:
+                - person.js:
+                    export const name = "Jesse";
+                    export const age = 40;
+            - All at once at the bottom:
+                - person.js:
+                    const name = "Jesse";
+                    const age = 40;
+                    export {name, age};
+        - Default Exports:
+            - Let us create another file, named message.js, and use it for demonstrating default export.
+            - You can only have one default export in a file.
+                - message.js
+                    const message = () => {
+                        const name = "Jesse";
+                        const age = 40;
+                        return name + ' is ' + age + 'years old.';
+                    };
+                    export default message;
+    - Import:
+        - You can import modules into a file in two ways, based on if they are named exports or default exports.
+        - Named exports are constructed using curly braces. Default exports are not.
+        - Import from named exports:
+            - Import named exports from the file person.js:
+                import { name, age } from "./person.js";
+        - Import from default exports:
+            - Import a default export from the file message.js:
+                import message from "./message.js";
+    - Modules only work with the HTTP(s) protocol.
+    - A web-page opened via the file:// protocol cannot use import / export.
+#############################################
+- JavaScript Best Practices
+    - Avoid Global Variables:
+        - Minimize the use of global variables.
+        - This includes all data types, objects, and functions.
+        - Global variables and functions can be overwritten by other scripts.
+        - Use local variables instead, and learn how to use closures.
+    - Always Declare Local Variables
+        - All variables used in a function should be declared as local variables.
+        - Local variables must be declared with the var, the let, or the const keyword, otherwise they will become global variables.
+        - Strict mode does not allow undeclared variables.
+    - Declarations on Top:
+        - It is a good coding practice to put all declarations at the top of each script or function.
+        - This will:
+            - Give cleaner code
+            - Provide a single place to look for local variables
+            - Make it easier to avoid unwanted (implied) global variables
+            - Reduce the possibility of unwanted re-declarations
+    - It is a good coding practice to put all declarations at the top of each script or function.
+        - This will:
+            - Give cleaner code
+            - Provide a single place to look for local variables
+            - Make it easier to avoid unwanted (implied) global variables
+            - Reduce the possibility of unwanted re-declarations
+    - Initialize Variables:
+        - This will:
+            - Give cleaner code
+            - Provide a single place to initialize variables
+            - Avoid undefined values
+        - Initializing variables provides an idea of the intended use (and intended data type).
+    - Declare Objects with const
+        - Declaring objects with const will prevent any accidental change of type:
+            let car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Changes object to string
+
+            const car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Not possible
+    - Declare Arrays with const:
+        - Declaring arrays with const will prevent any accidential change of type:
+            let cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Changes array to number
+
+            const cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Not possible
+    - Don't Use new Object()
+        - Use "" instead of new String()
+        - Use 0 instead of new Number()
+        - Use false instead of new Boolean()
+        - Use {} instead of new Object()
+        - Use [] instead of new Array()
+        - Use /()/ instead of new RegExp()
+        - Use function (){} instead of new Function()
+    - Use === Comparison:
+        - The == comparison operator always converts (to matching types) before comparison.
+        - The === operator forces comparison of values and type:
+    - Use Parameter Defaults:
+        - If a function is called with a missing argument, the value of the missing argument is set to undefined.
+        - Undefined values can break your code. It is a good habit to assign default values to arguments.
+            function myFunction(x, y) {
+                if (y === undefined) {
+                    y = 0;
+                }
+            }
+            - ECMAScript 2015 allows default parameters in the function definition:
+                function (a=1, b=1) { /*function code*/ }
+############################################
+JavaScript Common Mistakes
+    - Misunderstanding Floats:
+        let x = 0.1;
+        let y = 0.2;
+        let z = x + y            // the result in z will not be 0.3
+        -> To solve the problem above, it helps to multiply and divide:
+        let z = (x * 10 + y * 10) / 10;       // z will be 0.3
+    - Breaking a JavaScript String
+        - You must use a "backslash" if you must break a statement in a string:
+            let x = "Hello \
+            World!";
+    - JavaScript does not support arrays with named indexes.
+    - In JavaScript, arrays use numbered indexes
+    - In JavaScript, objects use named indexes.
+    - If you use a named index, when accessing an array, JavaScript will redefine the array to a standard object.
+    - After the automatic redefinition, array methods and properties will produce undefined or incorrect results:
+    - Undefined is Not Null:
+        - JavaScript objects, variables, properties, and methods can be undefined.
+        - In addition, empty JavaScript objects can have the value null.
+        - This can make it a little bit difficult to test if an object is empty.
+        -> if (typeof myObj !== "undefined" && myObj !== null)
+###################################################
+JavaScript Performance
+    - Reduce Activity in Loops
+        - Bad: for (let i = 0; i < arr.length; i++) {
+        - Better: 
+            let l = arr.length;
+            for (let i = 0; i < l; i++) {
+    - Reduce DOM Access:
+        - Accessing the HTML DOM is very slow, compared to other JavaScript statements.
+        - If you expect to access a DOM element several times, access it once, and use it as a local variable:
+            const obj = document.getElementById("demo");
+            obj.innerHTML = "Hello";
+    - Delay JavaScript Loading:
+        - Putting your scripts at the bottom of the page body lets the browser load the page first.
+        - While a script is downloading, the browser will not start any other downloads. 
+          In addition all parsing and rendering activity might be blocked.
+        - The HTTP specification defines that browsers should not download more than two components in parallel.
+        - An alternative is to use defer="true" in the script tag. 
+          The defer attribute specifies that the script should be executed after the page has finished parsing,
+          but it only works for external scripts.
+        - If possible, you can add your script to the page by code, after the page has loaded:
+            <script>
+                window.onload = function() {
+                    const element = document.createElement("script");
+                    element.src = "myScript.js";
+                    document.body.appendChild(element);
+                };
+            </script>

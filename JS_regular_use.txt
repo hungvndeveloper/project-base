@@ -1,0 +1,1277 @@
+- Node.js treats each file in a Node project as a module that can export values and functions from the file.
+- Declare Objects with const
+        - Declaring objects with const will prevent any accidental change of type:
+            let car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Changes object to string
+
+            const car = {type:"Fiat", model:"500", color:"white"};
+            car = "Fiat";      // Not possible
+            car.newProperty = "newValue"; // it's ok
+            car['newProperty1'] = "newValue1"; // it's ok
+    - Declare Arrays with const:
+        - Declaring arrays with const will prevent any accidential change of type:
+            let cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Changes array to number
+
+            const cars = ["Saab", "Volvo", "BMW"];
+            cars = 3;    // Not possible
+            cars.push("newValue") // It's ok
+            cars[4] = "Toyota"; // It's ok
+#############################################
+- Comparison table for CommonJS and ES Modules
+    - Module Loading:
+        - CommonJS: Synchronous
+        - ES Module: Asynchronous
+    - Import/Export:
+        - CommonJS: 'require'/'exports'
+        - ES Module: 'import'/'export'
+    - Caching
+        - CommonJS: Cached
+        - ES Module: Not cached by default
+    - Use Case
+        - CommonJS: Server-side
+        - ES Module: Client-side and server-side
+    - Dynamic Import
+        - CommonJS: Not supported
+        - ES Module: Supported
+Node.js module.exports vs. exports. áp dụng nếu sử dụng CommonJS
+    - exports và module.exports chứ không phải là export nhé các bạn, export là cho bên ES module.
+      Nhiều bạn hay viết thiếu chữ “s” lắm ấy.
+      Trong Javascript thì có cái từ khóa export nhưng trong NodeJS thì chưa đâu.
+    - Furthermore, you will come across three types of modules in Node.js:
+        - Core Modules: These are built-in modules like http, fs, etc.
+        - Local Modules: These modules are locally created by the programmer.
+        - Third-Party Modules: These modules are available to use after installation
+          using NPM(Node Package Manager) like: express, mongoose etc.
+    - Cơ chế Wrapping của NodeJS là gì?
+        - When we call require in our application, the new module is created.
+          Its initial value is an empty object literal {}. Before the referenced module’s code
+          is executed, Node.js will wrap it with the module wrapper function. 
+          Let's look briefly into the structure of the module wrapper function:
+            (function(exports, require, module, __filename, __dirname) { 
+                // Module code actually lives in here 
+            });
+        - Using the module wrapper function, Node.js keeps top-level variables
+          (defined with var, const, or let) scoped to the module rather than as the global
+          object. It also provides access to the exported module-specific variables for use
+          in our application.
+        - The variables __filename and __dirname in the module wrapper function contain the
+          absolute filename and directory path of the module.
+        - Now let's look into module.exports, module.exports is the object reference that gets
+          returned when we make require() calls in our application. By module. exports,
+          we can get access to module-specific variables that don’t leak out to the global object.
+    - module.exports và exports khác nhau như thế nào?
+        - Trước hết thì module.exports và exports trỏ tới cùng một Object, là một Object rỗng.
+        - Tuy nhiên, chỉ có một thằng module.exports là cái thật sự được export khi mình require nó thôi. 
+          Còn thằng exports thì không phải. Nó chỉ là một reference tới thằng module.exports thôi.
+            - ví dụ:
+                module.exports.name = "Nguyen";
+                exports.name = "Nguyen";
+                console.log(module.exports); //{ name: 'Nguyen' }
+                console.log(exports); //{ name: 'Nguyen' }
+                console.log(module.exports === exports); //true
+            - Ở đây có thể thấy hai thằng này chỉ thay đổi cái properties của cái Object ban đầu
+              (là Object rỗng ban đầu). Nên ở đây, hai thằng này vẫn là cùng một Object.
+            - Tuy nhiên, nếu như sửa lại:
+                module.exports = {
+                    name: "Nguyen"
+                };
+                exports = {
+                    name: "Nguyen"
+                };
+                console.log(module.exports === exports); // false
+            - Hai thằng này là hai cái Object khác nhau, vì mình là assign lại giá trị cho thằng
+              exports (Mình dùng dấu =).Kết quả sẽ là false
+            - Mình chứng minh thêm như sau:
+                - Trong file export.js mình viết: 
+                    exports = {
+                        name: "Nguyen"
+                    };
+                - Sau đó, trong file index.js mình viết
+                    const object = require("./export");
+                    console.log(object);
+                - Thì kết quả là {}
+            - Vì chỉ là thằng module.exports mới là thằng thật sự được export
+              (Và mặc định nó là một Object rỗng). Còn thằng exports thì không.
+        - Vậy thì khi nào sử dụng thằng exports?
+            - Dùng thằng exports chỉ khi nào mình muốn add thêm một cái properties vào
+              cái Object mặc định của nó. Ví dụ như thay vì viết;
+                module.exports.x = 1;
+                module.exports.y = 2;
+                module.exports.z = 3;
+            - Thì có thể viết thành như sau cho nó ngắn và tiện hơn.
+                exports.x = 1;
+                exports.y = 2;
+                exports.z = 3;
+    - Kết luận:
+        - Luôn sử dụng module.exports khi muốn export một cái gì đó.
+          Đừng lăn tăn sử dụng exports là gì cho rối rắm hết cả lên.  
+##################################
+JavaScript Object Rest Properties
+    - ECMAScript 2018 added rest properties.
+    - This allows us to destruct an object and collect the leftovers onto a new object:
+        Example
+            let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+            x; // 1
+            y; // 2
+            z; // { a: 3, b: 4 }
+############################################
+Arguments javascript dễ hiểu mà sao họ giải thích dài thế
+    - Thật ra nó rất dễ hiểu, việc thông qua những ví dụ dưới đây là hiểu rồi. 
+      Nhưng đến giờ tôi không biết tại sao có nhiều bài viết giải thích dài dòng đến như vậy. Hãy xem ví dụ:
+        function add (num1, num2) {
+            // logs [num1, num2] (with their values)
+            console.log(arguments); [num1, num2]
+            // Lấy ra param đầu tiên 
+            console.log(arguments[0]); // num1
+            // Lấy ra param thứ 2
+            console.log(arguments[1]); // num2
+            // ...
+        }
+    - Ví dụ này chúng tôi tạo một Regular Function. Đừng nói với tôi Regular Function là gì? đấy nhé. Vậy thôi đơn giản gọn nhẹ,
+      arguments giúp chúng ta lấy được tham số truyền vào một cách dễ dàng. Ở đây có ý kiến cho rằng vậy "khác gì cách lấy tham số đâu?" 
+    - OK, ví dụ tiếp theo sẽ khác đấy.
+        function add () {
+            // Set biến tổng
+            let total = 0;
+            // Cộng đồn mỗi params
+            Array.from(arguments).forEach(function (num) {
+                total += num;
+            });
+            // Return to the total
+            return total;
+        }
+    - Tiếp theo chúng ta sử dụng ví dụ này như sau:
+        // returns 0
+        add();
+        // returns 4
+        add(4);
+        // returns 36
+        add(4, 2, 11, 19);
+    - Có gì khác chưa? Khác đúng không? Điều này đặc biệt hữu ích nếu bạn muốn cho phép một số lượng không giới hạn các đối số được chuyển vào hàm của bạn.
+    - Arguments javascript sử dụng nên chú ý
+    - Khi sử dụng Arguments trong javascript cũng nên chú ý một điều cũng hơi quan trọng đó là arguments
+      giống như một Array nhưng nó không thực sự là một Array. Nếu nó là một Array thì tất cả 10 method của Array đều có thể sử dụng được. 
+
+    - Nhưng ví dụ trên thì chúng ta phải nhờ đến người anh em Array.from trước sau đó mới sử dụng forEach(). 
+      Vậy Arguments thực sự là gì? Arguments có thể nói chính là Array-like.
+############################################
+const
+    The const declaration declares block-scoped local variables.
+    The value of a constant can't be changed through reassignment using the assignment operator, but if a constant is an object,
+    its properties can be added, updated, or removed.
+    - const in objects and arrays
+        - const also works on objects and arrays. Attempting to overwrite the object throws an error "Assignment to constant variable".
+            - example: 
+                - it is throw an error:
+                    //object
+                    const MY_OBJECT = { key: "value" };
+                    MY_OBJECT = { OTHER_KEY: "value" };
+                    //array
+                    const MY_ARRAY = [];
+                    MY_ARRAY = ["B"];
+                - However, object keys are not protected, so the following statement is executed without problem.
+                    MY_OBJECT.key = "otherValue";
+                - Still, it's possible to push items into the array and thus mutate it.
+                    MY_ARRAY.push("A"); // ["A"]
+        - Declaration with destructuring
+            - The left-hand side of each = can also be a binding pattern. This allows creating multiple variables at once.
+                const result = /(a+)(b+)(c+)/.exec("aaabcc");
+                const [, a, b, c] = result;
+                console.log(a, b, c); // "aaa" "b" "cc"
+            - But if we change the values of the variables above, it throw an error: Uncaught TypeError: Assignment to constant variable.
+#############################################
+Giải thích về Destructuring, Rest Parameters, và Spread Syntax trong javascript
+    - Destructuring javascript là gì?
+        - Destructuring là một cú pháp cho phép bạn gán các thuộc tính của một Object hoặc một Array. 
+          Điều này có thể làm giảm đáng kể các dòng mã cần thiết để thao tác dữ liệu trong các cấu trúc này. 
+          Có hai loại Destructuring: Destructuring Objects và Destructuring Arrays
+            - Destructuring Objects:
+                - Destructuring Objects cho phép bạn tạo ra một hay nhiều  new variables  sử dụng những property của một Objects. Xem ví dụ dưới đây:
+                    - example: 
+                        const note = {
+                            id: 1,
+                            website: 'anonystick.com',
+                            date: '17/07/2014',
+                        }
+                    - Theo cách truyền thống thì chúng ta sẽ lấy ra những giá trị như cú pháp sau:
+                        const id = note.id
+                        const website = note.website
+                        const date = note.date
+
+                        console.log(id)
+                        console.log(website)
+                        console.log(date)
+                    - Nhưng với việc sử dụng object destructuring chỉ với một dòng code ( Thủ thuật viết một dòng code ),
+                      chúng ta có thể get được những giá trị ấy miễn là trùng tên của thuộc tính trong object là được:
+                        // Destructure properties into variables
+                        const { id, website, date } = note
+
+                        console.log(id)
+                        console.log(website)
+                        console.log(date)
+            - Destructuring Arrays:
+                - Array destructuring cho phép bạn tạo ra một new variables bằng cách sử dụng giá trị mỗi index của Array. 
+                  Xem ví dụ dưới đây cho nó dễ hiểu, chứ nói vậy chả hiểu đâu. 
+                  Ta có một Array là thông tin về trang "blog javascript" được tạo ngày
+                    - example: 
+                        const date = ['2014', '17', '07']
+                    - Như ở Object thì ta lần lượt lấy giá trị của mỗi item theo index
+                        // Create variables from the Array items
+                        const year = date[0]
+                        const month = date[1]
+                        const day = date[2]
+                    - Nhưng giờ đây với việc sử dụng Array Destructuring thì công việc sẽ trở nên dế dàng hơn nhiều
+                        // Destructure Array values into variables
+                        const [year, month, day] = date
+
+                        console.log(year) // 2014
+                        console.log(month) // 17
+                        console.log(day) // 07
+    - Spread operator là gì?
+        - Spread operator là ba dấu chấm ( ...), có thể chuyển đổi một mảng thành một chuỗi các tham số được phân tách bằng dấu phẩy.
+          Nói cho dễ hiểu, nó giống như một cái xương và một cái xương sườn vậy, chia nhỏ một phần tử lớn thành những phần tử nhỏ riêng lẻ.
+        - Nói về Spread tips javascript cũng đã có rất nhiều bài viết liên quan đến tính năng này. Spread syntax hay còn gọi là three dot (...)
+          là một bổ sung hữu ích khác cho JavaScript để làm việc với các Arrays, Objects và các function calls. 
+        - Hơn nữa Spread có thể tao ra một cấu trúc dữ liệu shallow copy để tăng tính thao tác dữ liệu. 
+          Cũng giống như destructuring thì Spread cũng làm việc nhiều với Arrays và Objects.
+        - Spread with Arrays:
+            - Ví dụ trường hợp thức tế thì ta có thể merge array sử dụng concat.
+                // Create an Array
+                const tools = ['hammer', 'screwdriver']
+                const otherTools = ['wrench', 'saw']
+
+                // Concatenate tools and otherTools together
+                const allTools = tools.concat(otherTools)
+
+                console.log(allTools);
+
+                //(4) [
+                "hammer",
+                "screwdriver",
+                "wrench",
+                "saw"
+                ]
+            - Nhưng giờ đây đã khác xưa rất nhiều rồi, hãy xem đây khi sử dụng Spread systax.
+                // Unpack the tools Array into the allTools Array
+                const allTools = [...tools, ...otherTools]
+                console.log(allTools)
+            - Còn rất nhiều thứ rất hay đang chờ đón bạn, chút nữa sẽ cung cấp đanh cho những ai đủ kiên nhẫn đọc hết bài viết này. 
+                const ocean = ['🐙', '🦀'];
+                const aquarium = [...ocean, '🐡']; // Add a single value
+                const sushi = [...ocean, '🐡', '🍚']; // Add multiple values
+                aquarium; // ['🐙', '🦀', '🐡']
+                sushi; // ['🐙', '🦀', '🐡', '🍚']
+                // Original Array Not Affected
+                ocean; // ['🐙', '🦀']
+        - Spread with Objects:
+            - Khi sử dụng Spread thì chúng ta có thể copy và update một object như những gì mà Object.assign() đã làm
+            - // Create an Object and a copied Object with Object.assign()
+                const originalObject = { enabled: true, darkMode: false }
+                const secondObject = Object.assign({}, originalObject)
+                console.log(secondObject);//{enabled: true, darkMode: false}
+            - Sử dụng Spread syntax thì sao? ez game.
+                // Create an object and a copied object with spread
+                const originalObject = { enabled: true, darkMode: false }
+                const secondObject = { ...originalObject }
+                console.log(secondObject);//{enabled: true, darkMode: false}
+            - Spread with Function Calls
+                - Giả sử chúng ta có một function như thế này
+                    // Create a function to multiply three items
+                    function multiply(a, b, c) {
+                        return a * b * c
+                    }
+                - Nếu bình thường thì sao, thì add từng paramsx zô chứ sao:
+                    multiply(1, 2, 3) ;// 6
+                - Nhưng khi sử dụng Spread trong function calls thì rất đơn giản
+                    const numbers = [1, 2, 3]
+                    multiply(...numbers);//6
+    - Rest Parameters là gì?
+        - Tính năng cuối cùng bạn sẽ tìm hiểu trong bài viết này đó là Rest Parameters. Cú pháp này giống như Spread Syntax (...) nhưng có tác dụng ngược lại.
+          Ví dụ Ví dụ, trong hàm restTest, nếu chúng ta muốn args là một mảng bao gồm một số lượng đối số không xác định, chúng ta có thể có:
+            function restTest(...args) {
+                console.log(args)
+            }
+            restTest(1, 2, 3, 4, 5, 6);// [1, 2, 3, 4, 5, 6]
+    - Và đây là một bài viết về Rest Parameters và Spread Syntax dành cho những bạn kiên nhẫn đọc tới đây. 
+      Ở bài viết này thì mọi điều sẽ được sáng tỏ, bạn sẽ phân biệt được giữa Rest Parameters và Spread Syntax. Và khi nào sử dụng chúng.
+
+#############################################
+- The Nullish Coalescing Operator (??)
+    - The ?? operator returns the first argument if it is not nullish (null or undefined). 
+      Otherwise it returns the second argument.
+        - Example:
+            let name = null;
+            let text = "missing";
+            let result = name ?? text;
+            -> result: missing
+- The Optional Chaining Operator (?.):
+    - The ?. operator returns undefined if an object is undefined or null (instead of throwing an error).
+    - Example:
+        // Create an object:
+        const car = {type:"Fiat", model:"500", color:"white"};
+        // Ask for car name:
+        document.getElementById("demo").innerHTML = car?.name;
+        -> result: undefined
+#############################################
+JavaScript Object Properties
+    - Accessing JavaScript Properties:
+        - The syntax for accessing the property of an object is:
+            - objectName.property      // person.age
+            or
+            - objectName["property"]   // person["age"]
+            or
+            - objectName[expression]   // x = "age"; person[x]
+        - The expression must evaluate to a property name.
+##############################################
+- JavaScript supports different kinds of loops:
+    - for - loops through a block of code a number of times
+    - for/in - loops through the properties of an object
+    - for/of - loops through the values of an iterable object
+    - while - loops through a block of code while a specified condition is true
+    - do/while - also loops through a block of code while a specified condition is true
+###################################################
+- JavaScript Array Iteration
+    - Array forEach()
+        - The forEach() method calls a function for each element in an array.
+        - The forEach() method is not executed for empty elements.
+        - Syntax: array.forEach(function(currentValue, index, arr), thisValue)
+        - Parameters:
+            function(): Required. A function to run for each array element.
+            currentValue: Required.The value of the current element.
+            index: Optional.The index of the current element.
+            arr: Optional. The array of the current element.
+            thisValue: Optional. Default undefined. A value passed to the function as its this value.
+        - Return Value: undefined
+        - example 1:
+            let sum = 0;
+            const numbers = [65, 44, 12, 4];
+            numbers.forEach(myFunction);
+
+            function myFunction(item) {
+                sum += item;
+            }
+        - example 2:
+            const numbers = [65, 44, 12, 4];
+            numbers.forEach(myFunction)
+
+            function myFunction(item, index, arr) {
+                arr[index] = item * 10;
+            }
+    - Array map():
+        - The map() method creates a new array by performing a function on each array element.
+        - The map() method does not execute the function for array elements without values.
+        - The map() method does not change the original array.
+        - Example:
+            const numbers1 = [45, 4, 9, 16, 25];
+            const numbers2 = numbers1.map(myFunction);
+
+            function myFunction(value, index, array) {
+                return value * 2;
+            }
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array filter():
+        - The filter() method creates a new array with array elements that pass a test.
+        - This example creates a new array from elements with a value larger than 18:
+        - Example:
+            const numbers = [45, 4, 9, 16, 25];
+            const over18 = numbers.filter(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array reduce():
+        - The reduce() method runs a function on each array element to produce (reduce it to) a single value.
+        - The reduce() method works from left-to-right in the array. See also reduceRight().
+        - The reduce() method does not reduce the original array.
+        - This example finds the sum of all numbers in an array:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let sum = numbers.reduce(myFunction);
+
+            function myFunction(total, value, index, array) {
+                return total + value;
+            }
+        - Note that the function takes 4 arguments:
+            - The total (the initial value / previously returned value)
+            - The item value
+            - The item index
+            - The array itself
+    - Array every():
+        - The every() method checks if all array values pass a test.
+        - This example checks if all array values are larger than 18:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let allOver18 = numbers.every(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> result: All over 18 is false
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array some():
+        - The some() method checks if some array values pass a test.
+        - This example checks if some array values are larger than 18:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let someOver18 = numbers.some(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> result: Some over 18 is true
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array Spread (...):
+        - The ... operator expands an iterable (like an array) into more elements:
+        - Example:
+            const q1 = ["Jan", "Feb", "Mar"];
+            const q2 = ["Apr", "May", "Jun"];
+            const q3 = ["Jul", "Aug", "Sep"];
+            const q4 = ["Oct", "Nov", "May"];
+
+            const year = [...q1, ...q2, ...q3, ...q4];
+##############################################
+- What is this?
+        - In JavaScript, the this keyword refers to an object.
+        - Which object depends on how this is being invoked (used or called).
+        - The this keyword refers to different objects depending on how it is used:
+            - In an object method, this refers to the object.
+            - Alone, this refers to the global object.
+            - In a function, this refers to the global object.
+            - In a function, in strict mode, this is undefined.
+            - In an event, this refers to the element that received the event.
+            - Methods like call(), apply(), and bind() can refer this to any object.
+            - this is not a variable. It is a keyword. You cannot change the value of this.
+################################################
+#####################################################
+Object.defineProperties()
+    - The Object.defineProperties() static method defines new or modifies existing properties directly on an object, returning the object.
+        const object1 = {};
+        Object.defineProperties(object1, {
+        property1: {
+            value: 42,
+            writable: true,
+        },
+        property2: {},
+        });
+        console.log(object1.property1);
+        // Expected output: 42
+    - Syntax:
+        Object.defineProperties(obj, props)
+        - Parameters:
+            - obj
+                - The object on which to define or modify properties.
+            - props:
+                - An object whose keys represent the names of properties to be defined or
+                  modified and whose values are objects describing those properties.
+                  Each value in props must be either a data descriptor or an accessor descriptor;
+                  it cannot be both (see Object.defineProperty() for more details).
+                - Data descriptors and accessor descriptors may optionally contain the following keys:
+                    - configurable: 
+                        - true if and only if the type of this property descriptor may be changed
+                          and if the property may be deleted from the corresponding object. Defaults to false.
+                    - enumerable:
+                        - true if and only if this property shows up during enumeration
+                          of the properties on the corresponding object. Defaults to false.
+                - A data descriptor also has the following optional keys:
+                    - value
+                        - The value associated with the property. 
+                          Can be any valid JavaScript value (number, object, function, etc.). 
+                          Defaults to undefined.
+                    - writable
+                        - true if and only if the value associated with the property may be changed
+                          with an assignment operator. Defaults to false.
+                - An accessor descriptor also has the following optional keys:
+                    - get
+                        - A function which serves as a getter for the property, or undefined if there is no getter.
+                          The function's return value will be used as the value of the property. 
+                          Defaults to undefined.
+
+                    - set
+                        - A function which serves as a setter for the property, or undefined if there is no setter.
+                          The function will receive as its only argument the new value being assigned to the property. 
+                          Defaults to undefined.
+                - If a descriptor has neither of value, writable, get and set keys, it is treated as a data descriptor.
+                  If a descriptor has both value or writable and get or set keys, an exception is thrown.
+                - Return value:
+                    - The object that was passed to the function.
+                        const obj = {};
+                        Object.defineProperties(obj, {
+                            property1: {
+                                value: true,
+                                writable: true,
+                            },
+                            property2: {
+                                value: "Hello",
+                                writable: false,
+                            },
+                            // etc. etc.
+                        });
+#####################################################
+Object.defineProperty()
+    - The Object.defineProperty() static method defines a new property directly on an object, 
+      or modifies an existing property on an object, and returns the object.
+        const object1 = {};
+        Object.defineProperty(object1, 'property1', {
+            value: 42,
+            writable: false,
+        });
+        object1.property1 = 77;
+        // Throws an error in strict mode
+        console.log(object1.property1);
+        // Expected output: 42
+    - Syntax:
+        Object.defineProperty(obj, prop, descriptor)
+        - Parameters:
+            - obj
+                The object on which to define the property.
+            - prop
+                A string or Symbol specifying the key of the property to be defined or modified.
+            - descriptor
+                The descriptor for the property being defined or modified.
+    - Return value:
+        - The object that was passed to the function, with the specified property added or modified.
+    - Description:
+        - Object.defineProperty() allows a precise addition to or modification of a property on an object.
+          Normal property addition through assignment creates properties which show up during
+          property enumeration (for...in, Object.keys(), etc.), whose values may be changed and which may be deleted.
+          This method allows these extra details to be changed from their defaults. 
+          By default, properties added using Object.defineProperty() are not writable, 
+          not enumerable, and not configurable. In addition, Object.defineProperty() uses the [[DefineOwnProperty]] internal method,
+          instead of [[Set]], so it does not invoke setters, even when the property is already present.
+        - Property descriptors present in objects come in two main flavors: 
+          data descriptors and accessor descriptors. A data descriptor is a property with a value that may or may not be writable.
+          An accessor descriptor is a property described by a getter-setter pair of functions. 
+          A descriptor must be one of these two flavors; it cannot be both.
+        - Both data and accessor descriptors are objects. They share the following optional keys
+          (please note: the defaults mentioned here are in the case of defining properties using Object.defineProperty()):
+            - configurable:
+                - the type of this property cannot be changed between data property and accessor property, and
+                - the property may not be deleted, and
+                - other attributes of its descriptor cannot be changed (however, if it's a data descriptor with writable: true,
+                  the value can be changed, and writable can be changed to false).
+                - Defaults to false.
+            - enumerable:
+                - true if and only if this property shows up during enumeration of the properties on the corresponding object. 
+                - Defaults to false.
+        - A data descriptor also has the following optional keys:
+            - value
+                - The value associated with the property. Can be any valid JavaScript value (number, object, function, etc.). 
+                  Defaults to undefined.
+            - writable
+                - true if the value associated with the property may be changed with an assignment operator. 
+                  Defaults to false.
+        - An accessor descriptor also has the following optional keys:
+            - get
+                - A function which serves as a getter for the property, or undefined if there is no getter.
+                  When the property is accessed, this function is called without arguments and with this set
+                  to the object through which the property is accessed (this may not be the object on which the property is defined due to inheritance).
+                  The return value will be used as the value of the property. 
+                - Defaults to undefined.
+            - set
+                - A function which serves as a setter for the property, or undefined if there is no setter.
+                  When the property is assigned, this function is called with one argument (the value being assigned to the property)
+                  and with this set to the object through which the property is assigned. 
+                - Defaults to undefined.
+        - If a descriptor doesn't have any of the value, writable, get, and set keys, it is treated as a data descriptor. 
+          If a descriptor has both [value or writable] and [get or set] keys, an exception is thrown.
+        - These attributes are not necessarily the descriptor's own properties. 
+          Inherited properties will be considered as well. In order to ensure these defaults are
+          preserved, you might freeze existing objects in the descriptor object's prototype chain upfront,
+          specify all options explicitly, or create a null-prototype object.
+        - Creating a property
+            - example:
+                const o = {}; // Creates a new object
+
+                // Example of an object property added
+                // with defineProperty with a data property descriptor
+                Object.defineProperty(o, "a", {
+                    value: 37,
+                    writable: true,
+                    enumerable: true,
+                    configurable: true,
+                });
+                // 'a' property exists in the o object and its value is 37
+        - Modifying a property
+            - Writable attribute:
+                - When the writable property attribute is false, the property is said to be "non-writable". 
+                  It cannot be reassigned. Trying to write to a non-writable property doesn't change it
+                  and results in an error in strict mode.
+                - example:
+                    const o = {}; // Creates a new object
+                    Object.defineProperty(o, "a", {
+                        value: 37,
+                        writable: false,
+                    });
+                    console.log(o.a); // 37
+                    o.a = 25; // No error thrown
+                    // (it would throw in strict mode,
+                    // even if the value had been the same)
+                    console.log(o.a); // 37; the assignment didn't work
+                    // strict mode
+                    (() => {
+                        "use strict";
+                        const o = {};
+                        Object.defineProperty(o, "b", {
+                            value: 2,
+                            writable: false,
+                        });
+                        o.b = 3; // throws TypeError: "b" is read-only
+                        return o.b; // returns 2 without the line above
+                    })();
+#################################################
+JavaScript Object Prototypes
+    - All JavaScript objects inherit properties and methods from a prototype.
+    - Prototype Inheritance
+        - All JavaScript objects inherit properties and methods from a prototype:
+            - Date objects inherit from Date.prototype
+            - Array objects inherit from Array.prototype
+            - Person objects inherit from Person.prototype     
+        - The Object.prototype is on the top of the prototype inheritance chain:
+        - Date objects, Array objects, and Person objects inherit from Object.prototype.  
+    - Adding Properties and Methods to Objects
+        - Sometimes you want to add new properties (or methods) to all existing objects of a given type.
+        - Sometimes you want to add new properties (or methods) to an object constructor. 
+    - Using the prototype Property:
+        - The JavaScript prototype property allows you to add new properties to object constructors:
+            function Person(first, last, age, eyecolor) {
+                this.firstName = first;
+                this.lastName = last;
+                this.age = age;
+                this.eyeColor = eyecolor;
+            }
+            Person.prototype.nationality = "English";
+        - The JavaScript prototype property also allows you to add new methods to objects constructors:
+            function Person(first, last, age, eyecolor) {
+                this.firstName = first;
+                this.lastName = last;
+                this.age = age;
+                this.eyeColor = eyecolor;
+            }
+            Person.prototype.name = function() {
+                return this.firstName + " " + this.lastName;
+            };
+    - Only modify your own prototypes. Never modify the prototypes of standard JavaScript objects.
+####################################################
+JavaScript Modules
+    - JavaScript modules allow you to break up your code into separate files.
+    - This makes it easier to maintain a code-base.
+    - Modules are imported from external files with the import statement.
+    - Modules also rely on type="module" in the <script> tag.
+        <script type="module">
+            import message from "./message.js";
+        </script>
+    - Export:
+        - Modules with functions or variables can be stored in any external file.
+        - There are two types of exports: Named Exports and Default Exports.
+
+        - Named Exports:
+            - Let us create a file named person.js, and fill it with the things we want to export.
+            - You can create named exports two ways. In-line individually, or all at once at the bottom.
+            - In-line individually:
+                - person.js:
+                    export const name = "Jesse";
+                    export const age = 40;
+            - All at once at the bottom:
+                - person.js:
+                    const name = "Jesse";
+                    const age = 40;
+                    export {name, age};
+        - Default Exports:
+            - Let us create another file, named message.js, and use it for demonstrating default export.
+            - You can only have one default export in a file.
+                - message.js
+                    const message = () => {
+                        const name = "Jesse";
+                        const age = 40;
+                        return name + ' is ' + age + 'years old.';
+                    };
+                    export default message;
+    - Import:
+        - You can import modules into a file in two ways, based on if they are named exports or default exports.
+        - Named exports are constructed using curly braces. Default exports are not.
+        - Import from named exports:
+            - Import named exports from the file person.js:
+                import { name, age } from "./person.js";
+        - Import from default exports:
+            - Import a default export from the file message.js:
+                import message from "./message.js";
+    - Modules only work with the HTTP(s) protocol.
+    - A web-page opened via the file:// protocol cannot use import / export.
+#######################################
+JavaScript Function call()
+    - Method Reuse:
+        - With the call() method, you can write a method that can be used on different objects.
+    - All Functions are Methods:
+        - In JavaScript all functions are object methods.
+        - If a function is not a method of a JavaScript object, it is a function of the global object (see previous chapter).
+        - The example below creates an object with 3 properties, firstName, lastName, fullName.
+        - Example
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            // This will return "John Doe":
+            person.fullName();
+        - In the example above, this refers to the person object.
+        - this.firstName means the firstName property of this.
+        - Same as: this.firstName means the firstName property of person.
+    - The JavaScript call() Method:
+        - The call() method is a predefined JavaScript method.
+        - It can be used to invoke (call) a method with an owner object as an argument (parameter).
+        - With call(), an object can use a method belonging to another object.
+        - This example calls the fullName method of person, using it on person1:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            const person2 = {
+                firstName:"Mary",
+                lastName: "Doe"
+            }
+            // This will return "John Doe":
+            person.fullName.call(person1);
+        - This example calls the fullName method of person, using it on person2:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            const person2 = {
+                firstName:"Mary",
+                lastName: "Doe"
+            }
+            // This will return "Mary Doe"
+            person.fullName.call(person2);
+        - The call() Method with Arguments:
+            - The call() method can accept arguments:
+                const person = {
+                    fullName: function(city, country) {
+                        return this.firstName + " " + this.lastName + "," + city + "," + country;
+                    }
+                }
+                const person1 = {
+                    firstName:"John",
+                    lastName: "Doe"
+                }
+                person.fullName.call(person1, "Oslo", "Norway");
+#############################################
+JavaScript Function apply()
+    - Method Reuse
+        - With the apply() method, you can write a method that can be used on different objects.
+    - The JavaScript apply() Method
+        - The apply() method is similar to the call() method (previous chapter).
+        - In this example the fullName method of person is applied on person1:
+            const person = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person1 = {
+                firstName: "Mary",
+                lastName: "Doe"
+            }
+            // This will return "Mary Doe":
+            person.fullName.apply(person1);
+    - The Difference Between call() and apply()
+        - The call() method takes arguments separately.
+        - The apply() method takes arguments as an array.
+        - The apply() method is very handy if you want to use an array instead of an argument list.
+    - The apply() Method with Arguments:
+        - The apply() method accepts arguments in an array:
+            const person = {
+                fullName: function(city, country) {
+                    return this.firstName + " " + this.lastName + "," + city + "," + country;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            person.fullName.apply(person1, ["Oslo", "Norway"]);
+        - Compared with the call() method:
+            const person = {
+                fullName: function(city, country) {
+                    return this.firstName + " " + this.lastName + "," + city + "," + country;
+                }
+            }
+            const person1 = {
+                firstName:"John",
+                lastName: "Doe"
+            }
+            person.fullName.call(person1, "Oslo", "Norway");
+######################################
+JavaScript Function bind()
+    - Function Borrowing
+        - With the bind() method, an object can borrow a method from another object.
+        - The example below creates 2 objects (person and member).
+        - The member object borrows the fullname method from the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const member = {
+                firstName:"Hege",
+                lastName: "Nilsen",
+            }
+            let fullName = person.fullName.bind(member);
+    - Preserving this:
+        - Sometimes the bind() method has to be used to prevent losing this.
+        - In the following example, the person object has a display method. In the display method, this refers to the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+            person.display();
+        - When a function is used as a callback, this is lost.
+        - This example will try to display the person name after 3 seconds, but it will display undefined instead:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+            setTimeout(person.display, 3000);
+            -> result: undefined undefined
+        - The bind() method solves this problem.
+        - In the following example, the bind() method is used to bind person.display to person.
+        - This example will display the person name after 3 seconds:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                display: function () {
+                    let x = document.getElementById("demo");
+                    x.innerHTML = this.firstName + " " + this.lastName;
+                }
+            }
+
+            let display = person.display.bind(person);
+            setTimeout(display, 3000);
+######################################
+The JavaScript this Keyword:
+    -Example
+        const person = {
+            firstName: "John",
+            lastName : "Doe",
+            id       : 5566,
+            fullName : function() {
+                return this.firstName + " " + this.lastName;
+            }
+        };
+    - What is this?
+        - In JavaScript, the this keyword refers to an object.
+        - Which object depends on how this is being invoked (used or called).
+        - The this keyword refers to different objects depending on how it is used:
+            - In an object method, this refers to the object.
+            - Alone, this refers to the global object.
+            - In a function, this refers to the global object.
+            - In a function, in strict mode, this is undefined.
+            - In an event, this refers to the element that received the event.
+            - Methods like call(), apply(), and bind() can refer this to any object.
+            - this is not a variable. It is a keyword. You cannot change the value of this.
+    - this in a Method:
+        - When used in an object method, this refers to the object.
+        - In the example on top of this page, this refers to the person object.
+        - Because the fullName method is a method of the person object.
+    - this Alone:
+        - When used alone, this refers to the global object.
+        - Because this is running in the global scope.
+        - In a browser window the global object is [object Window]:
+            let x = this;
+        - In strict mode, when used alone, this also refers to the global object:
+            "use strict";
+            let x = this;
+    - this in a Function (Default):
+        - In a function, the global object is the default binding for this.
+        - In a browser window the global object is [object Window]:
+            function myFunction() {
+                return this;
+            }
+    - this in a Function (Strict):
+        - JavaScript strict mode does not allow default binding.
+        - So, when used in a function, in strict mode, this is undefined.
+    - this in Event Handlers:
+        - In HTML event handlers, this refers to the HTML element that received the event:
+            ex: <button onclick="this.style.display='none'">Click to Remove Me!</button>
+    - Object Method Binding:
+        - In these examples, this is the person object:
+            const person = {
+                firstName  : "John",
+                lastName   : "Doe",
+                id         : 5566,
+                myFunction : function() {
+                    return this;
+                }
+            };
+
+            const person = {
+                firstName: "John",
+                lastName : "Doe",
+                id       : 5566,
+                fullName : function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            };
+            i.e. this.firstName is the firstName property of this (the person object).
+    - Explicit Function Binding:
+        - The call() and apply() methods are predefined JavaScript methods.
+        - They can both be used to call an object method with another object as argument.
+        - The example below calls person1.fullName with person2 as an argument,
+          this refers to person2, even if fullName is a method of person1:
+            const person1 = {
+                fullName: function() {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const person2 = {
+                firstName:"John",
+                lastName: "Doe",
+            }
+            // Return "John Doe"; object person2 call method fullName
+            person1.fullName.call(person2);
+    - Function Borrowing:
+        - With the bind() method, an object can borrow a method from another object.
+        - This example creates 2 objects (person and member).
+        - The member object borrows the fullname method from the person object:
+            const person = {
+                firstName:"John",
+                lastName: "Doe",
+                fullName: function () {
+                    return this.firstName + " " + this.lastName;
+                }
+            }
+            const member = {
+                firstName:"Hege",
+                lastName: "Nilsen",
+            }
+            let fullName = person.fullName.bind(member);
+####################################
+ES6 Arrow Functions:
+    - Block body thì => return keyword cần có
+    - Concise(dạng ngắn gọn) body thì => return keyword là implied và không cần thiết
+        Example A: Normal Function
+        const sayHi = function(name) {
+            return name
+        }
+
+        Example B: Arrow Function with Explicit Return
+        // Multi-line
+        const sayHi = (name) => {
+            return name
+        }
+
+        // Single-line
+        const sayHi = (name) => { return name }
+
+        Example C: Arrow Function with Implicit Return
+        // Single-line
+        const sayHi = (name) => name
+
+        // Multi-line
+        const sayHi = (name) => (
+            name
+        )
+    - Returning Objects:
+        - const me = () => { name: "samantha" };
+            me(); // undefined 😱
+        - const me = () => ({ name: "samantha" });
+            me(); // { name: "samantha" }
+##################################
+ExpressJS
+
+    - ví dụ:
+        import express from "express";
+        import mongoose from "mongoose";
+        import dotenv from "dotenv";
+        import userRoute from "./routes/user.route.js";
+        import gigRoute from "./routes/gig.route.js";
+        import orderRoute from "./routes/order.route.js";
+        import conversationRoute from "./routes/conversation.route.js";
+        import messageRoute from "./routes/message.route.js";
+        import reviewRoute from "./routes/review.route.js";
+        import authRoute from "./routes/auth.route.js";
+        import uploadRoute from "./routes/upload.route.js";
+        import cookieParser from "cookie-parser";
+        import cors from "cors";
+
+        const app = express();
+        mongoose.set("strictQuery", true);
+        dotenv.config();
+        app.use(express.urlencoded({
+            extended: true
+        }))
+
+        const connect = async () => {
+            try {
+                await mongoose.connect(process.env.MONGO);
+                console.log("Connected to mongoDB!");
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+
+        // cần sử dụng thư viện này vì nếu ta gọi từ ứng bên client chạy react đến api, sẽ gặp lỗi 
+        // cors policy vì chúng ta đang cố truy cập đến api từ một nơi khác. thư viện này cho phép ta
+        // nói với ứng dụng là cho phép domain này truy cập vào api của chúng ta
+        app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+        app.use(express.json());
+        app.use(cookieParser());
+
+        app.use("/api/auth", authRoute);
+        app.use("/api/users", userRoute);
+        app.use("/api/gigs", gigRoute);
+        app.use("/api/orders", orderRoute);
+        app.use("/api/conversations", conversationRoute);
+        app.use("/api/messages", messageRoute);
+        app.use("/api/reviews", reviewRoute);
+        app.use("/api/upload", uploadRoute);
+
+        app.use((err, req, res, next) => {
+            const errorStatus = err.status || 500;
+            const errorMessage = err.message || "Something went wrong";
+            return res.status(errorStatus).send(errorMessage);
+        });
+        app.listen(8000, () => {
+            connect();
+            console.log("Backend server is running");
+        });
+- Công dụng của hàm app.use:
+    - Đăng ký middleware: Hàm app.use được sử dụng để đăng ký middleware với ứng dụng Express. 
+      Middleware là các hàm được sử dụng để xử lý các yêu cầu HTTP trước khi chúng được chuyển đến các tuyến đường.
+    - Xử lý các yêu cầu: Middleware có thể được sử dụng để thực hiện các tác vụ như:
+        - Xác thực và ủy quyền
+        - Phân tích dữ liệu yêu cầu
+        - Ghi nhật ký
+        - Xử lý lỗi
+    - Cấu hình linh hoạt: Hàm app.use cho phép bạn cấu hình ứng dụng Express theo cách linh hoạt. 
+      Bạn có thể đăng ký middleware cho các tuyến đường cụ thể hoặc cho toàn bộ ứng dụng.
+
+- Thứ tự thực hiện middleware và số lượng đối số trong hàm callback
+    - Thứ tự thực hiện middleware:
+        - Middleware được thực thi theo thứ tự được khai báo trong mã.
+        - Middleware được đặt trước sẽ được thực thi trước, sau đó đến các middleware được đặt sau.
+- Số lượng đối số trong hàm callback:
+    - Số lượng đối số trong hàm callback của middleware không ảnh hưởng đến thứ tự thực hiện.
+    - Nó chỉ ảnh hưởng đến chức năng của middleware.
+- Ví dụ:
+    app.use((req, res, next) => {
+    console.log('Middleware 1');
+    next();
+    });
+
+    app.use((req, res, next) => {
+    console.log('Middleware 2');
+    next();
+    });
+
+    app.get('/', (req, res) => {
+    res.send('Hello World!');
+    });
+
+    app.listen(3000);
+- Trong ví dụ này, cả hai middleware đều có 3 đối số: req, res và next.
+- Tuy nhiên, middleware 1 sẽ được thực thi trước middleware 2 vì nó được khai báo trước.
+
+- Bảng sau đây tóm tắt số lượng đối số phổ biến trong hàm callback của middleware và chức năng của chúng:
+
+    Số lượng đối    số	Chức năng
+    4	            Middleware xử lý lỗi
+    3	            Middleware thông thường
+    2	            Middleware chỉ xử lý request và response
+
+- Lưu ý:
+    - Bạn có thể sử dụng bất kỳ số lượng đối số nào trong hàm callback của middleware.
+    - Tuy nhiên, 3 đối số là phổ biến nhất.
+    - Middleware xử lý lỗi phải có 4 đối số.
+
+Kết luận:
+
+    - Thứ tự thực hiện middleware được xác định bởi thứ tự khai báo trong mã, không phải bởi số lượng đối số trong hàm callback.
+      Số lượng đối số chỉ ảnh hưởng đến chức năng của middleware.
+
+- Hàm app.listen(3000); được đặt ở cuối cùng để đảm bảo rằng tất cả các middleware và tuyến đường đã được định nghĩa trước
+  khi máy chủ Express bắt đầu lắng nghe các yêu cầu.
+#################################
+- Hàm next
+    Hàm next được sử dụng trong middleware để chuyển tiếp yêu cầu đến middleware tiếp theo trong chuỗi.
+    Nó hoạt động như một cờ hiệu để cho biết middleware hiện tại đã hoàn tất việc xử lý yêu cầu và middleware tiếp theo có thể bắt đầu.
+
+- Cách thức hoạt động:
+    - Khi một middleware được gọi, nó có thể thực hiện một số thao tác với yêu cầu và phản hồi.
+    - Nếu middleware muốn chuyển tiếp yêu cầu đến middleware tiếp theo, nó cần gọi hàm next.
+    - Nếu middleware không gọi next, yêu cầu sẽ không được chuyển tiếp và sẽ dừng lại tại middleware hiện tại.
+- Ví dụ:
+    app.use((req, res, next) => {
+    console.log('Middleware 1');
+    next();
+    });
+
+    app.use((req, res, next) => {
+    console.log('Middleware 2');
+    next();
+    });
+
+    app.get('/', (req, res) => {
+    res.send('Hello World!');
+    });
+
+    app.listen(3000);
+
+    - Trong ví dụ này, khi một yêu cầu được gửi đến /, nó sẽ được xử lý bởi hai middleware trước khi đến được tuyến đường. 
+    - Mỗi middleware sẽ ghi nhật ký một thông báo vào bảng điều khiển và sau đó gọi next để chuyển tiếp yêu cầu đến middleware tiếp theo.
+
+- Lưu ý:
+    - Hàm next không bắt buộc phải được gọi trong middleware.
+    - Nếu bạn không gọi next, yêu cầu sẽ dừng lại tại middleware hiện tại.
+    - Bạn có thể sử dụng next để chuyển tiếp yêu cầu đến một middleware cụ thể.
+
+- Công dụng khác của next:
+    - Bỏ qua các middleware: Bạn có thể sử dụng next('route') để bỏ qua các middleware còn lại và chuyển tiếp yêu cầu đến một tuyến đường cụ thể.
+    - Gửi lỗi: Bạn có thể sử dụng next(new Error('Error message')) để gửi một lỗi đến middleware xử lý lỗi.
+- Kết luận:
+    - Hàm next là một phần quan trọng trong việc xử lý các yêu cầu trong ứng dụng Express. 
+    - Nó cho phép bạn kiểm soát luồng yêu cầu và chuyển tiếp yêu cầu đến các middleware khác nhau.
+################################################
+- Mình có một website, mình muốn website đó được hiển thị lên tìm kiếm của google thì mình cần thiết lập những gì?
+    Để website của bạn được hiển thị lên kết quả tìm kiếm của Google, bạn cần chú ý đến những yếu tố sau:
+    1. Search Engine Optimization (SEO): Tối ưu hóa website cho công cụ tìm kiếm là bước không thể bỏ qua, gồm có:
+        - Tối ưu hóa nội dung: Sử dụng các từ khóa liên quan đến ngành nghề hoặc chủ đề mà trang web của bạn tập trung vào.
+        - Meta tags: Cung cấp meta descriptions và meta titles có chứa từ khóa.
+        - Tối ưu hóa hình ảnh: Sử dụng alt tags cho hình ảnh và tối ưu hóa kích thước của ảnh để tải trang nhanh hơn.
+        - Nội dung chất lượng: Đảm bảo bạn cung cấp thông tin có giá trị, độc đáo và thường xuyên cập nhật.
+    2. Mobile-friendly: Đảm bảo rằng website của bạn tương thích với thiết bị di động, vì Google chuộng các trang web thân thiện với mobile.
+    3. Page Speed: Tăng tốc độ tải trang của bạn vì tốc độ tải trang là một yếu tố xếp hạng quan trọng của Google.
+    4. Backlinks: Xây dựng backlinks chất lượng từ các trang web uy tín, điều này càng chứng minh cho Google rằng trang web của bạn có giá trị.
+    5. Google Search Console: Đăng ký sử dụng Google Search Console để theo dõi cách Google xem và xếp hạng trang web của bạn.
+    6. Sitemaps và robots.txt: Tạo và gửi sitemap cho Google để giúp Google tìm và lập chỉ mục các trang của bạn nhanh chóng hơn, và sử dụng file robots.txt
+       để hướng dẫn bots của công cụ tìm kiếm cách tiếp cận trang web của bạn.
+    7. Social Media và Marketing Content: Sử dụng mạng xã hội và content marketing để tạo traffic tự nhiên về trang web của bạn.
+    8. Local SEO: Nếu bạn có doanh nghiệp địa phương, hãy đảm bảo rằng bạn có danh sách trên Google My Business.
+    9. Rich Snippets: Sử dụng Schema markup để giúp Google hiểu nội dung của trang bạn tốt hơn và có thể hiển thị nội dung nổi bật
+       của bạn thành các rich snippets trên trang kết quả tìm kiếm.
+    10. Security: Sử dụng HTTPS để bảo mật thông tin của người dùng và tăng cơ hội được xếp hạng cao hơn trong kết quả tìm kiếm của Google.
+    Hiểu biết sâu sắc và áp dụng đúng cách những yếu tố trên sẽ giúp website của bạn tối ưu hóa được hiệu suất trên công cụ tìm kiếm và gia tăng khả năng hiển thị.
+
+- Bạn có thể hướng dẫn mình về bước 5 và 6 không
+
+    ### Bước 5: Sử dụng Google Search Console
+
+        Google Search Console (GSC) là một dịch vụ miễn phí của Google giúp bạn theo dõi và duy trì sự hiện diện của website trong kết quả tìm kiếm Google. Đây là cách bạn sử dụng GSC:
+
+        1. Đăng ký: Truy cập Google Search Console và sử dụng tài khoản Google để đăng ký.
+        2. Xác minh website: Bạn cần xác minh sở hữu trang web của mình. Có nhiều cách để làm điều này, ví dụ như tải lên một file HTML vào root directory của website, hoặc thêm một thẻ meta vào homepage.
+        3. Gửi Sitemap: Sitemap là một file XML chứa danh sách các URLs trong site của bạn và có thể giúp Google dễ dàng tìm và lập chỉ mục trang web. Tạo sitemap và gửi nó thông qua GSC.
+        4. Giám sát: Theo dõi các chỉ số hiệu suất, như số lần click, số lần hiển thị, vị trí trung bình của các từ khóa và nhiều thứ khác.
+        5. Kiểm tra lỗi: Sử dụng GSC để kiểm tra xem có lỗi lập chỉ mục hay lỗi mobile usability nào không và sửa chúng.
+        6. Tối ưu hóa: Sử dụng thông tin từ GSC để tối ưu hóa từ khóa và cải thiện chiến lược nội dung của bạn.
+
+    ### Bước 6: Tạo và sử dụng Sitemaps và robots.txt
+
+        1. Sitemaps:
+            - Tạo sitemap dạng XML cho website của bạn, công cụ tạo sitemap miễn phí trực tuyến có thể giúp bạn nếu website chưa có sitemap.
+            - Một sitemap thông thường nên cập nhật định kỳ và gồm có các trang quan trọng của bạn.
+            - Gửi sitemap đến Google thông qua Google Search Console để giúp Google lập chỉ mục trang web của bạn nhanh chóng và dễ dàng hơn.
+
+        2. robots.txt:
+            - File robots.txt là một file văn bản được đặt ở root của domain để hướng dẫn các web crawler xem nên và không nên lập chỉ mục phần nào của website.
+            - Bạn có thể sử dụng file này để loại trừ các trang không muốn công cụ tìm kiếm lập chỉ mục, nhưng hãy cẩn thận vì sai sót có thể ngăn cản Google lập chỉ mục các trang quan trọng.
+            - Cú pháp của robots.txt là khá đơn giản, 
+                - ví dụ:
+                    User-agent: *
+                    Disallow: /folder/
+                    Allow: /folder/myfile.html
+                - giải thích:
+                    - "User-agent: *" nghĩa là các hướng dẫn sau áp dụng cho tất cả các web crawlers.
+                    - "Disallow: /folder/" ngăn chặn các crawlers truy cập vào thư mục chứa đường dẫn "/folder/".
+                    - "Allow: /folder/myfile.html" cho phép truy cập vào file cụ thể "myfile.html" nằm trong thư mục bị cấm kia.
+        Kiểm tra cường độ thường xuyên để đảm bảo rằng cả robots.txt và sitemap vẫn phản ánh chính xác cấu trúc và nội dung của trang web bạn.
+        Nhớ là bạn phải thường xuyên theo dõi và điều chỉnh để phản ánh đúng nhất nội dung và cấu trúc website hiện tại của bạn nhé!
+################################################
+Hãy giúp tôi hiểu rõ về emit event trong nodejs nhé?
+
+    Event emitting trong Node.js là một phần của mô hình Event-Driven Architecture, nơi mà các đối tượng (thường được gọi là emitters)
+    phát ra các sự kiện hoặc tín hiệu về việc một số trạng thái hoặc hành động đã xảy ra. Các đối tượng khác, được gọi là listeners hoặc handlers,
+    sau đó sẽ phản hồi lại với các sự kiện đó.
+
+    Dưới đây là một số điểm cơ bản về emit event trong Node.js:
+
+        1. EventEmitter Class: Node.js cung cấp một module events bao gồm EventEmitter class, đây là nền tảng cho việc phát và lắng nghe các sự kiện.
+        const EventEmitter = require('events');
+        class MyEmitter extends EventEmitter {}
+
+        2. Tạo Emitter: Bạn tạo một emitter bằng cách khởi tạo một instance của class EventEmitter hoặc một subclass mở rộng từ nó.
+        const myEmitter = new MyEmitter();
+
+        3. Emitting Events: Bạn phát một sự kiện bằng phương thức .emit(), và đặt tên cho sự kiện. Bạn cũng có thể truyền một số dữ liệu làm đối số cho sự kiện đó.
+        // Phát sự kiện 'event'
+        myEmitter.emit('event');
+        // Phát sự kiện 'event' với đối số
+        myEmitter.emit('event', { a: 1, b: 2 });
+
+        4. Listening for Events: Để xử lý một sự kiện, bạn cần đăng ký một listener cho sự kiện đó sử dụng phương thức .on() hoặc .addListener().
+        // Đăng ký một listener cho 'event'
+        myEmitter.on('event', (data) => {
+        console.log('An event occurred!', data);
+        });
+
+        5. Emitter với Nhiều Listeners: Bạn có thể có nhiều listeners cho cùng một sự kiện và chúng sẽ được thực thi theo thứ tự mà bạn đăng ký.
+        myEmitter.on('event', function firstListener() {
+        console.log('Helloooo! first listener');
+        });
+        myEmitter.on('event', function secondListener(arg1, arg2) {
+        console.log(event with parameters ${arg1}, ${arg2} in second listener);
+        });
+        myEmitter.emit('event', 1, 2);
+
+        6. Ứng Dụng của Event Emitter: Trong Node.js, emit event được sử dụng rộng rãi - từ việc xử lý HTTP requests trong express đến việc đọc dữ liệu từ streams.
+
+        7. Lắng Nghe Sự Kiện Một Lần: Sử dụng .once() thay vì .on() để đăng ký một listener chạy một lần duy nhất.
+
+        8. Xóa Listeners: Bạn có thể gỡ bỏ các listeners khỏi một emitter sử dụng .removeListener() hoặc .off().
+        const callback = (data) => {
+        console.log('An event occurred with data:', data);
+        };
+        myEmitter.on('event', callback);
+        // Sau một thủ tục nào đó
+        myEmitter.removeListener('event', callback);
+
+        9. Giới Hạn về Số Listeners: Mặc định, một emitter có thể có tối đa 10 listeners đăng ký cho mỗi sự kiện. Bạn có thể thay đổi giới hạn này sử dụng .setMaxListeners().
+
+        10. Error Events: Emitter cũng có thể phát ra các sự kiện error. Nếu có lỗi xảy ra và không có listener nào cho sự kiện error, ứng dụng sẽ crash và in ra một stack trace.
+
+        Như bạn thấy, emit và listen cho events trong Node.js là khá đơn giản nhưng mạnh mẽ, cho phép bạn thiết kế ứng dụng linh hoạt và dễ mở rộng.

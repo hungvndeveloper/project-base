@@ -1,0 +1,401 @@
+He doesn't live with his parents
+Tiger is bigger and danger than cat
+
+change element content
+	- document.getElementById("demo").innerHTML = "Hello JavaScript";
+
+Change HTML Attribute Values
+	- document.getElementById('myImage').src='pic_bulboff.gif';
+
+Change HTML Styles (CSS)
+	- document.getElementById("demo").style.fontSize = "35px";
+
+Hide HTML Elements
+	- document.getElementById("demo").style.display = "none";
+
+Show HTML Elements
+	- document.getElementById("demo").style.display = "block";
+
+An external script can be referenced in 3 different ways:
+	- With a full URL (a full web address): <script src="https://www.w3schools.com/js/myScript.js"></script>
+	- With a file path (like /js/): <script src="/js/myScript.js"></script>
+	- Without any path: <script src="myScript.js"></script>
+
+JavaScript can "display" data in different ways:
+	- Writing into an HTML element, using innerHTML:
+		document.getElementById("demo").innerHTML = 5 + 6;
+	- Writing into the HTML output using document.write():
+		document.write(5 + 6);// Using document.write() after   an HTML document is loaded, will delete all existing HTML. -> The document.write() method should only be used for testing.
+	- Writing into an alert box, using window.alert(): window.alert(5 + 6);
+		You can skip the window keyword.
+		In JavaScript, the window object is the global scope object. This means that variables, properties, and methods by default belong to the window object. This also means that specifying the window keyword is optional:
+	- Writing into the browser console, using console.log():
+		console.log(5 + 6);
+	- JavaScript Print
+		JavaScript does not have any print object or print methods.
+
+		You cannot access output devices from JavaScript.
+
+		The only exception is that you can call the window.print() method in the browser to print the content of the current window.
+
+- In HTML, JavaScript programs are executed by the web browser.
+- JavaScript programs (and JavaScript statements) are often called JavaScript code.
+- JavaScript ignores multiple spaces. You can add white space to your script to make it more readable.
+- For best readability, programmers often like to avoid code lines longer than 80 characters.
+- JavaScript Variables can be declared in 4 ways:
+	- Automatically: x = 5; y = 6; z = x + y; 
+		In this first example, x, y, and z are undeclared variables.
+		They are automatically declared when first used
+		It is considered good programming practice to always declare variables before use.
+	- Using var
+	- Using let
+	- Using const
+- The var keyword was used in all JavaScript code from 1995 to 2015.
+- The let and const keywords were added to JavaScript in 2015.
+- The var keyword should only be used in code written for older browsers.
+- When to Use var, let, or const?
+	- Always declare variables
+	- Always use const if the value should not be changed
+	- Always use const if the type should not be changed (Arrays and Objects)
+	- Only use let if you can't use const
+	- Only use var if you MUST support old browsers.
+- Strings are written inside double or single quotes. Numbers are written without quotes. If you put a number in quotes, it will be treated as a text string.
+- Creating a variable in JavaScript is called "declaring" a variable.
+	- After the declaration, the variable has no value (technically it is undefined). Example: let carName;
+	- You can also assign a value to the variable when you declare it: let carName = "Volvo";
+	- It's a good programming practice to declare all variables at the beginning of a script.
+- You can declare many variables in one statement. Start the statement with let and separate the variables by comma
+	let person = "John Doe", carName = "Volvo", price = 200;
+- A declaration can span multiple lines: 
+	let person = "John Doe",
+	carName = "Volvo",
+	price = 200;
+- A variable declared without a value will have the value undefined.
+- If you re-declare a JavaScript variable declared with var, it will not lose its value.
+	- The variable carName will still have the value "Volvo" after the execution of these statements:
+		var carName = "Volvo";
+		carName;
+	- You cannot re-declare a variable declared with let or const.
+		This will not work:
+			let carName = "Volvo";
+			let carName;
+- The result of adding: 
+	- let x = "5" + 2 + 3 is: 523 (string) // If you put a number in quotes, the rest of the numbers will be treated as strings, and concatenated.
+	- let x = 2 + 3 + "5"; is: 55 (string)
+- Since JavaScript treats a dollar sign as a letter, identifiers containing $ are valid variable names:
+	- example:
+		let $$$ = 2;
+		let $myMoney = 5;
+		document.getElementById("demo").innerHTML = $$$ + $myMoney;
+	- Using the dollar sign is not very common in JavaScript, but professional programmers often use it as an alias for the main function in a JavaScript library. In the JavaScript library jQuery, for instance, the main function $ is used to select HTML elements. In jQuery $("p"); means "select all p elements".
+- Using the underscore is not very common in JavaScript, but a convention among professional programmers is to use it as an alias for "private (hidden)" variables.
+	- example:
+		let _lastName = "Johnson";
+		let _x = 2;
+		let _100 = 5;
+- let keyword:
+	- The let keyword was introduced in ES6 (2015)
+	- Variables declared with let have Block Scope
+	- Variables declared with let must be Declared before use:
+	- Variables declared with let cannot be Redeclared in the same scope.
+	- Block Scope: Variables declared inside a { } block cannot be accessed from outside the block
+		- Before ES6 (2015), JavaScript did not have Block Scope.
+		- JavaScript had Global Scope and Function Scope.
+		- ES6 introduced the two new JavaScript keywords: let and const.
+		- example:
+			{
+			  let x = 2;
+			}
+			// x can NOT be used here
+	- Global Scope: Variables declared with varinside a { } block can be accessed from outside the block:
+		- Variables declared with the var always have Global Scope.
+		- Variables declared with the var keyword can NOT have block scope:
+		- example:
+			{
+				var x = 2;
+			}
+			// x CAN be used here
+	- What is Good?
+		- let and const have block scope.
+		- let and const can not be redeclared.
+		- let and const must be declared before use.
+		- let and const does not bind to this.
+		- let and const are not hoisted.
+	- What is Not Good?
+		- var does not have to be declared.
+		- var is hoisted.
+		- var binds to this.
+- JavaScript Const
+	- A variable defined with the const keyword cannot be reassigned:
+	- JavaScript const variables must be assigned a value when they are declared:
+	- When to use JavaScript const?
+		-> Always declare a variable with const when you know that the value should not be changed.
+		- Use const when you declare:
+			- A new Array
+			- A new Object
+			- A new Function
+			- A new RegExp
+	- Constant Objects and Arrays:
+	- The keyword const is a little misleading.
+	- It does not define a constant value. It defines a constant reference to a value.
+	Because of this you can NOT:
+		- Reassign a constant value
+		- Reassign a constant array
+		- Reassign a constant object
+	But you CAN:
+		- Change the elements of constant array:
+			- example:
+				// You can create a constant array:
+				const cars = ["Saab", "Volvo", "BMW"];
+				// You can change an element:
+				cars[0] = "Toyota";
+				// You can add an element:
+				cars.push("Audi");
+			- But you can NOT reassign the array:
+				const cars = ["Saab", "Volvo", "BMW"];
+				cars = ["Toyota", "Volvo", "Audi"];    // ERROR
+		- Change the properties of constant object:
+			- example:
+				// You can create a const object:
+				const car = {type:"Fiat", model:"500", color:"white"};
+
+				// You can change a property:
+				car.color = "red";
+
+				// You can add a property:
+				car.owner = "Johnson";
+			- But you can NOT reassign the object:
+				const car = {type:"Fiat", model:"500", color:"white"};
+				car = {type:"Volvo", model:"EX60", color:"red"};    // ERROR
+- typeof: Returns the type of a variable
+- instanceof: Returns true if an object is an instance of an object type
+- If you add a number and a string, the result will be a string!
+- JavaScript has 8 Datatypes
+	- String
+	- Number
+	- Bigint
+	- Boolean
+	- Undefined:
+		In JavaScript, a variable without a value, has the value undefined. The type is also undefined:
+		- let car;    // Value is undefined, type is undefined
+		- car = undefined;    // Value is undefined, type is undefined
+	- Null
+	- Symbol
+	- Object
+
+- The Object Datatype
+	The object data type can contain:
+		- An object
+		- An array
+		- A date
+- Empty Values: 
+	- An empty value has nothing to do with undefined.
+	- An empty string has both a legal value and a type.
+	- Example:
+		- let car = "";    // The value is "", the typeof is "string"
+- JavaScript Functions:
+	- A JavaScript function is a block of code designed to perform a particular task.
+	- A JavaScript function is executed when "something" invokes it (calls it).
+	- Function Invocation: 
+		The code inside the function will execute when "something" invokes (calls) the function:
+			- When an event occurs (when a user clicks a button)
+			- When it is invoked (called) from JavaScript code
+			- Automatically (self invoked)
+- JavaScript Objects:
+	- JavaScript objects are containers for named values called properties, objects can contain many values. It is a common practice to declare objects with the const keyword.
+	- Accessing Object Properties: You can access object properties in two ways:
+		- objectName.propertyName
+		- objectName["propertyName"]
+	- A method is a function stored as a property.
+		- example:
+			const person = {
+				firstName: "John",
+				lastName : "Doe",
+				id       : 5566,
+				fullName : function() {
+					return this.firstName + " " + this.lastName;
+				}
+			};
+			In the example above, this refers to the person object:
+				this.firstName means the firstName property of person.
+				this.lastName means the lastName property of person.
+		- What is this?
+			In JavaScript, the this keyword refers to an object.
+			Which object depends on how this is being invoked (used or called).
+			The this keyword refers to different objects depending on how it is used:
+				- In an object method, this refers to the object.
+				- Alone, this refers to the global object.
+				- In a function, this refers to the global object.
+				- In a function, in strict mode, this is undefined.
+				- In an event, this refers to the element that received the event.
+				- Methods like call(), apply(), and bind() can refer this to any object.
+		- this is not a variable. It is a keyword. You cannot change the value of this.
+		- The this Keyword:
+			- In a function definition, this refers to the "owner" of the function.
+			- In the example above, this is the person object that "owns" the fullName function.
+			- In other words, this.firstName means the firstName property of this object.
+- JavaScript Events:
+	- HTML events are "things" that happen to HTML elements.
+	- When JavaScript is used in HTML pages, JavaScript can "react" on these events.
+	- HTML Events:
+		- An HTML event can be something the browser does, or something a user does.
+		- Here are some examples of HTML events:
+			- An HTML web page has finished loading
+			- An HTML input field was changed
+			- An HTML button was clicked
+		- Often, when events happen, you may want to do something.
+		- JavaScript lets you execute code when events are detected.
+		- HTML allows event handler attributes, with JavaScript code, to be added to HTML elements.
+		- With single quotes:
+			<element event='some JavaScript'>
+		- With double quotes:
+			<element event="some JavaScript">
+		- In the following example, an onclick attribute (with code), is added to a <button> element:
+			- Example
+				<button onclick="document.getElementById('demo').innerHTML = Date()">The time is?</button>
+			- In the example above, the JavaScript code changes the content of the element with id="demo".
+			- In the next example, the code changes the content of its own element (using this.innerHTML):
+				<button onclick="this.innerHTML = Date()">The time is?</button>
+			- JavaScript code is often several lines long. It is more common to see event attributes calling functions:
+				<button onclick="displayDate()">The time is?</button>
+	- JavaScript Event Handlers:
+		Event handlers can be used to handle and verify user input, user actions, and browser actions:
+			- Things that should be done every time a page loads
+			- Things that should be done when the page is closed
+			- Action that should be performed when a user clicks a button
+			- Content that should be verified when a user inputs data
+			- And more ...
+		Many different methods can be used to let JavaScript work with events:
+			- HTML event attributes can execute JavaScript code directly
+			- HTML event attributes can call JavaScript functions
+			- You can assign your own event handler functions to HTML elements
+			- You can prevent events from being sent or being handled
+			- And more ...
+- JavaScript String Methods;
+	- Basic String Methods: 
+		- Javascript strings are primitive and immutable:
+		All string methods produces a new string without altering the original string:
+			- String length: 
+				The length property returns the length of a string
+					let text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					let length = text.length;
+			- String charAt(): 
+				The charAt() method returns the character at a specified index (position) in a string:
+					let text = "HELLO WORLD";
+					let char = text.charAt(0);
+			- String charCodeAt():
+				The charCodeAt() method returns the code of the character at a specified index in a string:
+				The method returns a UTF-16 code (an integer between 0 and 65535).
+					let text = "HELLO WORLD";
+					let char = text.charCodeAt(0);
+			- String at():
+				The at() method returns the character at a specified index (position) in a string.
+					const name = "W3Schools";
+					let letter = name.at(2);
+			- String [ ]:
+				Property Access [ ]
+					let text = "HELLO WORLD";
+					let char = text[0];
+			- String slice():
+				slice() extracts a part of a string and returns the extracted part in a new string.
+				The method takes 2 parameters: start position, and end position (end not included).
+					let text = "Apple, Banana, Kiwi";
+					let part = text.slice(7, 13);
+			- String substring():
+				substring() is similar to slice().
+				The difference is that start and end values less than 0 are treated as 0 in substring().
+					let str = "Apple, Banana, Kiwi";
+					let part = str.substring(7, 13);
+			- String substr():
+				substr() is similar to slice().
+				The difference is that the second parameter specifies the length of the extracted part.
+					let str = "Apple, Banana, Kiwi";
+					let part = str.substr(7);
+			- String toUpperCase():
+				let text1 = "Hello World!";
+				let text2 = text1.toUpperCase();
+			- String toLowerCase():
+				let text1 = "Hello World!";       // String
+				let text2 = text1.toLowerCase();  // text2 is text1 converted to lower
+			- String concat():
+				concat() joins two or more strings:
+					let text1 = "Hello";
+					let text2 = "World";
+					let text3 = text1.concat(" ", text2);
+			- String trim():
+				The trim() method removes whitespace from both sides of a string:
+					let text1 = "      Hello World!      ";
+					let text2 = text1.trim();
+			- String trimStart():
+				The trimStart() method works like trim(), but removes whitespace only from the start of a string.
+					let text1 = "     Hello World!     ";
+					let text2 = text1.trimStart();
+			- String trimEnd():
+				The trimEnd() method works like trim(), but removes whitespace only from the end of a string.
+					let text1 = "     Hello World!     ";
+					let text2 = text1.trimEnd();
+			- String padStart():
+				The padStart() method pads a string from the start.
+				It pads a string with another string (multiple times) until it reaches a given length.
+					let text = "5";
+					let padded = text.padStart(4,"0");
+			- String padEnd()
+				The padEnd() method pads a string from the end.
+				It pads a string with another string (multiple times) until it reaches a given length.
+					let text = "5";
+					let padded = text.padEnd(4,"0");
+			- String repeat():
+				The repeat() method returns a string with a number of copies of a string.
+				The repeat() method returns a new string.
+				The repeat() method does not change the original string.
+					let text = "Hello world!";
+					let result = text.repeat(2);
+			- String replace():
+				The replace() method replaces a specified value with another value in a string:
+					let text = "Please visit Microsoft!";
+					let newText = text.replace("Microsoft", "W3Schools");
+			- String replaceAll():
+				The replaceAll() method allows you to specify a regular expression instead of a string to be replaced.
+				If the parameter is a regular expression, the global flag (g) must be set, otherwise a TypeError is thrown.
+					text = text.replaceAll("Cats","Dogs");
+					text = text.replaceAll("cats","dogs");
+			- String split():
+				A string can be converted to an array with the split() method:
+					text.split(",")    // Split on commas
+					text.split(" ")    // Split on spaces
+					text.split("|")    // Split on pipe
+- String Search Methods;
+	- String indexOf()
+		The indexOf() method returns the index (position) of the first occurrence of a string in a string, or it returns -1 if the string is not found:
+			let text = "Please locate where 'locate' occurs!";
+			let index = text.indexOf("locate");
+	- String lastIndexOf():
+		The lastIndexOf() method returns the index of the last occurrence of a specified text in a string:
+			let text = "Please locate where 'locate' occurs!";
+			let index = text.lastIndexOf("locate");
+	- String search():
+		The search() method searches a string for a string (or a regular expression) and returns the position of the match:
+			let text = "Please locate where 'locate' occurs!";
+			text.search("locate");
+	- String match()
+		The match() method returns an array containing the results of matching a string against a string (or a regular expression).
+			let text = "The rain in SPAIN stays mainly in the plain";
+			text.match("ain");
+	- String matchAll():
+		The matchAll() method returns an iterator containing the results of matching a string against a string (or a regular expression).
+			const iterator = text.matchAll("Cats");
+	- String includes()
+		The includes() method returns true if a string contains a specified value.
+		Otherwise it returns false.
+			let text = "Hello world, welcome to the universe.";
+			text.includes("world");
+	- String startsWith():
+		The startsWith() method returns true if a string begins with a specified value.
+		Otherwise it returns false:
+			let text = "Hello world, welcome to the universe.";
+			text.startsWith("Hello");
+	- String endsWith():
+			The endsWith() method returns true if a string ends with a specified value.
+			Otherwise it returns false:
+				let text = "John Doe";
+				text.endsWith("Doe");

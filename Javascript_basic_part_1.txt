@@ -1,0 +1,677 @@
+##################
+- Integers (numbers without a period or exponent notation) are accurate up to 15 digits.
+##################
+- The maximum number of decimals is 17.
+##################
+- JavaScript Number Methods:
+    - toString(): Returns a number as a string
+    - toFixed(): returns a string, with the number written with a specified number of decimals
+    - toPrecision(): returns a string, with a number written with a specified length
+    - valueOf(): returns a number as a number.
+- Converting Variables to Numbers: The methods below are not number methods. They are global 
+##################
+JavaScript methods.
+    - Number() method can be used to convert JavaScript variables to numbers
+    - parseInt() parses a string and returns a whole number. Spaces are allowed.
+      Only the first number is returned. If the number cannot be converted, NaN (Not a Number) is returned.
+    - parseFloat() parses a string and returns a number. Spaces are allowed.
+      Only the first number is returned. If the number cannot be converted, NaN (Not a Number) is returned.
+###################
+JavaScript Arrays
+- Creating an Array:
+	- Syntax: const array_name = [item1, item2, ...];
+	- It is a common practice to declare arrays with the const keyword.
+    - example: const cars = ["Saab", "Volvo", "BMW"];
+        or const cars = new Array("Saab", "Volvo", "BMW");
+        The two examples above do exactly the same.
+        There is no need to use new Array().
+- Converting an Array to a String:
+    - The JavaScript method toString() converts an array to a string of (comma separated) array values.
+    - const fruits = ["Banana", "Orange", "Apple", "Mango"];
+    - document.getElementById("demo").innerHTML = fruits.toString();
+    -> Result: Banana,Orange,Apple,Mango
+- Arrays are Objects:
+    - Arrays are a special type of objects. The typeof operator in JavaScript returns "object" for arrays.
+    - But, JavaScript arrays are best described as arrays.
+    - Arrays use numbers to access its "elements". In this example, person[0] returns John:
+        const person = ["John", "Doe", 46];
+    - Objects use names to access its "members". In this example, person.firstName returns John:
+        const person = {firstName:"John", lastName:"Doe", age:46};
+    - The length property is always one more than the highest array index.
+- Looping Array Elements:
+- One way to loop through an array, is using a for loop
+- You can also use the Array.forEach() function
+    const fruits = ["Banana", "Orange", "Apple", "Mango"];
+    fruits.forEach(myFunction);
+    function myFunction(value) {
+        text += "<li>" + value + "</li>";
+    }
+- The easiest way to add a new element to an array is using the push() method:
+    const fruits = ["Banana", "Orange", "Apple"];
+    fruits.push("Lemon");  // Adds a new element (Lemon) to fruits
+- JavaScript does not support arrays with named indexes.
+- In JavaScript, arrays always use numbered indexes.
+- If you use named indexes, JavaScript will redefine the array to an object.
+- After that, some array methods and properties will produce incorrect results.
+- The Difference Between Arrays and Objects:
+    - In JavaScript, arrays use numbered indexes.  
+    - In JavaScript, objects use named indexes.
+    - Arrays are a special kind of objects, with numbered indexes.
+- When to Use Arrays. When to use Objects:
+    - JavaScript does not support associative arrays.
+    - You should use objects when you want the element names to be strings (text).
+    - You should use arrays when you want the element names to be numbers.
+- How to Recognize an Array:
+    - Array.isArray(fruits);
+    - fruits instanceof Array;
+###############################
+JavaScript Array Methods
+- Basic Array Methods
+
+    - Array length: 
+        - The length property returns the length (size) of an array:
+        - The length property provides an easy way to append a new element to an array:
+    - Array toString():
+        - The JavaScript method toString() converts an array to a string of (comma separated) array values.
+        - JavaScript automatically converts an array to a comma separated string when a primitive value is expected.
+        - This is always the case when you try to output an array.
+    - Array at():
+        - The at() method returns an indexed element from an array.
+        - The at() method returns the same as [].
+    - Array join():
+        - The join() method also joins all array elements into a string.
+          It behaves just like toString(), but in addition you can specify the separator:
+    - Array pop()
+        - The pop() method removes the last element from an array
+        - The pop() method returns the value that was "popped out"
+    - Array push()
+        - The push() method adds a new element to an array (at the end):
+        - The push() method returns the new array length
+    - Array shift()
+        - The shift() method removes the first array element and "shifts" all other elements to a lower index.
+        - The shift() method returns the value that was "shifted out":
+    - Array unshift()
+        - The unshift() method adds a new element to an array (at the beginning), and "unshifts" older elements:
+        - The unshift() method returns the new array length:
+    - Array delete()
+        - Using delete() leaves undefined holes in the array.
+        - delete fruits[0];
+        - Use pop() or shift() instead.
+    - Array concat()
+        - The concat() method creates a new array by merging (concatenating) existing arrays:
+        - The concat() method does not change the existing arrays. It always returns a new array.
+        - The concat() method can take any number of array arguments.
+        - The concat() method can also take strings as arguments:
+    - Array copyWithin()
+        - The copyWithin() method copies array elements to another position in an array:
+        - The copyWithin() method overwrites the existing values.
+        - The copyWithin() method does not add items to the array.
+        - The copyWithin() method does not change the length of the array.
+    - Array flat()
+        - The flat() method creates a new array with sub-array elements concatenated to a specified depth.
+    - Array splice()
+        - The splice() method can be used to add new items to an array:
+    - Array toSpliced():
+        - The difference between the new toSpliced() method and the old splice() method is that the new method creates a new array, keeping the original array unchanged, while the old method altered the original array.
+    - Array slice()
+        - The slice() method slices out a piece of an array into a new array:
+###############################
+Array Find and Search Methods
+    - Array indexOf():
+        - The indexOf() method searches an array for an element value and returns its position.
+        - The first item has position 0, the second item has position 1, and so on.
+        - Syntax: array.indexOf(item, start)
+        - Array.indexOf() returns -1 if the item is not found.
+        - If the item is present more than once, it returns the position of the first occurrence.
+        - Array.indexOf() returns -1 if the item is not found.
+        - If the item is present more than once, it returns the position of the first occurrence.
+        - example: 
+            const fruits = ["Apple", "Orange", "Apple", "Mango"];
+            let position = fruits.indexOf("Apple") + 1;
+    - Array lastIndexOf():
+        - Array.lastIndexOf() is the same as Array.indexOf(), but returns the position of the last occurrence of the specified element.
+        - Example:
+            const fruits = ["Apple", "Orange", "Apple", "Mango"];
+            let position = fruits.lastIndexOf("Apple") + 1;
+        - Syntax: array.lastIndexOf(item, start)
+    - Array includes():
+        - ECMAScript 2016 introduced Array.includes() to arrays. This allows us to check if an element is present in an array (including NaN, unlike indexOf).
+        - Example:
+            const fruits = ["Banana", "Orange", "Apple", "Mango"];
+            fruits.includes("Mango"); // is true
+        - Syntax: array.includes(search-item)
+        - Array.includes() allows to check for NaN values. Unlike Array.indexOf().
+    - Array find():
+        - The find() method returns the value of the first array element that passes a test function.
+        - This example finds (returns the value of) the first element that is larger than 18:
+            const numbers = [4, 9, 16, 25, 29];
+            let first = numbers.find(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> Result: First number over 18 is 25
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array findIndex():
+        - The findIndex() method returns the index of the first array element that passes a test function.
+        - This example finds the index of the first element that is larger than 18:
+            const numbers = [4, 9, 16, 25, 29];
+            let first = numbers.findIndex(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> Result: First number over 18 has index 3
+    - Array findLast():
+        - ES2023 added the findLast() method that will start from the end of an array and return the value of the first element that satisfies a condition.
+        - Example:
+            const temp = [27, 28, 30, 40, 42, 35, 30];
+            let high = temp.findLast(x => x > 40);
+            -> Result: The last temperature over 40 was 42
+    - Array findLastIndex()
+        - The findLastIndex() method finds the index of the last element that satisfies a condition.
+        - Example:
+            const temp = [27, 28, 30, 40, 42, 35, 30];
+            let pos = temp.findLastIndex(x => x > 40);
+            -> Result: The last temperature over 40 was in position 4
+###############################
+JavaScript Sorting Arrays:
+    - Array sort():
+        - The sort() method sorts an array alphabetically
+        - example:
+            const fruits = ["Banana", "Orange", "Apple", "Mango"];
+            fruits.sort();
+    - Array reverse():
+        - The reverse() method reverses the elements in an array:
+        - example:
+            const fruits = ["Banana", "Orange", "Apple", "Mango"];
+            fruits.reverse();
+        - By combining sort() and reverse(), you can sort an array in descending order
+    - Array toSorted():
+        - ES2023 added the toSorted() method as a safe way to sort an array without altering the original array.
+
+        - The difference between toSorted() and sort() is that the first method creates a new array,
+          keeping the original array unchanged, while the last method alters the original array.
+        - example:
+            const months = ["Jan", "Feb", "Mar", "Apr"];
+            cconst sorted = months.toSorted();
+    - Array toReversed():
+        - ES2023 added the toReversed() method as a safe way to reverse an array without altering the original array.
+        - The difference between toReversed() and reverse() is that the first method creates a new array,
+          keeping the original array unchanged, while the last method alters the original array.
+        - example:
+            const months = ["Jan", "Feb", "Mar", "Apr"];
+            const reversed = months.toReversed();
+    - By default, the sort() function sorts values as strings.
+    - Numeric Sort
+        - By default, the sort() function sorts values as strings.
+        - This works well for strings ("Apple" comes before "Banana").
+        - If numbers are sorted as strings, "25" is bigger than "100", because "2" is bigger than "1".
+        - Because of this, the sort() method will produce incorrect result when sorting numbers.
+        - You can fix this by providing a compare function:
+            - Example:
+                const points = [40, 100, 1, 5, 25, 10];
+                points.sort(function(a, b){return a - b});
+        - Use the same trick to sort an array descending:
+            - Example:
+                const points = [40, 100, 1, 5, 25, 10];
+                points.sort(function(a, b){return b - a});
+    - The Compare Function:
+        - The purpose of the compare function is to define an alternative sort order.
+        - The compare function should return a negative, zero, or positive value, depending on the arguments:
+        - function(a, b){return a - b}
+        - When the sort() function compares two values, it sends the values to the compare function, and sorts the values according to the returned (negative, zero, positive) value.
+        - If the result is negative, a is sorted before b.
+        - If the result is positive, b is sorted before a.
+        - If the result is 0, no changes are done with the sort order of the two values.
+        - Example:
+            - The compare function compares all the values in the array, two values at a time (a, b).
+            - When comparing 40 and 100, the sort() method calls the compare function(40, 100).
+            - The function calculates 40 - 100 (a - b), and since the result is negative (-60),  the sort function will sort 40 as a value lower than 100.
+            - You can use this code snippet to experiment with numerically and alphabetically sorting:
+    - Sorting Object Arrays:
+        - Even if objects have properties of different data types, the sort() method can be used to sort the array.
+        - The solution is to write a compare function to compare the property values:
+            - Example:
+                const cars = [
+                    {type:"Volvo", year:2016},
+                    {type:"Saab", year:2001},
+                    {type:"BMW", year:2010}
+                ];
+                cars.sort(function(a, b){return a.year - b.year});
+        - Comparing string properties is a little more complex:
+            cars.sort(function(a, b){
+                let x = a.type.toLowerCase();
+                let y = b.type.toLowerCase();
+                if (x < y) {return -1;}
+                if (x > y) {return 1;}
+                return 0;
+            });
+###############################
+JavaScript Array Iteration
+    - Array iteration methods operate on every array item:
+    - Array forEach:
+        - The forEach() method calls a function (a callback function) once for each array element.
+        - Example:
+            const numbers = [45, 4, 9, 16, 25];
+                let txt = "";
+                numbers.forEach(myFunction);
+
+            function myFunction(value, index, array) {
+                txt += value + "<br>";
+            }
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array map():
+        - The map() method creates a new array by performing a function on each array element.
+        - The map() method does not execute the function for array elements without values.
+        - The map() method does not change the original array.
+        - Example:
+            const numbers1 = [45, 4, 9, 16, 25];
+            const numbers2 = numbers1.map(myFunction);
+
+            function myFunction(value, index, array) {
+                return value * 2;
+            }
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array flatMap():
+        - ES2019 added the Array flatMap() method to JavaScript.
+        - The flatMap() method first maps all elements of an array and then creates a new array by flattening the array.
+        - Example
+            const myArr = [1, 2, 3, 4, 5, 6];
+            const newArr = myArr.flatMap((x) => x * 2);
+    - Array filter():
+        - The filter() method creates a new array with array elements that pass a test.
+        - This example creates a new array from elements with a value larger than 18:
+        - Example:
+            const numbers = [45, 4, 9, 16, 25];
+            const over18 = numbers.filter(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array reduce():
+        - The reduce() method runs a function on each array element to produce (reduce it to) a single value.
+        - The reduce() method works from left-to-right in the array. See also reduceRight().
+        - The reduce() method does not reduce the original array.
+        - This example finds the sum of all numbers in an array:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let sum = numbers.reduce(myFunction);
+
+            function myFunction(total, value, index, array) {
+                return total + value;
+            }
+        - Note that the function takes 4 arguments:
+            - The total (the initial value / previously returned value)
+            - The item value
+            - The item index
+            - The array itself
+    - Array reduceRight():
+        - The reduceRight() method runs a function on each array element to produce (reduce it to) a single value.
+        - The reduceRight() works from right-to-left in the array. See also reduce().
+        - The reduceRight() method does not reduce the original array.
+        - This example finds the sum of all numbers in an array:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let sum = numbers.reduceRight(myFunction);
+
+            function myFunction(total, value, index, array) {
+                return total + value;
+            }
+        - Note that the function takes 4 arguments:
+            - The total (the initial value / previously returned value)
+            - The item value
+            - The item index
+            - The array itself
+    - Array every():
+        - The every() method checks if all array values pass a test.
+        - This example checks if all array values are larger than 18:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let allOver18 = numbers.every(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> result: All over 18 is false
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array some():
+        - The some() method checks if some array values pass a test.
+        - This example checks if some array values are larger than 18:
+        - Example
+            const numbers = [45, 4, 9, 16, 25];
+            let someOver18 = numbers.some(myFunction);
+
+            function myFunction(value, index, array) {
+                return value > 18;
+            }
+            -> result: Some over 18 is true
+        - Note that the function takes 3 arguments:
+            - The item value
+            - The item index
+            - The array itself
+    - Array from():
+        - The Array.from() method returns an Array object from any object with a length property or any iterable object.
+        - Example
+            Create an Array from a String:
+                Array.from("ABCDEFG");
+    - Array keys():
+        - The Array.keys() method returns an Array Iterator object with the keys of an array.
+        - Example
+            Create an Array Iterator object, containing the keys of the array:
+
+            const fruits = ["Banana", "Orange", "Apple", "Mango"];
+            const keys = fruits.keys();
+
+            for (let x of keys) {
+                text += x + "<br>";
+            }
+    - Array entries():
+        - The entries() method returns an Array Iterator object with key/value pairs:
+        - The entries() method does not change the original array.
+        - Example 1:
+            Create an Array Iterator, and then iterate over the key/value pairs:
+
+            const fruits = ["Banana", "Orange", "Apple", "Mango"];
+            const f = fruits.entries();
+
+            for (let x of f) {
+                document.getElementById("demo").innerHTML += x;
+            }
+        -> result:
+            [0, "Banana"]
+            [1, "Orange"]
+            [2, "Apple"]
+            [3, "Mango"]
+        - example 2:
+            const a = ["a", "b", "c"];
+            for (const [index, element] of a.entries()) {
+                console.log(index, element);
+            }
+        - example 3:
+            const array1 = ['a', 'b', 'c'];
+            const iterator1 = array1.entries();
+            console.log(iterator1.next().value); // Expected output: Array [0, "a"]
+            console.log(iterator1.next().value); // Expected output: Array [1, "b"]
+    - Array with():
+        - ES2023 added the Array with() method as a safe way to update elements in an array without altering the original array.
+        - Example:
+            const months = ["Januar", "Februar", "Mar", "April"];
+            const myMonths = months.with(2, "March");
+    - Array Spread (...):
+        - The ... operator expands an iterable (like an array) into more elements:
+        - Example:
+            const q1 = ["Jan", "Feb", "Mar"];
+            const q2 = ["Apr", "May", "Jun"];
+            const q3 = ["Jul", "Aug", "Sep"];
+            const q4 = ["Oct", "Nov", "May"];
+
+            const year = [...q1, ...q2, ...q3, ...q4];
+
+###############################
+JavaScript Array Const
+    - It has become a common practice to declare arrays using const:
+        - Example
+            const cars = ["Saab", "Volvo", "BMW"];
+    - An array declared with const cannot be reassigned:
+        - Example
+            const cars = ["Saab", "Volvo", "BMW"];
+            cars = ["Toyota", "Volvo", "Audi"];    // ERROR
+    - The keyword const is a little misleading.
+    - It does NOT define a constant array. It defines a constant reference to an array.
+    - Because of this, we can still change the elements of a constant array.
+    - You can change the elements of a constant array:
+        - Example:
+            // You can create a constant array:
+            const cars = ["Saab", "Volvo", "BMW"];
+
+            // You can change an element:
+            cars[0] = "Toyota";
+
+            // You can add an element:
+            cars.push("Audi");
+    - Assigned when Declared: 
+        - JavaScript const variables must be assigned a value when they are declared:
+        - Meaning: An array declared with const must be initialized when it is declared.
+        - Using const without initializing the array is a syntax error:
+            - example: This will not work:
+                const cars;
+                cars = ["Saab", "Volvo", "BMW"];
+        - Arrays declared with var can be initialized at any time.
+        - You can even use the array before it is declared:
+            - Example: This is OK:
+                cars = ["Saab", "Volvo", "BMW"];
+                var cars;
+###############################
+- The Nullish Coalescing Operator (??)
+    - The ?? operator returns the first argument if it is not nullish (null or undefined). 
+      Otherwise it returns the second argument.
+        - Example:
+            let name = null;
+            let text = "missing";
+            let result = name ?? text;
+            -> result: missing
+- The Optional Chaining Operator (?.):
+    - The ?. operator returns undefined if an object is undefined or null (instead of throwing an error).
+    - Example:
+        // Create an object:
+        const car = {type:"Fiat", model:"500", color:"white"};
+        // Ask for car name:
+        document.getElementById("demo").innerHTML = car?.name;
+        -> result: undefined
+###############################
+- JavaScript For Loop
+    - Different Kinds of Loops
+    - JavaScript supports different kinds of loops:
+        - for - loops through a block of code a number of times
+        - for/in - loops through the properties of an object
+        - for/of - loops through the values of an iterable object
+        - while - loops through a block of code while a specified condition is true
+        - do/while - also loops through a block of code while a specified condition is true
+    - Loop Scope:
+        - Using var in a loop:
+            - example:
+                var i = 5;
+                for (var i = 0; i < 10; i++) {
+                    // some code
+                }
+                console.log(i)
+                => Here i is 10
+        - Using let in a loop:
+            - example:
+                let i = 5;
+                for (let i = 0; i < 10; i++) {
+                    // some code
+                }
+                console.log(i)
+                => Here i is 5
+        - In the first example, using var, the variable declared in the loop redeclares the variable outside the loop.
+        - In the second example, using let, the variable declared in the loop does not redeclare the variable outside the loop.
+        - When let is used to declare the i variable in a loop, the i variable will only be visible within the loop.
+##################################
+- JavaScript For In
+    - The For In Loop
+        - The JavaScript for in statement loops through the properties of an Object:
+        - Syntax:
+            for (key in object) {
+                // code block to be executed
+            }
+        - example:
+            const person = {fname:"John", lname:"Doe", age:25};
+            let text = "";
+            for (let x in person) {
+                text += person[x];
+            }
+        - Example Explained:
+            - The for in loop iterates over a person object
+            - Each iteration returns a key (x)
+            - The key is used to access the value of the key
+            - The value of the key is person[x]
+    - For In Over Arrays:
+        - The JavaScript for in statement can also loop over the properties of an Array:
+        - Syntax:
+            for (variable in array) {
+                //code
+            }
+        - example:
+            const numbers = [45, 4, 9, 16, 25];
+            let txt = "";
+            for (let x in numbers) {
+                txt += numbers[x];
+            }
+    - Do not use for in over an Array if the index order is important.
+    - The index order is implementation-dependent, and array values may not be accessed in the order you expect.
+    - It is better to use a for loop, a for of loop, or Array.forEach() when the order is important.
+    - Array.forEach():
+        - The forEach() method calls a function (a callback function) once for each array element.
+        - Example:
+            const numbers = [45, 4, 9, 16, 25];
+            let txt = "";
+            numbers.forEach(myFunction);
+            function myFunction(value, index, array) {
+                txt += value;
+            }
+################################
+- JavaScript For Of:
+    - The For Of Loop:
+        - The JavaScript for of statement loops through the values of an iterable object.
+        - It lets you loop over iterable data structures such as Arrays, Strings, Maps, NodeLists, and more:
+        - Syntax:
+            for (variable of iterable) {
+                // code block to be executed
+            }
+            - variable - For every iteration the value of the next property is assigned to the variable. Variable can be declared with const, let, or var.
+            - iterable - An object that has iterable properties.
+    - Looping over an Array:
+        - Example
+            const cars = ["BMW", "Volvo", "Mini"];
+            let text = "";
+            for (let x of cars) {
+                text += x;
+            }
+    - Looping over a String:
+        - example:
+            let language = "JavaScript";
+            let text = "";
+            for (let x of language) {
+                text += x;
+            }
+###################################
+- JavaScript Iterables:
+    - Iterables are iterable objects (like Arrays).
+    - Iterables can be accessed with simple and efficient code.
+    - Iterables can be iterated over with for..of loops
+    - The For Of Loop
+        - The JavaScript for..of statement loops through the elements of an iterable object.
+    - Iterating:
+        - Iterating is easy to understand.
+        - It simply means looping over a sequence of elements.
+        - Here are some easy examples which use a for..of loop to iterate over the elements:
+            - Iterating over a String
+            - Iterating over an Array
+            - Iterating Over a Set
+            - Iterating Over a Map
+####################################
+- JavaScript Sets:
+    - A JavaScript Set is a collection of unique values.
+    - Each value can only occur once in a Set.
+    - Essential Set Methods:
+        - Method:
+            - new Set(): Creates a new Set
+            - add(): Adds a new element to the Set
+            - delete(): Removes an element from a Set
+            - has(): Returns true if a value exists in the Set
+            - forEach(): Invokes a callback for each element in the Set
+            - values():	Returns an iterator with all the values in a Set
+        - Property:
+            - size: Returns the number of elements in a Set
+#####################################
+- JavaScript Maps:
+    - A Map holds key-value pairs where the keys can be any datatype.
+    - A Map remembers the original insertion order of the keys.
+    - Essential Map Methods:
+        - Method:
+            - new Map(): Creates a new Map
+            - set(): Sets the value for a key in a Map
+            - get(): Gets the value for a key in a Map
+            - delete(): Removes a Map element specified by the key
+            - has(): Returns true if a key exists in a Map
+            - forEach(): Calls a function for each key/value pair in a Map
+            - entries(): Returns an iterator with the [key, value] pairs in a Map
+        - Property:
+            - size: Returns the number of elements in a Map
+    - JavaScript Objects vs Maps:
+        - Differences between JavaScript Objects and Maps:
+        	- Object:
+                - Not directly iterable	
+                - Do not have a size property	
+                - Keys must be Strings (or Symbols)	
+                - Keys are not well ordered	
+                - Have default keys
+            - Maps:
+                - Directly iterable
+                - Have a size property
+                - Keys can be any datatype
+                - Keys are ordered by insertion
+                - Do not have default keys
+########################################
+- JavaScript typeof:
+    - Please observe:
+        - The data type of NaN is number
+        - The data type of an array is object
+        - The data type of a date is object
+        - The data type of null is object
+        - The data type of an undefined variable is undefined *
+        - The data type of a variable that has not been assigned a value is also undefined *
+        - You cannot use typeof to determine if a JavaScript object is an array (or a date).
+#######################################
+- JavaScript Regular Expressions:
+    - Syntax: /pattern/modifiers;
+    - example: /w3schools/i;
+        - Example explained:
+            - /w3schools/i  is a regular expression.
+            - w3schools  is a pattern (to be used in a search).
+            - i  is a modifier (modifies the search to be case-insensitive).
+    - Regular Expression Modifiers:
+        - Modifiers can be used to perform case-insensitive more global searches:
+            - i: Perform case-insensitive matching	
+            - g: Perform a global match (find all)	
+            - m: Perform multiline matching	
+            - d: Perform start and end matching (New in ES2022)
+    - Regular Expression Patterns:
+        - Brackets are used to find a range of characters:
+            - [abc]: Find any of the characters between the brackets	
+            - [0-9]: Find any of the digits between the brackets	
+            - (x|y): Find any of the alternatives separated with |
+        - Metacharacters are characters with a special meaning:
+            - \d: Find a digit	
+            - \s: Find a whitespace character	
+            - \b: Find a match at the beginning of a word like this: \bWORD, or at the end of a word like this: WORD\b	
+            - \uxxxx: Find the Unicode character specified by the hexadecimal number xxxx
+        - Quantifiers define quantities:
+            - n+: Matches any string that contains at least one n
+            - n*: Matches any string that contains zero or more occurrences of n
+            - n?: Matches any string that contains zero or one occurrences of n
+    - Using test() and Using exec() are RegExp expression methods:
+    - ex: /e/.test("The best things in life are free!") hoặc /e/.exec("The best things in life are free!");
+##########################################
+"use strict"; Defines that JavaScript code should be executed in "strict mode".
+##########################################
+
+            
