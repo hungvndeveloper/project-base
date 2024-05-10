@@ -1775,3 +1775,136 @@ Vậy this là gì, và this trong javascript và nodejs khác gì nhau không
     - Trình duyệt thì lại khác, khi bạn không trong strict mode, this tham chiếu tới global object window, nhưng trong strict mode, this sẽ là undefined.
 
     Nói chung, this có thể khá là trượt trải như bơ vậy, nhưng một khi bạn đã hiểu về nó, bạn sẽ thấy việc lập trình trong JavaScript và Node.js cứ "trơn tru" mãi thôi! 😄🛹
+###################################################
+Elasticsearch and Redis:
+
+Như vậy trong mô hình client server có database là mysql, nếu áp dụng redis và elastichsearch thì khi có request get data thì ta sẽ đọc data từ redis và elasticsearch.
+Còn khi có request thêm, sửa, xóa data trong cơ sở dữ liệu thì sẽ tương tác trực tiếp với database mysql phải không, bạn hãy giải thích giúp tôi nhé?
+
+Đúng vậy, trong mô hình client-server với cơ sở dữ liệu MySQL, việc sử dụng Redis và Elasticsearch sẽ diễn ra như bạn đã mô tả. Dưới đây là chi tiết cho từng loại request:
+
+1. Request Get Data:
+   - Khi client yêu cầu data, server sẽ trước tiên kiểm tra trong Redis xem dữ liệu cần thiết đã được lưu trong cache chưa.
+     Nếu có, server sẽ trả về dữ liệu từ Redis, giúp tiết kiệm thời gian truy cập vào MySQL và cải thiện hiệu suất.
+   - Trong trường hợp dữ liệu cần tìm kiếm phức tạp hoặc yêu cầu phân tích (như tìm kiếm full-text), yêu cầu sẽ được chuyển tới Elasticsearch.
+     Elasticsearch sẽ xử lý yêu cầu và trả về kết quả tìm kiếm, mà không cần phải truy vấn trực tiếp đến MySQL.
+   - Nếu dữ liệu không có trong cache của Redis, server sẽ truy vấn MySQL để lấy dữ liệu,
+     sau đó thường sẽ lưu kết quả vào Redis để những yêu cầu tiếp theo có thể được phục vụ nhanh chóng hơn.
+
+2. Request Thêm, Sửa, Xóa: 
+   - Các thao tác này được gọi là thao tác ghi (write operations) và luôn yêu cầu tính nhất quán và độ tin cậy cao. 
+     Do đó, việc thêm, sửa, xóa dữ liệu sẽ được thực hiện trực tiếp trên MySQL, đảm bảo rằng tất cả dữ liệu đều được cập nhật đúng đắn.
+   - Sau khi thao tác ghi vào MySQL hoàn thành, bạn sẽ cần cập nhật dữ liệu đó trong Redis và Elasticsearch nếu chúng đã được lưu trữ ở đó:
+     - Với Redis: Xóa cache liên quan hoặc cập nhật mới để dữ liệu cache phản ánh đúng trạng thái mới nhất.
+     - Với Elasticsearch: Cập nhật hoặc xóa chỉ mục tương ứng để dữ liệu tìm kiếm luôn đồng bộ với MySQL.
+
+Mục đích chính của việc này là đảm bảo dữ liệu trả về từ các thao tác đọc sau đó phản ánh đúng dữ liệu hiện hành trong cơ sở dữ liệu.
+Ví dụ, khi bạn cập nhật thông tin sản phẩm trong cơ sở dữ liệu, bạn cũng muốn cập nhật thông tin đó trong cache (Redis) và chỉ mục tìm kiếm (Elasticsearch)
+để người dùng có thể thấy thông tin mới ngay lập tức khi họ tìm kiếm hoặc truy cập dữ liệu sản phẩm.
+
+Điều quan trọng là phải thiết kế hệ thống đồng bộ hóa dữ liệu hiệu quả giữa MySQL,
+Redis và Elasticsearch để cả ba nguồn dữ liệu này luôn đồng nhất với nhau. Điều này đôi khi có thể đòi hỏi một cơ chế đồng bộ tự động,
+đặc biệt nếu hệ thống phải xử lý một lượng lớn các yêu cầu ghi.
+
+####################################################
+Webpack là một module bundler (trình đóng gói module) cho JavaScript. Nó thu thập các modules với các phụ thuộc và tạo ra các tập tin tĩnh đại diện cho các modules đó.
+Webpack có thể chuyển đổi các assets như HTML, CSS, và hình ảnh nếu các loader tương ứng được kết hợp và có thể biến đổi, bundle hoặc đóng gói hầu như mọi tài nguyên hoặc asset.
+Webpack được sử dụng rất phổ biến trong việc phát triển các ứng dụng web hiện đại.
+
+Để thiết lập một dự án đơn giản sử dụng Webpack, bạn cần theo các bước sau:
+	### Bước 1: Khởi Tạo Dự Án 
+		Tạo một thư mục mới cho dự án của bạn và khởi tạo một package.json mới:
+		mkdir webpack-demo
+		cd webpack-demo
+		npm init -y
+	### Bước 2: Cài Đặt Webpack
+		Cài đặt Webpack và Webpack CLI qua npm:
+		npm install --save-dev webpack webpack-cli
+	### Bước 3: Tạo Cấu Trúc Dự Án
+		Tạo cấu trúc thư mục và file cơ bản:
+		webpack-demo
+		|- /dist
+		|- /src
+		  |- index.js
+		|- index.html
+		|- webpack.config.js
+	### Bước 4: Webpack Configuration
+		Tạo một file cấu hình webpack.config.js:
+		const path = require('path');
+		module.exports = {
+		  mode: 'development',
+		  entry: './src/index.js',
+		  output: {
+			filename: 'main.js',
+			path: path.resolve(__dirname, 'dist'),
+		  },
+		};
+	### Bước 5: Tạo một Module Đơn Giản
+		Trong file src/index.js, hãy thêm một đoạn mã JavaScript đơn giản:
+		function component() {
+			const element = document.createElement('div');
+			element.innerHTML = 'Hello, webpack!';
+			return element;
+		}
+
+		document.body.appendChild(component());
+	### Bước 6: Tạo file HTML
+		File index.html trong thư mục gốc nên link tới tập tin bundle mà Webpack sẽ tạo ra:
+		<!DOCTYPE html>
+		<html>
+		  <head>
+			<title>Webpack Demo</title>
+		  </head>
+		  <body>
+			<script src="dist/main.js"></script>
+		  </body>
+		</html>
+	### Bước 7: Chạy Webpack
+		Sau khi thiết lập tất cả, hãy chạy webpack để bundle code:
+		npx webpack --config webpack.config.js
+
+Khi webpack chạy thành công, bạn sẽ thấy tập tin main.js trong thư mục dist, và bạn có thể mở file index.html trong trình duyệt để xem kết quả.
+Webpack cũng hỗ trợ một số chức năng tiện ích khác như HMR (Hot Module Replacement), code splitting, và lazy loading, nhưng những điều này đòi hỏi cấu hình và thiết lập phức tạp hơn.
+#########################################################
+Vite là một công cụ xây dựng front-end tiên tiến và nhanh chóng, sử dụng Rollup 
+làm bundler cho sản phẩm cuối cùng và tận dụng sức mạnh của ES Modules để phục vụ mã nguồn một cách nhanh chóng trong quá trình phát triển.
+Vite cung cấp các tính năng như Hot Module Replacement (HMR) ngay lập tức, hỗ trợ các frameworks như Vue, React, Angular,...
+
+Để bắt đầu với Vite, bạn có thể làm theo các bước sau:
+	### Bước 1: Khởi tạo dự án mới
+		npm create vite@latest my-vite-project --template vanilla
+		cd my-vite-project
+		npm install
+		Đoạn lệnh trên sẽ tạo một dự án mới dùng Vite với template vanilla (mẫu cơ bản), bạn cũng có thể chọn các template khác như vue, react, svelte,...
+	### Bước 2: Tìm hiểu cấu trúc thư mục
+		Dự án my-vite-project sẽ có cấu trúc như sau:
+		my-vite-project
+		|- index.html
+		|- /src
+		  |- main.js
+		|- package.json
+		|- vite.config.js
+	### Bước 3: Xem lại nội dung các tệp quan trọng
+		- index.html: Là trang HTML chính của ứng dụng.
+		- src/main.js: Là điểm bắt đầu của ứng dụng JavaScript của bạn.
+		- vite.config.js: Là nơi bạn có thể thêm các cấu hình cho Vite nếu cần.
+	### Bước 4: Chạy dự án
+		Bạn có thể chạy dự án trên server cục bộ bằng cách sử dụng lệnh:
+		npm run dev
+		Điều này sẽ khởi chạy server phát triển Vite, và bạn có thể xem ứng dụng của mình qua đường link được cung cấp trong terminal (thường là http://localhost:3000).
+
+	### So Sánh Vite và Webpack
+	- Khởi Động Nhanh: Nhờ vào việc sử dụng ES Modules, Vite cho phép server phát triển khởi động cực kỳ nhanh so với Webpack,
+	  do Webpack phải xử lý toàn bộ ứng dụng và tạo ra một bundle để phục vụ trong quá trình phát triển.
+	  
+	- HMR (Hot Module Replacement): HMR trong Vite rất nhanh là do việc nó không cần phải xử lý qua các bundler như Webpack, nó chỉ thay thế module cần thiết chứ không phải reload toàn bộ trang.
+	  
+	- Rollup vs Webpack: Vite sử dụng Rollup làm công cụ bundle cho sản phẩm ở chế độ production, mang lại kết quả tối ưu hơn so với Webpack trong một số trường hợp như khi xuất các thư viện.
+
+	- Cấu hình: Cấu hình Vite thường đơn giản và dễ hiểu hơn so với Webpack. Đối với phần lớn các dự án, Vite không cần cấu hình nhiều hoặc thậm chí là không cần cấu hình gì cả.
+
+	- Sử dụng Các Công Nghệ Web Hiện Đại: Vite tận dụng các tính năng hiện đại của JavaScript và web như ES Modules và native ESM dynamic imports, điều này giúp nó có performance tốt và ít phụ thuộc vào các polyfills.
+
+	Tóm lại, Vite mang lại trải nghiệm phát triển nhanh và hiện đại, đặc biệt khi làm việc với các single-page applications.
+	Trong khi đó, Webpack vẫn mạnh mẽ và linh hoạt, hỗ trợ rất nhiều tình huống và là lựa chọn tốt cho các dự án lớn và phức tạp.
+	Lựa chọn giữa Vite và Webpack sẽ phụ thuộc vào yêu cầu cụ thể của dự án và sở thích của nhà phát triển.
