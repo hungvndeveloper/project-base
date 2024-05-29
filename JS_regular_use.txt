@@ -2208,3 +2208,131 @@ Callback, Promise, async-await
     và mỗi phương pháp có những đặc điểm cụ thể để thích nghi với các tình huống khác nhau..accessToken Nói một cách vui vẻ thì, nếu bạn thích tiệc tùng,
     thì callbacks giống như tự pha chế tại bữa tiệc, promises là đặt trước cocktail, 
     và async/await là hệ thống phục vụ tự động mang đến cho bạn đồ uống ngay khi bạn cần, mà không cần đợi chờ.
+
+##################################################################
+Khi nói đến mở rộng jQuery, có vài phương pháp chính chúng ta có thể sử dụng để tùy biến hoạt động của jQuery,
+thêm các phương thức của riêng mình, hoặc tạo plugin. Dưới đây là một số cách phổ biến:
+
+### 1. jQuery Plugins
+    Một cách phổ biến để mở rộng jQuery là viết plugin. Plugin giúp bạn tái sử dụng code, dễ bảo trì hơn và có thể chia sẻ với người khác.
+        - Cách viết truyền thống:
+            (function($) {
+                $.fn.highlight = function(color) {
+                    this.css('background-color', color);
+                    return this; // Để chain các phương thức khác
+                };
+            })(jQuery);
+
+            // Sử dụng plugin này
+            $('#myElement').highlight('yellow');
+
+
+        - Cách viết ngắn gọn:
+            $.fn.highlight = function(color) {
+                this.css('background-color', color);
+                return this; // Để chain các phương thức khác
+            };
+
+            // Sử dụng plugin này
+            $('#myElement').highlight('yellow');
+
+### 2. jQuery Namespace Extensions
+    Bạn có thể mở rộng các hàm jQuery bằng cách thêm vào namespace của nó.
+        - Cách viết truyền thống:
+            (function($) {
+                $.extend({
+                    alertMessage: function(message) {
+                        alert(message);
+                    }
+                });
+            })(jQuery);
+
+            // Sử dụng hàm này
+            $.alertMessage('Hello, World!');
+
+
+        - Cách viết ngắn gọn:
+            $.extend({
+                alertMessage: function(message) {
+                    alert(message);
+                }
+            });
+
+            // Sử dụng hàm này
+            $.alertMessage('Hello, World!');
+
+### 3. Thêm phương thức tùy biến vào jQuery
+    Bạn có thể thêm phương thức của mình vào jQuery mà không cần phải viết plugin hoàn chỉnh.
+        - Cách viết truyền thống:
+            (function($) {
+                $.fn.changeText = function(newText) {
+                    this.text(newText);
+                    return this; // Để chain các phương thức khác
+                };
+            })(jQuery);
+
+            // Sử dụng phương thức tùy biến này
+            $('#myElement').changeText('New Text');
+
+        - Cách viết ngắn gọn:
+            $.fn.changeText = function(newText) {
+                this.text(newText);
+                return this; // Để chain các phương thức khác
+            };
+
+            // Sử dụng phương thức tùy biến này
+            $('#myElement').changeText('New Text');
+
+### 4. Sử dụng $.proxy
+    Sử dụng $.proxy để giữ nguyên ngữ cảnh (this) khi gọi các hàm bên trong sự kiện.
+        - Cách viết truyền thống:
+            (function($) {
+                function MyObject() {
+                    this.value = "Hello";
+                    $('#myButton').on('click', $.proxy(this.onClick, this));
+                }
+
+                MyObject.prototype.onClick = function() {
+                    alert(this.value);
+                };
+                
+                new MyObject();
+            })(jQuery);
+
+        - Cách viết ngắn gọn:
+            function MyObject() {
+                this.value = "Hello";
+                $('#myButton').on('click', $.proxy(this.onClick, this));
+            }
+
+            MyObject.prototype.onClick = function() {
+                alert(this.value);
+            };
+
+            new MyObject();
+
+### 5. Thêm các phương thức tiện ích với $.extend
+    Bạn có thể mở rộng không chỉ object $.fn mà còn cả object chính jQuery để thêm các phương thức tiện ích.
+        - Cách viết truyền thống:
+            (function($) {
+                $.extend({
+                    square: function(n) {
+                        return n * n;
+                    }
+                });
+            })(jQuery);
+
+            // Sử dụng phương thức tiện ích này
+            console.log($.square(5)); // 25
+
+        - Cách viết ngắn gọn:
+            $.extend({
+                square: function(n) {
+                    return n * n;
+                }
+            });
+
+            // Sử dụng phương thức tiện ích này
+            console.log($.square(5)); // 25
+
+Qua các cách mở rộng trên, bạn có thể thấy tính linh hoạt của jQuery trong việc tùy biến và mở rộng chức năng của nó.

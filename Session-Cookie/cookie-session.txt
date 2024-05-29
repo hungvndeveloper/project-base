@@ -1,0 +1,281 @@
+để học được cookie và session các bạn cần phải có 1 dự án nó chạy cả FE và BE
+
+các bạn hình dung là những cái gì các bạn có trong file ejs nó sẽ là những cái code được trả về cho phía
+trình duyệt. vì vậy đây là code thuộc FE nên các bạn có thể code javascript để nó chạy nó thêm cookie vào
+trong trình duyệt
+ví dụ:
+<script>
+    //document.cookie = 'key=value';
+    document.cookie = 'username=nguyenvana';
+</script>
+sau khi đoạn trên được thực thi, nó sẽ tạo ra 1 một cái cookie với:
+- Name là username 
+- Value là nguyenvana
+cái Domain mặc định nó sẽ dùng chính cái domain của trang web của các bạn, thì cái domain này nó sẽ quyết định 
+được cái việc là cái cookie này được sử dụng ở đâu, nếu các bạn truy cập 1 domain khác thì nó sẽ không thấy được 
+cookie này. thì có nghĩa là cookie nó sẽ lưu theo domain, 1 trang web lạ nó sẽ không thể lấy được cookie của trang
+web.
+với localhost, thì cookie trên trình duyệt nó lại có những ngoại lệ nên nó sẽ hơi khác một chút nên chúng ta nên tạo
+1 cái virtual host để thay cái domain localhost cho giống với tình huống thực tế
+ví dụ ở đây đặt là 127.0.0.1 testcookie.com
+thì domain nó sẽ đổi thành testcookie.com. nhưng ở đây có 1 lưu ý, khi domain là testcookie.com thì cái cookie này nó sẽ 
+chỉ nhìn được khi các bạn ở trên trang testcookie.com thôi nhưng trong thực tế nó lại có tình huống
+là 1 trang web thì testcookie.com là tên miền chính nhưng mà nó lại có những tên miền phụ nữa ví dụ: abc.testcookie.com
+thì nó sẽ không thể truy cập được trên tên miền phụ này.
+do vậy để làm tính năng chia sẻ cookie giữa tên miền phụ và tên miền chính thì khi tạo cookie các bạn khai báo 
+thêm cái domain và thêm dấu chấm đằng trước. ví dụ: document.cookie = 'username=nguyenvana; domain=.testcookie.com';
+thì khi bắng đầu bằng .testcookie.com thì nó hiểu là cookie này sẽ được chia sẻ ở cả tên miền chính và tất cả
+tên miền phụ của nó. sau này muốn là tính năng giữ phiên đăng nhập giữa cả tên miền chính và tên miền phụ thì phải hiển 
+được điều này.
+
+- Path nó là cái đường dẫn để có thể truy cập được cái cookie, khi nó là dấu / thì nó sẽ hiểu là tất cả các đường 
+dẫn của trang đều thấy được cookie này. còn nếu muốn cookie chỉ tạo ra ở đường dẫn /bai-viet thôi thì mình sẽ làm như sau:
+document.cookie = 'email=abc@gmail.com; path=/bai-viet';
+với cách viết này, cookie email sẽ chỉ tạo ra và truy cập được ở đường dẫn /bai-viet thôi.
+khi có nhiều giá trị cookie thì nó sẽ ngăn cách nhau bằng dấu chấm phẩy "; " và 1 dấu cách. các bạn có thể 
+xử lý chuỗi và lấy ra giá trị của nó. và các bạn lưu ý, cái path=/bai-viet tức có nghĩa là bắt đầu với cái đường dẫn này
+trường hợp đặc biệt là chỉ có dấu /, thì các đường dẫn bắt đầu với dấu /, mà đường dẫn nào mà chả bắt đầu bàng dấu /
+thế nên là nó sẽ hiểu là truy cập tất cả
+
+- Expires/Max-Age: Có nghĩa là cái thời hạn, cái hết hạn của cookie. mặc định nếu không thiết lập thì nó sẽ có giá trị là
+Session. cái này không phải là khái niệm Session mà mình sắp được học đâu. khái niệm sẽ được học sau đó là Session ở phía BE
+còn cái Session ở đây thì các bạn nên hiểu nó với nghĩa đen, Session này nó là cái phiên của chính cái cookie này
+tức là khi các bạn tắt trình duyệt đi, nó hết phiên cookie này sẽ bị xóa luôn(còn tùy setting của trình duyệt trong phần on startup nữa)
+nếu cấu hình thời hạn cụ thể:
+const date = new Date();
+date.setTime(date.now() + 5000) // đưa số milisecond tính từ 1970 đến nay. timestemp
+document.cookie = `email=abc@gmail.com; expires=${date.toUTCString()}`;
+thì hết thời hạn mình cấu hình thì nó sẽ tự động xóa. điều này ứng dụng cho việc ví dụ sau này các bạn 
+cần lưu 1 cái gì đó đến hạn như kiểu các bạn làm chức năng người dùng người ta vào 1 trang web thì nó 
+bật lên 1 cái quảng cáo mà để tránh phiền người dùng thì trong 1 ngày chỉ hiện 1 lần thôi sang ngày mới
+vào thì nó mới hiện lại 1 lần thì các bạn tạo 1 cái cookie nó hết hạn vào cái 00 giờ.
+cách này nó sẽ giúp bạn xử lý trong tình huống muốn cấu hình với 1 thời gian cụ thể thì các bạn mới tính toán
+date, còn đơn thuần các bạn muốn nó sống được bao nhiêu giây thôi thì các bạn dùng max-age nó sẽ đơn giản hơn.
+ví dụ: document.cookie = `email=abc@gmail.com; max-age=5`;
+
+- Size: dung lượng cookie
+- HttpOnly: thì nó là cái cookie nó phải được máy chủ ở phía backend yêu cầu trình duyệt tạo ra cái cookie đấy
+chứ ở phía trình duyệt các bạn sẽ không tự tạo ra được cái HttpOnly. tính chất của cái HttpOnly cookie nếu các bạn 
+thấy nó được check thì cái cookie đó ở phía trình duyệt sẽ không truy cập được. tức là dù nó có khớp 
+cả domain cả path đi nữa thì các bạn cũng không thể truy cập cái cookie đó. thì cái cookie này nó sẽ
+thường dùng để làm tính năng đăng nhập hoặc giữ phiên đăng nhập vì nó bảo mật hơn, vì chỉ ở phía máy chủ nó mới
+lấy được cái cookie này thôi, còn ở phía trình duyệt là không lấy được. nhưng lưu ý là nói ở trình duyệt
+là không lấy được là chẳng qua là ở phạm vi các bạn tự viết code ở trên trang web này thôi, chứ các bạn mà viết 
+các tiện ích cài vào trình duyệt hoặc biết sử dụng api của trình duyệt chọc vào là lấy được hết nhưng nó vẫn sẽ bảo
+mật và an toàn hơn việc tạo ở bên trình duyệt vì nếu tạo ở trình duyệt mà mình lại dùng cookie này để tạo phiên
+đăng nhập nó chiếm được cookie là nó sẽ chiếm được phiên đăng nhập không cần tài khoản và mật khẩu
+
+- Secure: cái này khi được check vào thì cookie này sẽ chỉ hoạt động chỉ được tạo ra và chỉ chỉ có thể được gửi lên
+trên máy chủ BE khi mà các bạn có sử dụng https. nếu mà là http thì các bạn sẽ không dùng được cookie đấy. thì nó có
+1 ngoại lệ với localhost thì nó lại chấp nhận cho bạn dùng mặc dù nó là http.
+ví dụ: document.cookie = `email=abc@gmail.com; max-age=3600; secure`;
+và ý ở đây là nếu các bạn tích vào secure này, thì trừ localhost từ 127.0.0.1 thì bắt buộc các bạn phải có https thì 
+các bạn mới tạo, mới sử dụng và lúc đấy cookie được đính kèm và gửi tự động với yêu cầu mạng. còn không có 
+https là sẽ không
+
+- Đặc biệt: Tính chất của cookie thì nó sẽ tự gửi khi các bạn yêu cầu tức là các bạn truy cập trang web.
+trong phần request header của request là cái thông tin gửi đi thì nó có 1 cái thuộc tính Cookie giá trị là nội dung
+của cookie. nhấn mạnh lại: tức là cookie nó sẽ được đính kèm vào cái yêu cầu mạng khi mà nó gửi lên cùng với cái
+reuqest url thì nó tự đính vào các bạn nhé.
+
+- nhấn mạnh, cái nhu cầu sử dụng cookie chỉ ở phía trình duyệt nhá, là các bạn có thể tạo ra nó để làm những cái 
+tính năng mà các bạn chỉ cần lưu dữ liệu ở phía trình duyệt. ví dụ tạo 1 cái popup của sổ quảng cáo nó tự bật lên 
+và mỗi ngày chỉ bật 1 lần chẳng hạn, hoặc cấu hình giao diện người dùng như giao diện sáng, tối chẳng hạn mà không 
+cần đồng bộ giữa cái thiết bị khác. khi không cần hạn và muốn lưu lâu dài thì lưu vào localstorage thì nó sẽ không hết hạn 
+cộng với việc là dung lượng bộ nhớ lớn hơn. cookie thì nó thường dùng cho dữ liệu nhỏ và nó cần hết hạn
+
+- ví dụ truy cập vào trang web của f8, client là thiết bị truy cập, nó là cái máy tính, điện thoại của các bạn
+còn server là nơi lưu trữ cái trang web, là nơi triển khai trang web f8. thì từ thiết bị client nó sẽ phải
+gửi yêu cầu (request) thông qua mạng máy tính. và cụ thể là mạng internet tới máy chủ server. server nó sẽ tiếp 
+nhận và xử lý rồi nó phản hồi (response) về cho các bạn, có thể là nó trả về html, css rồi giao diện trang web
+của bạn nó sẽ hiển thị lên trang web.
+
+thế bây giờ khi các bạn chạy trang web này trên chính local thì hỏi các bạn nó có tuân theo mô hình client-server không
+thì nó cũng theo mô hình này, nhưng lúc này thì các bạn có thể hiểu như sau: hiểu client là cái trình duyệt
+cái server lúc này nó là cái máy chủ web đang chạy ở chính máy của các bạn cổng 3000. thì lúc này trình duyệt nó
+sẽ gửi yêu cầu tới máy chủ, máy chủ tiếp nhận xử lý và phản hồi lại html. rồi trình duyệt hiển thị lên
+
+trên máy tính của chúng ta nó có mạng loopback hiểu nôm na là vòng lại. địa chỉ ip của loopback:
+Loopback: ipv4 là 127.0.0.1/ipv6 là ::1/ hostname là localhost. 
+
+khi truy cập fullstack.edu.vn, cái card mạng nó sẽ hiểu là cần phải đi ra ngoài, nó cứ đi từng cấp 1, ra mạng lan
+từ mạng lan ra bên ngoài internet, rồi tìm kiếm ip tương ứng với cái máy chủ fullstack.edu.vn rồi nó truy cập vào
+và hiện ra trang web. đó thì có nghĩa là nó đi ra ngoài.
+
+loopback nó là cái mạng vòng lại. 
+khi mà các bạn truy cập bằng những địa chỉ này 127.0.0.1/ipv6 là ::1/ hostname là localhost, thì máy 
+tính nó sẽ không đi ra mạng ngoài mà thay vào đó nó sẽ quay lại chính máy tính của các bạn ấy. và khi 
+các bạn chạy máy chủ với express ở cổng 3000 trên local, thì nó sẽ chạy ở mạng loopback, và các bạn tưởng tượng 
+mạng loopback nó giống ngôi nhà của các bạn ấy, nó sẽ có nhiều cổng, và lúc này máy chỉ express nó mở ra cái
+cổng 3000, nên là khi các bạn gõ vào trình duyệt, localhost:3000, thì việc đầu tiên trình duyệt nó sẽ 
+phải phân giải cái localhost trở thành ip, và nó đâm vào cổng 3000 thì lúc đấy đang có thằng 
+    app.listen(3000, () => {
+        console.log(`Demo app is running on port ${3000}`);
+    })
+lắng nghe cổng 3000, nên là các bạn đâm vào được bên trong cái dịch vụ web của thằng express đang chạy, lúc đấy
+bắt đầu nó sẽ so khớp với:
+    app.get('/', (req, res) => {
+        // res.send("<h1>Xin chào anh em nha!</h1>");
+        res.render('pages/index');
+    });
+từ phương thức là GET cho đến cái path là /, thế là nó lọt vào res.render('pages/index'); thì nó mới xử lý được
+các bạn nhé.
+thì cái quá trình nó truyền tải dữ liệu khi mà trang web nó được tải như vậy nó là dựa trên giao thức http, và đây
+là giao thức phi trạng thái (stateless).
+ví dụ khi truy cập vào http://testcookie.com:3000 vài lần, hiểu đơn giản là giữa các request http nó là độc lập nó chả liên quan gì
+đến nhau cả thì nó gọi là phi trạng thái, tức là như này: những cái request sau thì mình cũng không can thiệp được
+vào dữ liệu của request trước, nó chả liên quan gì đến nhau cả nên là giả sử ở request đầu tiên các bạn thực hiện 
+đăng nhập, lấy thông tin người dùng đăng nhập hay là tạo phiên đăng nhập đi, à mà đang nói tới cái phi trạng thái thì
+nó chưa tạo phiên được, bởi vì nó không có trạng thái nên nó không giữ phiên được. thì giả sử ở đây 
+các bạn thực hiện đăng nhập ở request đầu tiên, rồi lấy giữ liệu đăng nhập của người dùng đi thì ở những request phía sau
+này thì bởi vì nó độc lập và nó không thể chọc vào request đầu tiên để nó truy cập vào dữ liệu đã đăng nhập
+thế nên là ở những request sau này cũng không biết được là chúng ta đã đăng nhập thì đấy là cái ý phi trạng thái của http
+
+- tại request đầu tiên từ client nó gửi giữ liệu lên trên máy chủ, thì máy chủ nó sẽ tạo ra 1 mẩu dữ liệu rồi nó trả về 
+thông qua qua phản hồi http cho client nó lưu cookie vào trình duyệt và từ những request sau trở đi, thì các bạn biết rồi đấy
+tính chất của cookie nó sẽ được tự đính vào cái request, nên là sau khi cái request đầu này được máy chủ trả dữ liệu cookie về
+và tạo cookie đó lưu vào trình duyệt thì những request tiếp theo gửi lên nó sẽ tự đính cái cookie vào và khi đó
+máy chủ nó sẽ nhận được cái cookie, và từ cái cookie đó bằng những biện pháp nghiệp vụ nó sẽ biết được là cái người dùng trước đó
+đã đăng nhập là ai, và từ đó là giữ được phiên đăng nhập
+
+- các bạn thử tưởng tượng như thế này: giờ f8 có trung tâm dạy offline tại hà nội, mình là bảo vệ, bạn là học viên
+lần đầu tiên bạn đền f8, nó giống như kiểu lần đầu tiên các bạn truy cập vào trang web thì lúc đấy là nếu mà mình với bạn 
+không nói chuyện gì với nhau thì mình sẽ không biết bạn là ai cả, hết buổi học bạn về đến ngày tiếp theo, tiếp theo nữa
+các bạn đến học mình vẫn không biết bạn là ai cả. nó giống như việc là những cái request độc lập đi rồi đến, đến rồi đi 
+vẫn không biết bạn là ai không giữ được phiên đăng nhập thì bây giờ có 1 cách như này, lần đầu bạn đến, mình gọi bạn ra
+em ơi em tên nguyễn văn a, biển số xe là 123. ok a cấp cho em cái vé tháng mã số là 01. rồi mỗi buổi sau e đi học e mang
+theo vé tháng đấy thì từ những lần sau mình chỉ cần bạn đưa vé cho mình là 01 cái mình ngồi mình tra 1 cái thế là mình biết 
+à ông này là nguyễn văn a, biến số xe là 123. đấy thì cái vé đấy nó chính là mẩu dữ liệu, nó chính là cookie, mình là ông bảo vệ
+thì mình là cái server mình không cầm cái cookie đó nhưng ban đầu mình là thằng phát cái cookie đấy cho bạn, đưa vé cho bạn
+rồi bạn cầm cái vé đó bạn đến học bạn về, đến học bạn về thì bạn cứ cầm theo nó. thì cứ cầm theo nó thì mình sẽ biết bạn là ai
+thì đó chính là nguyên lý hoạt động của cookie.
+
+- nếu submit với method mặc định sẽ là get, get thì nó sẽ lộ thông tin ở trên cái parameter ở trên url ấy,
+post thì nó sẽ đưa thông tin vào trong body thì nó sẽ không bị lộ ở trên cái url.
+
+- ví dụ khi làm chức năng đăng nhập, ta có 1 form với 2 field là email và password với phương thức gửi lên là
+post và một button submit, khi submit form, thì làm sao để phía backend lấy dược dữ liệu này, thì thêm đoạn này:
+    app.use(express.urlencoded({extended: true})) 
+vào trong file chạy chính thì nó sẽ xử lý cho bạn thông tin từ form gửi lên.
+ở endpoint: 
+app.post("/login", (req, res) =>{})
+ta phải xử lý đăng nhập trong function callback, thì đầu tiên ta phải xác thực xem là dữ liệu gửi lên username và password
+xem nó có tồn tại trong database không
+
+// Fake DB (MySQL, MongDB)
+const db = {
+    users: [
+        {
+            id: 1,
+            email: "nguyenvana@gmail.com",
+            // không dùng plain text như này mà chúng ta sẽ hash nó sử dụng các hàm băm hoặc là các hàm mã hóa 1 chiều
+            // đại khái nếu lưu plain text password thì nếu bị hack database người ta biết hết mật khẩu của tài khoản
+            // mà các bạn đã mã hóa, băm nó ra thì những cái phương án xử lý password như vậy thì sẽ không quy đổi ngược
+            // lại được thế nên là nó sẽ an toàn hơn
+            password: "123456",
+            name: "Nguyễn Văn A",
+        },
+    ],
+};
+const user = db.users.find(
+    (user) => user.email === email && user.password === password
+);
+if (user) {
+    res.json(user);
+    return;
+}
+
+để duy trì được phiên đăng nhập thì nó cần phải có khái niệm session nhá. 
+cookie thì được lưu ở trình duyệt còn session thì được lưu ở server, nên là ở đây mình cũng sẽ tạo ra 1 cái 
+session, đơn giản là 1 object thôi, 1 object rỗng
+const sessions = {};
+
+khi đăng nhập thành công thì đầu tiên mình tạo ra 1 cái sessionId, mình sẽ dùng tạm thời gian hiện tại:
+    const sessionId = Date.now().toString();
+trong thực tế chúng ta cần tạo ra cái chuỗi nó không bị trùng lặp, còn dùng timestemp này nếu mà có nhiều người
+dùng cùng request vào cùng 1 thời điểm luôn thì cái timestemp này vẫn có thể trùng nhau. thì nguyên lý ở đây là
+cái session các bạn phải sử dụng những cái hàm, những cái cách thức tạo để nó không bị trùng nhau, mỗi 1 người
+là một cái sessionId khác nhau.
+sau đó lưu giá trị sessionId vừa tạo vào object sessions và lưu giá trị người dùng đang đăng nhập thành công vào,
+trong ví dụ này để đơn giản thì mình chỉ lưu giá trị của userId vào thôi:
+    sessions[sessionId] = {
+        userId: user.id
+    }
+và sau đó tạo ra 1 cái cookie, lấy cái sessionId là cái giá trị của cookie, rồi mình trả cái dữ liệu đó về
+trình duyệt để bảo trình duyệt nó lưu cookie đấy vào trình duyệt nhá. thì cái cách để đứng ở phía backend
+để có thể gửi 1 cái yêu cầu set cookie về trình duyệt để bảo trình duyệt lưu lại cái cookie ấy thì các bạn dùng
+    res.setHeader('Set-Cookie', `sessionId=${sessionId}; max-age=3600; httpOnly`);
+để an toàn hơn thì ta chỉ cho phép chính backend nó đọc được cái cookie này thôi thì mình sẽ thêm vào cái httpOnly
+thì cookie nó được lưu vào trình duyệt ấy nhưng trình duyệt sẽ không truy cập được qua code javascript
+còn trong thực tế các bạn có thể thêm cái Secure để nó bảo mật hơn nếu chạy với https.
+thường thì đăng nhập thành công xong thì nó sẽ đá người ta qua 1 trang khác.
+với cái res.setHeader nó sẽ được vào cái response header. tức là trong quá trình server trả về dữ liệu, nó sẽ đính vào 
+dữ liệu ở header,
+chính là cái Set-Cookie với nội dung `sessionId=${sessionId}; max-age=3600; httpOnly`
+trình duyệt nó sẽ nhập được. và khi trình duyệt nó nhận được cái Set-Cookie nó hiểu rằng 
+à phía máy chủ đang bảo rằng là mày hãy tạo ra 1 cái cookie với những thông số như thế này
+`sessionId=${sessionId}; max-age=3600; httpOnly` đi, thế là trình duyệt nó tạo ra cái cookie này
+và nó lưu ở trình duyệt luôn.
+sau khi đó đã tạo ra cookie trên, thì sau này mỗi khi trình duyệt gửi request lên server, thì nó sẽ mang theo cookie ở cái 
+request header. và lúc này nó không còn là phi trạng thái nữa rồi. vì nó đã lưu cái cookie nên nó đã trở thành có trạng thái
+
+thì ở trang dashboard để lấy được cái cookie thì ta cần cài thêm thư viện cookie-parser,
+và sử dụng nó:
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+sau đó dùng giá trị của cookie chứa sessionId gửi lên từ brower là value cái sessionId,
+và từ cái sessionId mình lại chọc vào object session để lấy được userId đang đăng
+nhập, rồi chọc vào DB để lấy ra thông tin user dựa vào cái userId này.
+
+session tạo ra cũng phải set hết hạn cho nó trên server = với hạn của cookie trên client,
+sessions[sessionId] = {
+    userId: user.id,
+    // createAt:
+    // maxAge: 3600
+};
+từ thời gian được tạo + thời gian tối đa được sống các bạn sẽ tính so sánh với thời gian hiện tại
+nếu mà quá thời gian đáy thì coi như session đấy sẽ không được chấp nhận
+
+ở logout thứ nhất là xóa bỏ cookie, thứ 2 là xóa bỏ session đi
+trong thực tế thì ta sẽ dùng các thư viện để hỗ trợ làm việc này, nó sẽ có cơ chế mã hóa và giải mã
+để làm giỏ hàng các bạn cũng làm tương tự như đăng nhập này này, bởi vì nó giữ được sessionId, thế nên
+là dữ liệu của các bạn nó sẽ có thể dữ được ở những request phía sau nên các bạn có thể làm 1 chức năng giỏ hàng
+lưu những id của product vào session và mỗi khi các bạn f5 lại trang nó vẫn giữ được thông tin của giỏ
+hàng của các bạn
+
+câu hỏi phỏng vấn:
+
+1. cookie và session khác nhau như thế nào 
+  thì cookie nó là 1 mẩu dữ liệu nhỏ, nó được lưu ở phía trình duyệt hoặc nếu mà hiểu sâu xa thì các bạn bảo là
+  lưu ở phía client thường là trình duyệt, dung lượng bao nhiêu..., các cài đặt của cookie
+  lưu ý là phải cái cookie có expires là session thì khi tắt trình duyệt nó mới mất nó không phải là cái 
+  server tắt trình duyệt nó mất
+
+- session: là để giữ phiên thường là để giữ phiên đăng nhập hoặc là để tạo ra những cái giỏ hàng với session 
+  ở phía máy chủ. session được lưu ở phía máy chủ, nó không lưu ở phía client, và để session hoạt động được 
+  thì thường người ta sẽ gửi cái sessionId dưới dạng cookie lưu vào phía trình duyệt. có nghĩa là để thấy session
+  trên server. tức có để client và server có thể lấy data từ session đó thì ở phía trình duyệt nó phải lưu cái 
+  cookie, nếu mà không có cookie thì nó sẽ không biết cái session trên server là cái nào là tương ứng nữa
+
+- vậy để tạo ra session thì có nhất thiết phải có cookie không? thì câu trả lời là không nhất thiết, cookie nó là 
+  một lựa chọn phổ biến nhất để lưu cái sessionId nhưng các bạn không nhất thiết phải dùng nó. các bạn có thể sử 
+  dụng url param thay vì các bạn lưu về cookie, các bạn response kiểu ?sessionId=xxx nhưng nó không bảo mật, nó bị phiền
+  và rắc rồi khi các url phía sau cứ phải tự đính vào thì server mới nhận được.
+  cookie thì nó đơn giản hơn bởi vì trình duyệt nó tự đính vào.
+
+- tắt trình duyệt thì cookie với session có bị xóa không thì trả lời là cookie lưu dưới dạng có cái expires là session
+  tắt trình duyệt sẽ bị xóa, còn thời điểm đấy trên server session vẫn còn, không bị xóa trừ phi nó hết hạn ở trên server
+  ấy thì các bạn lại xử lý trên server thì nó hết hạn thì lúc đáy là nó sẽ bị xóa đúng không, nhưng khi các bạn tự tay tắt
+  trình duyệt đi hoặc các bạn tự tay xóa cookie đi thì nó chỉ gọi là mất kết nối giữa client và server chứ session vẫn còn 
+  trên server.
+
+- session có thể được lưu ở đâu, thì trả lời là tùy có thể là 
+    + memory trong bộ nhớ chương trình thôi, nếu tắt chương trình hoặc sửa code và refresh chương trình thì nó mất
+    trong thực tế thì học cách đọc ghi file và lưu ra file .
+    + hoặc các bạn có thể lưu vào bộ nhớ ram nó có những công nghệ như redis, memcache. 
+    2 cái này nó lưu vào ram thôi nên là bản chất các bạn mà bật tắt máy chủ thì ram bộ nhớ sẽ bị xóa, nó là bộ nhớ truy cập ngẫu nhiên mà
+    tắt điện là bị xóa, mất dữ liệu nên là những công nghệ này các bạn cần phải đọc cấu hình của nó để nó có 1 cái nó
+    sync đồng bộ xuống ổ cứng. định kỳ đồng bộ từ ram xuống ổ cứng thì nó sẽ duy trì được cái session nha
+    + thậm chí nếu các bạn thích các bạn lưu vào database cũng được ... tùy từng bài toán
+    lưu vào cái gì nó duy trì được ấy, tắt bật máy nó vẫn còn là được
