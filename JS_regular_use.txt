@@ -2336,3 +2336,16 @@ thêm các phương thức của riêng mình, hoặc tạo plugin. Dưới đâ
             console.log($.square(5)); // 25
 
 Qua các cách mở rộng trên, bạn có thể thấy tính linh hoạt của jQuery trong việc tùy biến và mở rộng chức năng của nó.
+###############################################################
+Cách viết jQuery truyền thống và hiện đại:
+### 1. Document Ready
+    - jQuery truyền thống:
+        $(document).ready(function() {
+            // Code chạy khi DOM sẵn sàng
+        });
+
+    - jQuery ngắn gọn:
+        $(function() {
+            // Code chạy khi DOM sẵn sàng
+        });
+Tóm lại, cách viết jQuery ngắn gọn chủ yếu là loại bỏ việc lặp lại tên hàm jQuery nhiều lần bằng cách dùng ký tự $ thay thế và tận dụng các hàm có sẵn
