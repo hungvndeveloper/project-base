@@ -2349,3 +2349,367 @@ Cách viết jQuery truyền thống và hiện đại:
             // Code chạy khi DOM sẵn sàng
         });
 Tóm lại, cách viết jQuery ngắn gọn chủ yếu là loại bỏ việc lặp lại tên hàm jQuery nhiều lần bằng cách dùng ký tự $ thay thế và tận dụng các hàm có sẵn
+###############################################################
+Một số cách mở rộng object trong javascript.
+
+Giả sử bạn có hai object sau:
+    let exportsItem = {
+        name: "Táo",
+        color: "Đỏ"
+    };
+
+    let libraryItem = {
+        price: 20000,
+        country: "Việt Nam",
+        color: "Xanh"
+    };
+
+###1. Sử dụng $.extend() của jQuery:
+    Nếu trong file javascript có import thư viện jQuery thì ta có thể sử dụng $.extend() của jQuery  
+    được sử dụng để ghép nối hoặc mở rộng các thuộc tính từ một hoặc nhiều object nguồn vào một object đích.
+    Nếu bạn sử dụng jQuery, bạn có thể ghép nối hai object này như sau:
+
+        let mergedItem = $.extend({}, exportsItem, libraryItem);
+        console.log(mergedItem);
+
+    Kết quả sẽ là một object mới mergedItem chứa tất cả thuộc tính từ cả hai object, với thuộc tính color từ libraryItem sẽ đè lên thuộc tính tương ứng trong exportsItem:
+        {
+            name: "Táo",
+            color: "Xanh",
+            price: 20000,
+            country: "Việt Nam"
+        }
+
+###2. Sử dụng Object.assign() trong JavaScript ES6 và mới hơn:
+
+    Bạn có thể đạt được kết quả tương tự mà không cần jQuery bằng cách sử dụng Object.assign():
+
+        let mergedItem = Object.assign({}, exportsItem, libraryItem);
+        console.log(mergedItem);
+
+Kết quả cũng sẽ giống như khi sử dụng $.extend():
+
+        {
+            name: "Táo",
+            color: "Xanh",
+            price: 20000,
+            country: "Việt Nam"
+        }
+
+###3. Sử dụng Spread Operator {...} trong JavaScript ES6 và mới hơn:
+    Một cách khác để kết hợp object mà không cần jQuery là sử dụng spread operator:
+
+        let mergedItem = {...exportsItem, ...libraryItem};
+        console.log(mergedItem);
+
+    Cũng như hai phương pháp trên, kết quả sẽ là:
+        {
+            name: "Táo",
+            color: "Xanh",
+            price: 20000,
+            country: "Việt Nam"
+        }
+Như vậy, bạn có thể thấy cả Object.assign() và spread operator {...} trong JavaScript cung cấp một cách
+mạnh mẽ để mở rộng hoặc kết hợp các object mà không cần dùng đến thư viện ngoại vi như jQuery.
+Trong các đoạn code trên:
+    - {} là object đích mới, nó trống rỗng. Điều này đảm bảo rằng không có thuộc tính nào của exports[item] gốc bị thay đổi.
+    - exports[item] là object nguồn đầu tiên được ghép vào object mới. Nếu exports[item] chưa được định nghĩa, nó sẽ được tạo ra như một object rỗng.
+    - library[item] là object nguồn thứ hai, và các thuộc tính của nó cũng sẽ được ghép nối vào object mới.
+
+    Phương thức $.extend không chỉ ghép các thuộc tính từ library[item] vào exports[item] mà còn ghép đè lên các thuộc tính có tên giống nhau.
+    Điều này không ảnh hưởng đến đối tượng $ (jQuery) mà chỉ thay đổi object exports[item].
+#################################################################
+Vậy là bạn muốn nhìn thấy sự tiến hóa trong cách Javascript mở rộng objects theo từng phiên bản? 
+Dễ thôi! Let’s embark on a tiny time travel through the Javascript universe!
+
+### ES5 và trước đó
+
+    Trong thời kỳ "cổ đại", Javascript không có một syntax dành riêng cho việc mở rộng objects. Nhưng chúng ta có thể dùng các chiến lược "truyền thống", ví dụ đoạn code "thủ công" sau:
+        var original = { cheese: 'Cheddar', wine: 'Merlot' };
+        var additional = { bread: 'Baguette', cheese: 'Camembert' };
+        for (var key in additional) {
+            if (additional.hasOwnProperty(key)) {
+                original[key] = additional[key];
+            }
+        }
+        // Output: original = { cheese: 'Camembert', wine: 'Merlot', bread: 'Baguette' }
+
+    Phương pháp này đơn giản nhưng nó không xử lý các thuộc tính đặc biệt như property descriptors, getters/setters hay đối tượng có thể sealed/frozen.
+
+### ES5: Object.create
+
+    Object.create cho phép tạo object mới với prototype được chỉ định, một bước đi xa hơn so với sự chỉ định thuộc tính trực tiếp.
+        var base = { cheese: 'Cheddar', wine: 'Merlot' };
+        var extended = Object.create(base);
+        extended.bread = 'Baguette';
+        // 'extended' object có 'bread', cùng với 'cheese' và 'wine' từ 'base' qua prototype chain.
+
+### ES5: Object.keys và forEach
+
+    Sự kết hợp của Object.keys và Array.prototype.forEach cũng được sử dụng để mở rộng objects:
+        var base = { cheese: 'Cheddar', wine: 'Merlot' };
+        var extension = { bread: 'Baguette', cheese: 'Camembert' };
+        Object.keys(extension).forEach(function(key) {
+            base[key] = extension[key];
+        });
+        // base = { cheese: 'Camembert', wine: 'Merlot', bread: 'Baguette' }
+
+### ES5.1: Object.assign
+
+    Với ES5.1, "quy trình phẫu thuật mở rộng" trở nên tự động hóa hơn:
+        var base = { cheese: 'Cheddar', wine: 'Merlot' };
+        var extensions = { bread: 'Baguette', cheese: 'Camembert' };
+        Object.assign(base, extensions);
+        // Output: base = { cheese: 'Camembert', wine: 'Merlot', bread: 'Baguette' }
+
+    Object.assign là bước đầu tiên đến việc mở rộng objects một cách "native" mà không cần phải viết các loops "for-in" nữa.
+
+### ES6 (ES2015): Spread Operator
+    À, cứu tinh của làng Javascript, Spread Operator làm cho việc mở rộng objects trở nên sành điệu và đơn giản đến bất ngờ:
+        const base = { cheese: 'Cheddar', wine: 'Merlot' };
+        const extension = { bread: 'Baguette', cheese: 'Camembert' };
+        const combined = { ...base, ...extension };
+        // Output: combined = { cheese: 'Camembert', wine: 'Merlot', bread: 'Baguette' }
+    Với Spread Operator, việc mở rộng và kết hợp các objects trở thành một đoạn mã sạch sẽ và dễ đọc hơn hẳn.
+
+### So sánh
+    - For-in loops (trước ES5): Được sử dụng từ đầu, nhưng cần kiểm tra hasOwnProperty và không đảm bảo kết quả đúng đắn cho các thuộc tính đặc biệt.
+    - Object.create (ES5): Tạo prototype chain nhưng không trực tiếp mở rộng object.
+    - Object.keys và forEach (ES5): Cải thiện việc sử dụng loops bằng cách cung cấp array of keys mà không cần kiểm tra hasOwnProperty.
+    - Object.assign (ES5.1): Mở rộng object một cách native và tự động, dễ sử dụng hơn, nhưng không làm việc với getters/setters.
+    - Spread Operator (ES6): Mớ lạ và mở rộng object một cách sạch sẽ, hiểu được getters/setters và là preferred solution trong nhiều trường hợp.
+    Thú vị chứ? Như thấy được, mỗi bước tiến trên hành trình Evolution của Javascript đều mang lại các cách thú vị và hiệu quả hơn để xử lí những công việc!
+
+#####################################################
+vậy đoạn code này có ý nghĩa gì, bạn có thể lấy ví dụ được không:
+'use strict';
+
+module.exports = function (include) {
+    if (typeof include === 'function') {
+        include();
+    } else if (typeof include === 'object') {
+        Object.keys(include).forEach(function (key) {
+            if (typeof include[key] === 'function') {
+                include[key]();
+            }
+        });
+    }
+};
+
+Đoạn code bạn cung cấp là một mô-đun Node.js sử dụng để kiểm tra tham số include truyền vào khi hàm được gọi. Dựa vào kiểu của include, hàm thực hiện các hành động sau:
+- Nếu include là một hàm, nó sẽ được thực thi ngay lập tức.
+- Nếu include là một object (không phải một mảng), mỗi thuộc tính trong object đó sẽ được kiểm tra. Nếu thuộc tính là một hàm, hàm đó sẽ được gọi.
+
+Cùng xem qua một vài ví dụ nhé:
+
+### Ví dụ 1: Sử dụng include là một hàm
+    'use strict';
+    // Giả sử đây là nội dung của file module.js
+    module.exports = function (include) {
+        if (typeof include === 'function') {
+            include();
+        } else if (typeof include === 'object') {
+            Object.keys(include).forEach(function (key) {
+                if (typeof include[key] === 'function') {
+                    include[key]();
+                }
+            });
+        }
+    };
+
+    // File sử dụng mô-đun
+    const includeHandler = require('./module');
+
+    includeHandler(function() {
+    console.log('Hello, Function!');
+    });
+
+    Kết quả khi thực thi sẽ in ra: Hello, Function!
+
+### Ví dụ 2: Sử dụng include là một object chứa hàm
+    'use strict';
+
+    // Giả sử đây là nội dung của file module.js
+    module.exports = function (include) {
+        if (typeof include === 'function') {
+            include();
+        } else if (typeof include === 'object') {
+            Object.keys(include).forEach(function (key) {
+                if (typeof include[key] === 'function') {
+                    include[key]();
+                }
+            });
+        }
+    };
+
+    // File sử dụng mô-đun
+    const includeHandler = require('./module');
+
+    includeHandler({
+        greet: function() {
+            console.log('Hello, Object!');
+        },
+        bye: function() {
+            console.log('Goodbye, Object!');
+        }
+    });
+
+    Kết quả khi thực thi sẽ in ra:
+        Hello, Object!
+        Goodbye, Object!
+
+    Ở ví dụ 2, chúng ta thấy đoạn code kiểm tra mỗi thuộc tính trong object include. 
+    Nếu thuộc tính đó là một hàm, hàm đó sẽ được thực thi. 
+Đoạn mã này rất hữu ích trong các trường hợp bạn muốn cung cấp một API linh hoạt cho mô-đun của mình,
+cho phép người dùng truyền vào một hàm duy nhất hoặc một object chứa nhiều hàm để thực thi.
+
+#####################################################
+2 thư viện sinon và mocha là gì trong ứng dụng javascript
+### Sinon
+    Sinon là một thư viện JavaScript được sử dụng cho việc thực hiện test doubles, bao gồm stubs, spies, và mocks trong quá trình kiểm thử.
+    Nó giúp dễ dàng giả lập các hành vi của các phần khác nhau trong ứng dụng để có thể kiểm tra các chức năng một cách độc lập.
+        - Spies: Theo dõi các hàm, bao gồm việc theo dõi một hàm đã được gọi bao nhiêu lần, với những đối số gì và giá trị trả về là gì.
+        - Stubs: Tương tự như Spies nhưng cho phép "đè" hành vi mặc định của hàm bằng cách thiết lập giá trị trả về, ném exception, etc.
+        - Mocks: Kết hợp các khả năng của spies và stubs nhưng với một cách tiếp cận khác nhau về cách khởi tạo và kiểm tra.
+
+### Mocha
+    Mocha là một framework kiểm thử cho JavaScript, chạy trên Node.js và trình duyệt, giúp làm cho kiểm thử đồng bộ và bất đồng bộ trở nên dễ dàng.
+    Mocha cung cấp một môi trường kiểm thử linh hoạt thông qua việc sử dụng describe và it blocks,
+    cho phép bạn mô tả các trường hợp kiểm thử và kỳ vọng kết quả một cách rõ ràng và mạch lạc.
+
+### Ví dụ kết hợp Sinon và Mocha
+    Giả sử bạn có một module notify.js với nội dung:
+        // notify.js
+        function sendEmail(email, message) {
+            // Logic gửi email
+            console.log(Gửi email đến ${email} với nội dung: "${message}");
+        }
+
+        function notifyUser(user) {
+            const message = "Hello there";
+            sendEmail(user.email, message);
+        }
+
+        module.exports = { notifyUser, sendEmail };
+
+        Chúng ta muốn kiểm thử hàm notifyUser để đảm bảo rằng nó gọi đúng hàm sendEmail với các tham số đúng. Dưới đây là cách bạn có thể thực hiện điều đó với Mocha và Sinon:
+
+    1. Tạo File Kiểm Thử:
+        // notify.test.js
+        const sinon = require('sinon');
+        const { expect } = require('chai');
+        const { notifyUser, sendEmail } = require('./notify');
+
+        describe('notifyUser function', function() {
+            it('should call sendEmail with user email and correct message', function() {
+                // Tạo stub cho hàm sendEmail
+                const sendEmailStub = sinon.stub().returns("Email sent");
+                // Ghi đè hàm sendEmail trong module exports
+                sinon.replace(exports, 'sendEmail', sendEmailStub);
+
+                const user = { email: 'user@example.com' };
+                notifyUser(user);
+
+                // Kiểm tra xem stub có được gọi đúng không
+                sinon.assert.calledWith(sendEmailStub, user.email, "Hello there");
+                // Khôi phục lại hành vi mặc định của hàm sau khi test
+                sinon.restore();
+            });
+        });
+
+    Ở đây, sinon.stub() được sử dụng để tạo ra một "stub" cho sendEmail, cho phép chúng ta giả lập việc gọi hàm này mà không cần phải thực sự thực thi logic bên trong nó.
+    Chúng ta sau đó ghi đè lên hàm sendEmail trong module.exports (cần chú ý rằng, việc này có thể yêu cầu cấu trúc code và xuất module của bạn phải phù hợp).
+
+    Dùng sinon.assert.calledWith() để kiểm tra xem stub đã được gọi với các tham số đúng hay không, và sinon.restore() để khôi phục lại mọi thứ sau khi kiểm thử hoàn tất.
+
+    Để thực hiện kiểm thử, bạn chạy lệnh mocha notify.test.js (giả sử bạn đã cài đặt Mocha toàn cục), hoặc cấu hình script trong package.json để chạy Mocha.
+
+    Lần này hy vọng rằng ví dụ sẽ chính xác và hữu ích hơn cho bạn! Và đừng quên, thử nghiệm và kiểm thử là chìa khóa để sản phẩm phần mềm chất lượng. Tiếp tục cày coding nhé!
+
+### Giới thiệu về Chai và cách sử dụng
+    Lệnh const { expect } = require('chai'); là một ví dụ của việc sử dụng thư viện Chai cùng với câu lệnh require trong Node.js
+    để nhập thư viện và sử dụng một trong những API kiểm thử của nó, trong trường hợp này là expect.
+
+    Chai là một thư viện giả định (assertion library) phổ biến được sử dụng trong kiểm thử JavaScript.
+    Nó cung cấp ba kiểu giao diện (stylish) giả định khác nhau: Assert, Expect, và Should, giúp viết các giả định kiểm thử một cách linh hoạt và bản năng.
+        1. Assert: Sử dụng cách viết giống các hàm kiểm tra giá trị trong các ngôn ngữ lập trình truyền thống.
+        2. Expect/Should: Cung cấp một cách viết kiểm thử theo ngữ cảnh tự nhiên hơn, giúp code dễ đọc và dễ hiểu.
+
+    - Sử dụng Expect
+        Expect cho phép bạn tạo ra các giả định kiểm thử về giá trị, kiểu dữ liệu, hoặc hành vi của code một cách rõ ràng.
+        Nó thường được sử dụng cùng với các thư viện kiểm thử như Mocha hoặc Jest để kiểm tra độ chính xác của kết quả code.
+
+        Ví dụ cơ bản sử dụng expect:
+            const expect = require('chai').expect;
+            describe('mathematical operations', function() {
+                it('should add numbers correctly', function() {
+                    const number1 = 2;
+                    const number2 = 3;
+                    const sum = number1 + number2;
+                    // Giả định rằng 'sum' phải bằng 5
+                    expect(sum).to.equal(5);
+                });
+            });
+        Trong ví dụ này, expect(sum).to.equal(5); kiểm tra xem biến sum có giá trị bằng 5 không. Nếu không, thì test case này sẽ thất bại.
+
+        - Lợi ích của Expect
+            - Rõ ràng và tự nhiên: Cú pháp của expect rất gần với ngôn ngữ tự nhiên, làm cho các giả định dễ đọc và hiểu.
+            - Linh hoạt: Có thể được sử dụng để kiểm thử đa dạng các kiểu giá trị và hành vi.
+            - Mạnh mẽ: Hỗ trợ nhiều loại giả định và kiểm thử sâu.
+
+#########################################################
+tôi có một thẻ input, tôi muốn rằng khi focus vào thẻ input này thì sẽ hiển thị ra một list suggestion được render từ api và có thể chọn được,
+khi không focus nữa thì cái list suggestion sẽ mất đi. yêu cầu là dùng jquery để làm:
+
+Để tạo một list suggestion (gợi ý) cho một thẻ input khi focus và ẩn nó khi không focus nữa, bạn có thể làm theo các bước sau đây sử dụng jQuery:
+
+1. Tạo HTML:
+    Thêm một thẻ input và một container để hiển thị các suggestion.
+        <input type="text" id="inputSuggestion" placeholder="Start typing...">
+        <div id="suggestionBox" style="display:none;"></div>
+
+2. CSS (tùy chọn):
+    Style cho #suggestionBox để nó trông như một list suggestion.
+        #suggestionBox {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            z-index: 1000;
+            /* Other styles as needed */
+        }
+
+3. jQuery:
+    Sử dụng sự kiện focus và focusout để xử lý việc hiển thị và ẩn suggestion box. Sử dụng $.ajax hoặc $.get để làm việc với API và lấy suggestions.
+        $(document).ready(function() {
+            $('#inputSuggestion').on('focus', function() {
+                // Call API để lấy suggestions
+                $.ajax({
+                    url: 'YOUR_API_ENDPOINT', // Endpoint API của bạn
+                    dataType: 'json', // Dạng dữ liệu trả về, thường là JSON
+                    success: function(data) {
+                        // Xử lý dữ liệu trả về từ API để tạo suggestions
+                        var suggestions = ''; // Tạo một chuỗi HTML để chứa suggestions
+                        $.each(data, function(index, item) {
+                        // item là giá trị suggestion từ API
+                        suggestions += '<div class="suggestion-item">' + item + '</div>';
+                        });
+                        // Thêm suggestions vào suggestionBox và hiển thị nó
+                        $('#suggestionBox').html(suggestions).show();
+                    }
+                });
+            }).on('focusout', function() {
+                // Ẩn box khi không focus
+                setTimeout(function() { // Sử dụng setTimeout để tránh ẩn ngay khi click
+                $('#suggestionBox').hide();
+                }, 300); // Delay một chút để có thể click chọn được suggestion
+            });
+
+            // Xử lý khi click chọn một suggestion
+            $(document).on('click', '.suggestion-item', function() {
+                var value = $(this).text(); // Lấy giá trị được chọn
+                $('#inputSuggestion').val(value); // Đặt giá trị cho thẻ input
+                $('#suggestionBox').hide(); // Ẩn suggestion box sau khi chọn
+            });
+        });
+    Nhớ cập nhật YOUR_API_ENDPOINT với endpoint thực tế của API của bạn. Mã trên đây chỉ là một ví dụ cơ bản,
+    bạn có thể cần điều chỉnh nó cho phù hợp với API và chức năng cụ thể mà bạn cần thực hiện.
