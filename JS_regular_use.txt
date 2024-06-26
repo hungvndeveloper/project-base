@@ -1874,6 +1874,32 @@ Webpack được sử dụng rất phổ biến trong việc phát triển các 
 
 Khi webpack chạy thành công, bạn sẽ thấy tập tin main.js trong thư mục dist, và bạn có thể mở file index.html trong trình duyệt để xem kết quả.
 Webpack cũng hỗ trợ một số chức năng tiện ích khác như HMR (Hot Module Replacement), code splitting, và lazy loading, nhưng những điều này đòi hỏi cấu hình và thiết lập phức tạp hơn.
+
+Webpack là một công cụ rất mạnh mẽ cho việc gom các mã nguồn từ nhiều tệp tin thành một tệp duy nhất (thường được gọi là bundle). 
+Điều này có nghĩa là bạn có thể viết mã JavaScript trong nhiều tệp tin khác nhau và khi chạy Webpack, nó sẽ tổng hợp tất cả các tệp này thành một bundle duy nhất.
+
+Cách hoạt động của Webpack:
+    - Entry Point (Điểm vào): 
+        Bạn chỉ định một hoặc nhiều tệp JavaScript làm điểm vào (entry point). Đây là nơi bắt đầu cho quá trình tổng hợp. 
+        Trong ví dụ trước, chúng ta đã chỉ định src/index.js làm entry point.
+
+    - Dependency Graph (Đồ thị phụ thuộc): 
+        Webpack sẽ phân tích mã của các tệp JavaScript từ entry point và xác định các phụ thuộc (dependencies). 
+        Các phụ thuộc có thể là các module import từ các thư viện hoặc từ các tệp khác trong dự án của bạn.
+
+    - Tạo Bundle: 
+        Dựa trên đồ thị phụ thuộc, Webpack sẽ tạo ra một bundle duy nhất. 
+        Trong ví dụ trước, bundle này được đặt tên là bundle.js và được đặt trong thư mục dist.
+
+    - Tối ưu hóa và Xử lý: 
+        Webpack cũng có thể thực hiện các bước tối ưu hóa như nén (minify) các mã, tối ưu hóa hình ảnh, 
+        xử lý CSS và nhiều loại tệp khác thông qua các plugin và loader.
+
+    - Sử dụng Bundle: 
+        Sau khi tạo ra bundle, bạn có thể nhúng nó vào trong trang HTML của bạn bằng cách sử dụng thẻ <script>.
+
+Webpack không chỉ giúp bạn tổng hợp các tệp JavaScript,
+mà còn có thể xử lý các loại tệp khác như CSS, SCSS, hình ảnh, và thậm chí cả các ngôn ngữ khác như TypeScript qua sự hỗ trợ của các loader và plugin.
 #########################################################
 Vite là một công cụ xây dựng front-end tiên tiến và nhanh chóng, sử dụng Rollup 
 làm bundler cho sản phẩm cuối cùng và tận dụng sức mạnh của ES Modules để phục vụ mã nguồn một cách nhanh chóng trong quá trình phát triển.
