@@ -1,0 +1,39 @@
+- nguồn gốc: giao thức(http://) + tên miền/địa chỉ ip(localhost) + port(:5137), khi nó giống nhau cả 3 thông tin này thì chúng ta
+gọi là cùng nguồn gốc, còn khi khác nhau 1 trong 3 thông tin này trở lên thì nó là khác nguồn gốc
+và khi cùng nguồn gốc thì mọi thứ rất là dễ dàng, các bạn lấy dữ liệu thì nó sẽ không gặp các vấn 
+đề như kiểu CORS, còn trường hợp ví dụ của chúng ta là khác nguồn gốc, các bạn đang đứng ở cổng 5173,
+gọi api sang 1 tài nguyên cổng 3000 thì tức là khác nguồn gốc rồi. Thì trình duyệt nó có chính sách CORS
+nó là chính sách bảo mật riêng liên quan tới cái truy cập dữ liệu ở những cái khác nguồn gốc. ví dụ các bạn
+gọi api ra ngoài hoặc các bạn nhúng những cái thẻ như là iframe... để truy cập những tài nguyên ở những nguồn gốc 
+khác ấy. thì nó sẽ có những chính sách để ngăn chặn cái việc là ở trang của chúng ta có thể lấy được dữ liệu của 
+nguồn gốc khác hoặc là cũng ngăn chặn việc ở nguồn gốc khác nó lại có thể thêm được cookie vào trang web của chúng ta
+các bạn có thể hình dung như này nhé:
+nếu bây giờ ai đó có 1 trang web đọc truyện tranh rất là nổi tiếng, thì bây giờ các bạn bỏ công sức ra code mỗi phần 
+FE sau đó các bạn lấy api của người ta để các bạn sài, thì như vậy người ta sẽ không thích chút nào. do đó họ sẽ tìm
+cách ngăn chặn, thì trình duyệt nó cũng có chính sách giúp chúng ta ngăn chặn điều đó. thì ngược lại thì bây giờ các
+bạn cũng không thể nào mà tự nhiên thích thì đi gọi api của người khác được.
+
+thì nếu BE là trang thuộc sở hữu của mình, thì các bạn có thể thay đổi nó để cho phép cái FE ở 1 cái nguồn gốc khác 
+có thể gọi sang. thì trong response header của con BE, các bạn hãy trả về Access-Control-Allow-Origin
+có nghĩa là các bạn đưa cái giá trị là cái nguồn mà các bạn cho phép nó gọi sang. thì cụ thể như ví dụ là giá trị:
+http://localhost:5173/, thế là các bạn sẽ được phép gọi sang, và các bạn phải trả về từ server BE nhé, thế nên là nếu
+là trang của người khác thì các bạn sẽ không sửa được server thì các bạn sẽ không gọi sang được, trừ khi là người ta sửa
+ví dụ như là các bạn gọi sang api của bên đối tác, của bên khách hàng thì các bạn có thể bảo người ta thêm vào là được 
+nhưng nếu mà một trang không phải của bạn, cũng không phải là đối tác, bạn bè của bạn thì các bạn sẽ không gọi sang được
+
+còn nếu các bạn vẫn muốn từ web FE của các bạn, gọi được thành công sang api của người khác, mặc dù người ta không có mở ra
+ra cho các bạn, thì vẫn có cách. các bạn cần biết đây là chính sách của trình duyệt thôi nên nếu chúng ta gọi api từ những nơi
+không phải trình duyệt, ví dụ như postman, công cụ dòng lệnh hay là ứng dụng trên điện thoại... thì nó không có chính sách này 
+nên nó vẫn sẽ gọi thành công, thế nên cách giải quyết ở trong trường hợp đó là các bạn tạo ra 1 máy chủ trung gian, và khi đó
+nó sẽ là từ web FE của các bạn => gọi sang máy chủ trung gian => gọi sang api của bên khác, thì khi đó máy chủ trung gian
+nó sẽ không có CORS, nên nó sẽ gọi thành công. các bạn hình dung máy chủ trung gian nó là 1 cái BE các bạn code ra thôi, các bạn
+có thể để nó cùng nguồn gốc thế là FE các bạn gọi lên đó nó sẽ thành công. kể cả nó khác nguồn gốc thì các bạn vẫn có cách giải
+quyết vì nó là máy chủ của các bạn.
+
+- thì các bạn có thể dùng 1 middleware, nó được viết dưới 1 dạng thư viện của express rồi, rất dễ dùng,
+không cần phải thêm thủ công đâu: npm i cors, sau đó lôi nó ra để dùng như sau:
+const cors = require('cors');
+app.use(cors());
+thì nó sẽ sẽ tự thêm tiêu đề đó (Access-Control-Allow-Origin: *) vào Response Headers, * tức là tất cả nguồn gốc khác đều có thể gọi sang.
+khi dev ở local thì để thế này cũng được, còn thực tế thì hiếm khi để *, trừ phi các bạn muốn ai cũng có thể gọi sang api của các 
+bạn thì mới để như vậy thôi, trong thực tế phổ biến thì chúng ta sẽ để giá trị của Access-Control-Allow-Origin là trang FE của chúng ta
