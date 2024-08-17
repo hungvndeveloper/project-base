@@ -37,3 +37,195 @@ app.use(cors());
 thì nó sẽ sẽ tự thêm tiêu đề đó (Access-Control-Allow-Origin: *) vào Response Headers, * tức là tất cả nguồn gốc khác đều có thể gọi sang.
 khi dev ở local thì để thế này cũng được, còn thực tế thì hiếm khi để *, trừ phi các bạn muốn ai cũng có thể gọi sang api của các 
 bạn thì mới để như vậy thôi, trong thực tế phổ biến thì chúng ta sẽ để giá trị của Access-Control-Allow-Origin là trang FE của chúng ta
+
+=================
+với ví dụ bài này, do chúng ta sẽ không submit form theo hành vi mặc định của html nữa mà chúng ta sẽ submit theo cái gọi api nên là chúng ta 
+không cần dùng action trong form, mà thay vào đó sẽ dùng sự kiện onSubmit của react. để loại bỏ hành vi submit form mặc định, ta dùng e.preventDefault();
+
+gửi dạng json thì phải có headers Content-Type: 'application/json', body cần gửi là 1 dạng json, ví dụ như bên dưới đây:
+fetch(`${baseApi}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(fields)
+    })
+    .then(res => res.json())
+    .then(user => {
+      console.log(user);
+    });
+lưu ý: ở bài trước chúng ta cần thêm cái phần express.urlencoded để xử lý dữ liệu gửi lên từ form data, tức là từ cái submit form có thể là từ form data hoặc là từ 
+urlencoded. đại khái là khi các bạn submit mặc định.
+còn trong bài này chúng ta đã vô hiệu hóa cái submit form mặc định mà chúng ta lại đang chủ động fetch lên với Content-Type là application/json, thì ở đây các bạn sẽ 
+thêm 1 cái middleware để xử lý cái body là json nhé, app.use(express.json())
+
+rồi bây giờ tạo phiên đăng nhập như đã học ở bài trước:
+const session = {}; 
+lưu ý là cái này chỉ lưu tạm thôi nhá, còn thực tế thì các bạn cần lưu vào chỗ nào mà nó duy trì bộ nhớ được ấy, như kiểu ở trong ổ cứng, lưu ra file 
+lưu vào database.
+
+lưu ý(code server)
+là ở các bài hướng dẫn của mình, thì mình chỉ hướng dẫn các bạn về tư duy luồng để các bạn hiểu bản chất thôi, còn khi các bạn code thì các bạn cần tùy cơ 
+ứng biến. ví dụ ở đây đang fake database, còn thực tế thì cần băm mật khẩu ra, và khi băm ra thì mỗi một phương thức băm chúng ta sẽ có các cách để xác thực mật khẩu
+khác nhau.
+
+như ví dụ thì nếu không có người dùng thì lúc này không phải là đi chuyển hướng nha. với SSR truyền thống thì các bạn mới chuyển hướng,
+còn ở đây chúng ta sẽ trả về lỗi. thường khi làm backend chúng ta sẽ có các quy chuẩn đồng nhất cho việc trả về thành công hoặc là lỗi nhé
+nhưng ở bài này để đơn giản thì mình trả về cái message và data.
+nếu có server trả về lỗi cho FE thì thường FE sẽ bắt lỗi và xử lý
+chú ý cần phân biệt message tự trả về dựa trên mã lỗi.(vd 401...) với message ta trả về trong body.
+để nhận được cái body thì trong hàm .then thứ nhất mình phải return cái res.json();
+
+tạo phiên theo kiến thức đã học ở bài trước, dùng session. thì quy trình sẽ là:
+b1: tạo sessionId
+b2: lưu sessionId vào server
+
+trả cho client cái sessionId này để client nó lưu vào cookie. res.setHeader('Set-Cookie', `sessionId=${sessionId}; httpOnly; max-age=3600`).json(user);
+lưu ý:
+là không phải ở tiêu đề http có Set-Cookie là trình duyệt nó sẽ nghe đâu nhé, trình duyệt nó vẫn có chính kiến của nó, thực ra nó là chính sách bảo mật của trình duyệt thôi.
+nếu mà các bạn đứng ở gốc http://localhost:5173/, các bạn gọi api của cùng nguồn gốc thì nó sẽ tin tưởng và nó set cookie ngay. nhưng lúc này nó khác gốc nên là nó sẽ không tin
+và không set cookie. do đó sẽ không sài được cookie. khi này set Access-Control-Allow-Origin: * thì mới đủ để cho nó tin tưởng, tức là về mặt chính sách của trình duyệt để cho các
+lấy dữ liệu thông thường thôi, chứ còn việc yêu cầu set cookie nó là một hành động mang tính nhạy cảm rồi. Các bạn tưởng tượng bây giờ 1 ông website tài chính ngân hàng 
+nào đấy liên quan đến tiền bạc, liên quan đến quyền lợi thì các inspect trang đó ra, các bạn lấy cái api đăng nhập của người ta rồi các bạn tự tạo FE, tư tạo form các thứ thì chẳng nhẽ
+lên 1 cái thì trang kia nó tin trang của các bạn, trình duyệt nó tin sau nó tự set cookie vào để tạo cái phiên ở trên máy của các bạn à. làm gì có chuyện đấy
+
+nên là nếu BE là server của các bạn, thì các bạn hãy làm 2 thao tác sau: 
+- thứ nhất ở phía client các bạn, các bạn gọi api với cấu hình thêm cái credentials: 'include', khi các bạn thêm cái này thì đồng nghĩa là các bạn đang nói với trình duyệt rằng
+là tao đang muốn sử dụng 1 cái gọi api liên quan đến thông tin xác thực người dùng, nên bây giờ nếu mà tao có cookie mà gửi nguồn gốc chéo ấy, thì trình duyệt ơi mày gửi kèm cookie đi cho tao
+nhé, hoặc ngược lại nếu mà bây giờ server nó trả về Set-Cookie ở nguồn gốc chéo ấy thì mày cũng tin và mày lưu vào trình duyệt cho tao nhé.
+thì đây mới chỉ là ở phía client, gọi là xin thôi. còn bây giờ nếu submit một cái thì server nó k đồng ý, nó lỗi CORS tiếp ở phía server
+thì lúc này nó bảo là đang trong trường hợp chúng ta sử dụng chế độ liên quan đến thông tin xác thực ấy, có việc gửi cookie hoặc set cookie
+thì chúng ta sẽ không được sử dụng cái set Access-Control-Allow-Origin là * nữa vì * có nghĩa là tất cả nó sẽ nhạy cảm quá. mà trong tình huống này thì nó liên quan đến xác thực nên là
+chúng ta cần phải để cái giá trị là cái gốc cụ thể chúng ta đang gọi api nhá.
+
+giờ thì copy cái url của client, http://localhost:5173/, vào server, thêm object vào cors():
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
+tuy nhiên, sau khi thêm xong cái này thì khi submit form vẫn bị lỗi cors nhưng nội dung lỗi lúc này là cái khác
+vấn đề hiện tại là ta đang không set được cookie với nguồn gốc chéo, do đó ta phải set credentials là include, nhưng khi các bạn thêm cái này
+thì thứ nhất là cái gốc các bạn không để là * được nữa mà các bạn phải để cụ thể, thứ 2 là các bạn phải bổ sung thêm 1 cái là Access-Control-Allow-Credentials: true
+thì nó mới hoạt động.
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+lúc này trong response header trả về cho client sẽ có thêm: access-control-allow-credentials: true
+
+bây giờ muốn hiển thị xin chào ai đó sau khi đăng nhập thì mình phải viết thêm 1 cái api nữa,
+thì trong api này, các bạn phải lấy được cái sessionId thông qua cookie (cookie được tự động đính
+kèm trong header trong mỗi lần request).
+tuy nhiên khi viết api, khi request đến api này từ FE thì xảy ra trường hợp là cookie nó không được tự động đính vào request headers,
+mà rõ ràng cookie vẫn đang có ở trình duyệt, thì nguyên nhân vì sao?
+là do nguồn gốc chéo, thì cách giải quyết ở đây là gì,
+khi FE dùng fetch gọi đến api, thì như ở trên thôi, ta thêm cái object có chưa credentials: 'include', còn ở server nãy ta xử lý rồi, ta đã thêm cái credentials: true vào cors 
+rồi.
+nhớ là phải có thư viện cookieParse thì ta mới lấy được cookie từ client gửi lên.
+sau khi lấy được cái sessionId từ cookie từ client gửi lên, thì ta dựa vào id này, chọc vào db để lấy ra cái userid từ bảng session,
+sau đó từ cái userid, ta chọc vào bảng users để lấy ra user đó thôi.
+
+- sau khi sửa ở backend và save, thì có thể là cái object chưa data của ta bị reload nên nó rỗng, nên để giải quyết thì ta nên đăng nhập lại 
+nếu ta có chỉnh sửa gì đó ở backend.
+
+để đăng xuất, lúc này ấy, thì các bạn viết ra 1 cái nút, bấm cái nút ấy thì gọi api, thì các bạn tạo ra 1 cái api logout, trong cái api logout đó các bạn thực hiện
+xóa session ở server đi (session này được lưu ở DB chẳng hạn) dựa vào cái sessionId được gửi lên, lưu ý là api đấy các bạn vẫn phải sử dụng 
+credentials: include thì nó mới đính kèm cái cookie sessionId để nó gửi lên server, để từ đó các bạn xóa session ở server đi, thì khi lúc này thành công các bạn cũng send về 
+trình duyệt cái set cookie để hết hạn cái cookie với sessionId ở trình duyệt đi. với 
+cookie là loại httpOnly thì các bạn phải gửi từ phía server về để yêu cầu trình duyệt nó xóa nhé chứ không thao tác ở FE được, ý là k code ở client được nhé
+
+- các bạn lưu ý là chúng ta đang trong trường hợp nguồn gốc chéo mà khác cổng thôi, nó vẫn dễ, nhưng các bạn tưởng tượng là trong thực tế các bạn sẽ có tình huống là trang web
+FE và BE nó khác tên miền luôn, thì trong cái tình huống nguồn gốc chéo khác tên miền ấy. thì nó sẽ khoai hơn.
+ví dụ:
+mở file hosts lên, và sửa domain đi, thay vì dùng localhost mình sẽ thay tên domain. lúc này sẽ sảy ra vấn đề ngay.
+ví dụ: testcookie.com,
+thì lúc này khi login nó vẫn set-cookie tuy nhiên nó sẽ có cảnh báo. nó bảo là đại khái là nó không set vào đâu. tức là nó nhận vào như vậy thôi chứ thực ra nó 
+không có tác dụng gì cả đâu, f5 lại mất luôn, nó không lưu đâu.
+nó bảo là cái set-cookie hiện tại là không cung cấp thuộc tính samesite thế nên mặc định samesite là bằng Lax. và khi samesite bằng Lax thì có nghĩa là 
+nó sẽ block khi mà có phản hồi từ nguồn gốc chéo. thì bây giờ nó bảo chúng ta là hãy set cookie với cái samesite là none để cho phép nguồn gốc chéo.
+samesite: có nghĩa là cùng gốc, giống nguồn gốc. như vậy trong tình huống set-cookie khác cả domain thì hãy set thêm samesite=none
+
+samesite là 1 thuộc tính của cookie. để thêm samesite thì cần thêm Secure, nhưng mà Secure thì lại cần domain là https, ssl
+lúc này ta sẽ cài thêm một thư viện mkcert để lấy chứng chỉ ssl, khi mới cài xong mkcert thì có thể là các bạn sẽ không thể chạy được 
+lệnh này ngay bởi vì terminal của vscode các bạn mở từ trước rồi ấy, có thể nó chưa được cập nhật cái biến môi trường của mkcert thì các bạn tắt hẳn vscode đi, các bạn mở lại nhé
+dùng lệnh: mkcert testcookie.com "*.testcookie.com" localhost, với lệnh này mình sẽ chạy ở thư mục dự án, (chạy ở đâu thì nó sẽ tạo ra 2 file chứng chỉ ở thư mục đó)
+
+nạp thêm thư viện fs vào để đọc file, require thư viện https:
+const fs = require('fs');
+const https = require('https');
+thì bây giờ thay thì mình khởi tạo server bằng cái app của express nhé, thì chúng ta sẽ làm như sau:
+các bạn dùng thằng https kia, các bạn chấm 
+https.createServer({
+    key: fs.readFileSync('testcookie.com+2-key.pem'),
+    cert: fs.readFileSync('testcookie.com+2.pem'),
+}, app).listen(port, () => {
+    console.log(`Demo app is running on port ${port}`);
+});
+lưu ý là chỗ này đang tạo https cho BE chứ chưa tạo https cho FE đâu nhé, FE thì lại phải xử lý khác nữa
+sau khi làm các điều trên thì nó đã lưu được cookie cho trường hợp cùng khác domain, và đã giữ được phiên đăng nhập
+
+=====================================================
+sắp tới cái samesite sẽ bị trình duyệt bỏ đi (cookie bên thứ 3 sẽ bị block trong tương lai).
+có trường hợp như này, các bạn truy cập vào 1 trang web, định mua 1 sản phẩm gì đấy, các bạn có thắc là tại sao đến 
+lúc các bạn lên trên facebook các bạn chạy đâu các bạn cũng thấy là nó quảng cáo sản phẩm đấy đúng không, có bao giờ 
+các bạn thắc mắc là tại sao khi các bạn vào một trang web bán hàng mà lên facebook nó cũng biết là các bạn vào không
+nó sử dụng cookie và nó gọi là cookie ở bên thứ 3 đấy. thì mình giả sử nhé, thằng facebook và thằng google ấy, bọn nó
+sẽ sống bằng quảng cáo đúng không, thì bây giờ bọn nó sẽ cung cấp một công cụ gọi là công cụ thì ví dụ như là google thì
+có GA, facebook thì có facebook pixel, tiktok nó cũng có 1 thằng gọi là tiktok pixel kiểu kiểu như vậy 
+thì bây giờ khi các bạn muốn bán hàng ở trên facebook, bạn là người bán hàng, bạn tạo 1 trang bán hàng thì bạn muốn theo 
+dõi những cái chuyển đổi của đơn hàng từ facebook, hoặc ngược lại các bạn quảng cáo google các bạn muốn theo dõi chuyển đổi
+đơn hàng từ google, thì các bạn đều phải cài, nhứng cái công cụ tracking của bọn google hoặc của bọn facebook ấy thì khi các
+các bạn cắm cái công cụ tracking đấy lên thì có nghĩa là nó đưa cho bạn 1 file javascript và file đấy sẽ là ở tên miền của bọn
+nó, nó sẽ là tên miền chéo đấy các bạn, khác domain của bạn luôn và đương nhiên ở phía máy chủ của bọn nó bọn nó sẽ bật sẵn những
+cái mà chúng ta vừa làm lên, nó bật hết những cái header vừa nãy chúng ta làm lên, nó cũng samesite: none, nó cũng Secure luôn
+thế nên là khi bạn nhúng cái file của bọn nó ấy, thì bọn nó có thể thực thi những đoạn code để nó ghi cookie ở trên trang của các bạn
+thực ra là nó ghi cookie ở trên domain của bọn nó. nhưng bởi vì do bạn đang nhúng cái file javascript của bọn nó ở trên trang của các
+bạn nên cái cookie này nó có thể gọi là nó ứng với trang của các bạn, các bạn vào phát nó tạo ra cookie. thì bây giờ giả sử các bạn vào
+trang web A, nó tạo ra 1 cái cookie gì đấy nó lưu lại, thì bây giờ đến lúc các bạn lên trên facebook là trang web B, thì tại sao 
+facebook nó lại biết là bạn vừa vào trang web A. là bởi vì trên facebook nó cũng nhúng cái file giống như trên trang web của các bạn đang
+nhúng đấy(file javascript của google) và vì vậy là facebook nó cũng truy cập được vào cái cookie trên trang web của bạn và nó sẽ biết được 
+bạn là ai, và bọn nó sẽ lưu dữ liệu dựa trên cookie đấy để nó biết được là à ông này đang quan tâm đến sản phẩm gì và từ đó là nó sẽ quảng
+cáo đuổi các bạn. cái quảng cáo đấy nó gọi là quảng cáo đuổi. chạy đâu cũng thấy.
+
+và bây giờ chính sách của trình duyệt bây giờ nó ngăn chặn cái samesite=none để nó bảo vệ người dùng để tránh bị cross-site tracking, tức là 
+tránh theo dõi tên miền chéo. thì sau này các bạn sài cái samesite=none thì có thể nó sẽ không hoạt động nữa đâu
+nên là chúng ta chỉ biết thôi, bây giờ muốn hoạt động nhé thì bọn nó cung cấp thêm 1 thuộc tính là Partitioned, tương ứng với tham số Partition của 
+cookie, thì các bạn lưu thêm Partitioned vào ấy thì nó sẽ được phép và cái này nó sẽ lâu dài đấy vì sắp tới bọn nó sẽ triển khai rộng rãi cái này.
+
+thì cái cách này nó hoạt động như thế này này, thì cái phần domain và path của cookie thì nó lưu dựa trên cái url của api, tức là cái nguồn gốc ở bên ngoài, 
+còn cái Partitioned nó lại ăn theo cái url site FE của các bạn, tức là cái url mà gọi cái api kia. thì có nghĩa là bây giờ nó sẽ lưu cái cookie này dựa trên
+2 tham số, ngày xưa là mỗi trên domain thôi, thế nên là bây giờ nó mới xảy ra cái tình huống là 1 cái trang web cũng nhúng cái đoạn mã của facebook đấy, thì 
+thằng facebook nó theo dõi được hết, bạn đi đâu nó cũng sẽ biết kể cả bạn từ trang web A bạn nhảy đến trang web B, C, D của nhiều người khác mà trên trang 
+đấy cũng nhúng cái javascript của thằng facebook ấy thì thằng facebook nó sẽ biết hết là bạn đang nhảy từ trang nào qua trang nào luôn, nó biết hành trình bạn 
+đi đâu luôn, và đi đâu nó cũng đuổi được để quảng cáo cho các bạn, thì bởi vì nó lưu dựa trên chính cái domain của nó thì thế nên bất cứ đâu nhúng nó thì nó sẽ
+lấy được cookie, và nó sẽ biết bạn ở đấy nhưng bây giờ chúng ta lưu Partitioned, nó lại có thêm 1 tham số là ở trang web mà chúng ta truy cập thôi ấy thế nên là 
+bây giờ nó phải khớp 2 điều kiện thì các bạn mới có thể xem được cookie này. thì ví dụ giờ các bạn vào trang web A, thì nó lưu cookie vào trang web A, thế đến bây giờ
+bạn qua trang web B cũng nhúng cái javascript từ cái domain chung bên thứ 3 luôn, nhưng nó sẽ bị khác cái tên miền, thì lúc đấy cái thằng domain bên thứ 3, nó sẽ không 
+đọc được cái cookie ở hành trình trước đó của bạn nữa nên nó sẽ không theo dõi được bạn nữa.
+và lưu ý cái Partitioned nó lưu tên miền của chúng ta ở trang đang truy cập hiện tại thì nó chấp nhận cả tên miền chính và tên miền phụ, thì đến lúc các bạn có cả 
+tên miền phụ abc.teenmieecinh thì nó vẫn hoạt động với cái Partitioned là tên miền chính nhé. thế nên là các bạn biết kỹ thuật này thì sau này các bạn 
+sẽ có thể biết những cái kỹ thuật nhúng thư viện chat, các bạn có bao giờ vào những trang web bán hàng các bạn thấy ở góc bên dưới là em đang ở đây bấm vào để được hỗ trợ
+thì các bạn hình dung cái công cụ chat đấy nó là công cụ được nhúng bên thứ 3 vào trang web, thì các bạn có thắc mắc là tại sao cái công cụ đấy các bạn nhúng vào 1 cái 
+rồi các bạn đi xem khắp các mặt hàng trên trang web, các bạn đi bất cứ url nào kể cả tên miền chính, tên miền phụ của cái trang web đấy thì cái phần mềm chat của trang web
+đấy vẫn biết bạn là ai, nó vẫn lưu được cái lịch sử trang web cũ của bạn thì bởi vì là cái phần mềm chat đấy nó là 1 cái link bên thứ 3, và bên thứ 3 đó cũng bật lên samesite
+=none, Secure. thế nên là lúc đấy nó sẽ được phép ghi cookie vào trang nên là các bạn cứ đi vòng vòng mấy trang đấy thì nó vẫn biết bạn là ai. thế trong tương lai khi các bạn
+sử dụng cái kỹ thuật này thì nhớ thêm Partitioned để đảm bảo nó hoạt động được lâu dài nhé. còn sắp tới samesite=none; Secure mà không có Partitioned thì sẽ bị bỏ đi nhá.
+
+=========================
+Khi gửi đi một "simple request", tức là với các methods GET, HEAD, POST (là post thì content-type là một trong số application/x-www-form-urlencoded, multipart/form-data,
+hoặc text/plain), không bao gồm option "credentials: include" hoặc "withCredentials: true" thì khi ấy request không bị chặn (nên không có preflight), server lúc này vẫn tiếp nhận,
+xử lý và phản hồi (chứ không phải là không trả về được), vì HTTP là "request-response protocol" - tức là luôn có request-response. 
+Lúc này, nếu cross-origin và phản hồi về Access-Control-Allow-Origin khác Origin hiện tại hoặc khác * thì sẽ bị trình duyệt block response
+(tức là client nhận được response, trình duyệt không cho access thôi).
+
+Trường hợp khác, khi gửi các yêu cầu KHÔNG simple, trình duyệt không chặn request đó, mà nó sẽ "tạm dừng" để gửi preflight (request thăm dò với method OPTIONS) 
+lên server trước, khi đó nếu server phản hồi các Headers phù hợp thì request chính mới được gửi đi, ngược lại trình duyệt sẽ block request chính luôn.
+
+Với trường hợp "credentials: include" hoặc "withCredentials: true" thì Access-Control-Allow-Origin không sử dụng được wildcard * mà bắt buộc phải là Origin cụ thể.
+Ngoài ra còn phải trả về thêm Access-Control-Allow-Credentials là "true" nữa, không là sau preflight request chính sẽ bị block.
+
+Để xử lý preflight request ta có thể viết trong route cụ thể với method OPTIONS và trả về đúng các Headers cần thiết thì vẫn pass được. 
+Nhưng việc xử lý preflight trong từng route là không cần thiết, nên thực tế sẽ xử lý ở một nơi là middleware, vừa dễ maintain, 
+vừa xử lý sớm luôn ngay sau khi nhận được request (trong video mình sử dụng thư viện "cors" đó).
+
+
+
