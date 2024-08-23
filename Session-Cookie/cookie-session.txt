@@ -184,7 +184,7 @@ if (user) {
     res.json(user);
     return;
 }
-
+==============================================================
 để duy trì được phiên đăng nhập thì nó cần phải có khái niệm session nhá. 
 cookie thì được lưu ở trình duyệt còn session thì được lưu ở server, nên là ở đây mình cũng sẽ tạo ra 1 cái 
 session, đơn giản là 1 object thôi, 1 object rỗng
@@ -201,6 +201,28 @@ trong ví dụ này để đơn giản thì mình chỉ lưu giá trị của us
     sessions[sessionId] = {
         userId: user.id
     }
+
+**===============================
+Lưu ý: mình có thể lưu attribute khác với các value mình muốn lưu trong phiên của người dùng ứng với sessionId này (
+    ví dụ: 
+    sessions[sessionId] = {
+        userId: user.id,
+        expires: 3600,
+        payment: {
+            id: credit-card,
+            name: Credit Cart
+        }
+    }
+    Có hai thời gian chờ phiên. Thời gian chờ mềm xảy ra 30 phút sau khi yêu cầu cuối cùng được thực hiện. 
+    Thời gian chờ mềm đăng xuất và xóa tất cả dữ liệu bảo mật, nhưng vẫn có thể sử dụng ID phiên để mở lại phiên.
+    Thời gian chờ cứng sẽ khiến ID phiên không hợp lệ sau sáu giờ, ngay cả khi phiên vẫn đang được sử dụng. 
+    Thời gian chờ khó khăn ngăn không cho phiên được mở lại. Ví dụ: nếu ID phiên được dán vào URL sau thời gian chờ cố định, phiên sẽ không mở lại.
+    getPrivacy() : CustomAttributes
+    Returns the session's custom privacy attributes. The attributes are stored for the lifetime of the session and are automatically cleared when the customer logs out.
+        Returns:
+        the session's custom privacy attributes.
+)
+**========================
 và sau đó tạo ra 1 cái cookie, lấy cái sessionId là cái giá trị của cookie, rồi mình trả cái dữ liệu đó về
 trình duyệt để bảo trình duyệt nó lưu cookie đấy vào trình duyệt nhá. thì cái cách để đứng ở phía backend
 để có thể gửi 1 cái yêu cầu set cookie về trình duyệt để bảo trình duyệt lưu lại cái cookie ấy thì các bạn dùng
@@ -227,7 +249,7 @@ app.use(cookieParser());
 sau đó dùng giá trị của cookie chứa sessionId gửi lên từ brower là value cái sessionId,
 và từ cái sessionId mình lại chọc vào object session để lấy được userId đang đăng
 nhập, rồi chọc vào DB để lấy ra thông tin user dựa vào cái userId này.
-
+=======================================================================================================
 session tạo ra cũng phải set hết hạn cho nó trên server = với hạn của cookie trên client,
 sessions[sessionId] = {
     userId: user.id,
@@ -243,6 +265,7 @@ trong thực tế thì ta sẽ dùng các thư viện để hỗ trợ làm vi�
 là dữ liệu của các bạn nó sẽ có thể dữ được ở những request phía sau nên các bạn có thể làm 1 chức năng giỏ hàng
 lưu những id của product vào session và mỗi khi các bạn f5 lại trang nó vẫn giữ được thông tin của giỏ
 hàng của các bạn
+=========================================================================================================
 
 câu hỏi phỏng vấn:
 
@@ -269,7 +292,7 @@ câu hỏi phỏng vấn:
   ấy thì các bạn lại xử lý trên server thì nó hết hạn thì lúc đáy là nó sẽ bị xóa đúng không, nhưng khi các bạn tự tay tắt
   trình duyệt đi hoặc các bạn tự tay xóa cookie đi thì nó chỉ gọi là mất kết nối giữa client và server chứ session vẫn còn 
   trên server.
-
+=======================================================================
 - session có thể được lưu ở đâu, thì trả lời là tùy có thể là 
     + memory trong bộ nhớ chương trình thôi, nếu tắt chương trình hoặc sửa code và refresh chương trình thì nó mất
     trong thực tế thì học cách đọc ghi file và lưu ra file .
