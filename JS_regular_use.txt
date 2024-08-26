@@ -1456,9 +1456,22 @@ hoặc defineProperty không, nếu có bạn hãy lấy ví dụ và giải th�
                 configurable: false // không thể xóa hoặc thay đổi tính năng này
             });
 
+            // Định nghĩa phương thức "sayHello"
+            Object.defineProperty(car, 'sayHello', {
+                value: function() {
+                    console.log('Hello, my name is ' + this.wheels);
+                },
+                writable: true,
+                enumerable: false,
+                configurable: true
+            });
+
             console.log(car.wheels); // 4
             car.wheels = 6;
             console.log(car.wheels); // 4 (không thay đổi vì writable là false)
+        ##Lưu ý:
+            Object.defineProperty() chỉ định nghĩa một thuộc tính tại một thời điểm.
+            Để định nghĩa nhiều thuộc tính, bạn có thể gọi Object.defineProperty() nhiều lần hoặc sử dụng Object.defineProperties().
 
     ### So Sánh
         Trong ví dụ đầu tiên về Decorator Pattern bạn đã viết, bạn thêm các chức năng mới cho đối tượng mà không cần thay đổi đối tượng gốc hoặc sử dụng kế thừa.
