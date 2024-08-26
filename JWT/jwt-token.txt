@@ -1,0 +1,309 @@
+Token nó đơn giản là cơ chế chía khóa ổ khóa thôi, nó cũng chả tư duy khác gì so với việc session như thế này đâu
+nhưng trong token nó lại có nhiều loại, và trong đó loại jwt token ngày nay nó khá là phổ biến thì nó định nghĩa ra
+1 cái quy chuẩn để các bạn tuân theo, và khi tuân theo đúng cái quy chuẩn đấy thì chúng ta gọi là jwt token, còn các bạn
+tưởng tượng là nếu là bây giờ các bạn trả về cái sessionId và lưu ở cookie, các bạn không gọi nó là sessionId nữa, các bạn 
+gọi nó là token thế là cái value trong cookie của cái với cái name là token thì nó cũng trở thành token thôi. và các bạn có thể 
+thay vì tạo ra cái chuỗi nó là số như cái sessionId value, thì các bạn tạo ra 1 cái chuỗi nó dài hơn, nó bao gồm nhiều ký tự hơn
+thế là nó trở thành token thôi.
+
+ý mình muốn nói ở đây là các bạn dùng đúng cái logic về phiên đăng nhập (session, cookie) như hiện tại 
+để tạo ra cái session để các bạn tạo ra token là được, chỉ cần thay đổi tên gọi đi thôi là xong
+nhưng tuy nhiên thì theo những cái cách sử dụng token như vậy ấy thì ngày nay nó không còn phổ biến, bởi vì nó sẽ có cái
+yếu điểm giống như session thôi vì cách thiết kế nó giống nhau. đó là đều lưu dữ liệu ở server. và khi lưu dữ liệu ở server 
+thì nó gặp vấn đề là:
+
+ví dụ khi trang của các bạn còn nhỏ, lượng người dùng chưa nhiều thì các bạn triển khai là có 1 server thôi, nhưng khi các bạn có nhiều
+người dùng và để tăng tính chịu tải ấy thì nó có 2 cách, 1 là scale theo chiều dọc tức là các bạn tăng ram, tăng cpu của cái server này lên
+nhưng cái việc đó thì nó có giới hạn thôi và nó vẫn có tồn tại 1 nhược điểm đó là các bạn tăng nhiều ram/cpu đến mấy đi nữa mà đến lúc con server
+nó sập thì hệ thống vẫn sập vì có mỗi 1 con.
+
+thì nó có 1 mô hình triển khai có nhiểu server, thì nó sẽ cài đặt các server này giống hệt nhau, thì nó đặt phía trước các server này 1 cái con 
+chia tải, phân tải gọi là load balancer. khi đó client sẽ kết nối vào load balancer và cái cái con load balancer này nó sẽ quyết định cái request của
+các bạn nó đến server nào. thì nó sẽ có 1 vấn đề như sau khi mà các bạn login theo cơ chế session, giả sử cái request log in của các bạn, con balancer nó 
+điều phối đến server A, thì cái session của các bạn được lưu ở server A, thì sau đó cái request tiếp theo của các bạn cái load balancer nó lại đá sang server B 
+đi, thì lúc này bên server B nó không có session và bạn thấy là bạn bị đăng xuất ngay sau đó. nhưng các bạn cứ refresh, refresh trang ấy tới lúc nó đá bạn về đúng 
+server A thì nó lại có session thì bạn lại thấy bạn đăng nhập thì đương nhiên đấy là lỗi chứ còn gì nữa. đúng không?
+thì thường ấy, cái con load balancer nó sẽ cấu hình ở cái thuật toán phân tải đều, tức là bạn vào nó sẽ đá vào A, request tiếp theo nó đá vào B, nó cứ tuần tự như vậy 
+trừ khi con nào bị quá tải thì nó sẽ nhắm những con rảnh để nó đá bạn vào đấy. nhưng nó cũng có cái cấu hình để là để giữ cho bạn luôn vào 1 server, lần đầu bạn vào nó nhá, 
+nó ngẫu nhiên bạn vào B chẳng hạn, thì những request tiêp theo của bạn ấy thì nó sẽ cho bạn vào B tiếp, nhưng nếu mà server B nó mà ngỏm hoặc là nó quá tải thì lúc đấy bắt buộc
+nó phải đá bạn sang server khác, và lúc đấy nó lại không có session nữa, thế nên là bạn lại bị đăng xuất. ấy nên là nó là 1 vấn đề khi các bạn lưu dữ liệu đăng nhập, dữ liệu phiên
+mà lại lưu ở máy chủ.
+
+thì giải pháp cũng đơn giản thôi, giả sử nhá, các bạn lưu session ra file đi, thì các bạn lưu ở 1 thư mục nào đấy ở server A, thì ở server B, C, bạn cũng tạo ra 1 thư mục 
+như vậy và các bạn cài phần mềm để nó tự động đồng bộ cái thư mục đấy với nhau thế nên là session của 3 server này được đồng bộ với nhau, thế là đến lúc con
+load balancer nó đá bạn vào server nào đi nữa thì bạn vẫn giữ được phiên đăng nhập.
+hoặc là các bạn không cần phải đồng bộ file như thế này nữa mà các bạn lưu session vào 1 con server độc lập ở bên ngoài, hoặc là các bạn lưu vào con database ấy
+thì tất cả các server A, B, C ấy nó chạy code thôi và nó chọc chung vào 1 nơi để nó xem session thì nó cũng sẽ giải quyết được.
+thế nhưng tuy nhiên ngày nay ấy thì cái tư duy thiết kế kiến trúc thì để nó dễ dàng phát triển, đễ dàng cài cắm, không bị phụ thuộc thì người ta thường thiế kế theo xu hướng
+là stateless, tức là không mang trạng thái, thì nó sẽ không phải lo cái việc đồng bộ dữ liệu, bởi vì bản thân nó có mang dữ liệu đâu.
+
+cái jwt token ấy, thì chúng ta sẽ lưu dữ liệu ở trên chính cái token luôn, server sẽ không phải lưu cái dữ liệu đó. ví dụ như lúc trước các bạn sài session thì các bạn lưu userId ở trong
+cái session hay sessionId ở trong cái session object lưu ở server đã tạo ở bài trước. thì bây giờ cái thông tin đó các bạn đẩy vào trong cái token, server nó không lưu nữa.
+
+jwt token viết tắt của json web token, có nghĩa đây là 1 token nó lưu được dữ liệu và nó sử dụng json để nó lưu
+jwt token nó có 3 thành phần, ngăn cách bằng dấu chấm, thế nên có 2 dấu chấm, thành phần thứ nhất gọi là
+- header: nó sẽ lưu các thông tin như là thuật toán mã hóa(alg), kiểu token(typ)
+- payload: nó sẽ lưu các thông tin như là chủ thể(sub), thường là lưu cái userId để định danh cái ông đang đăng nhập bằng các token đấu là ông nào. ngoài ra các bạn thích lưu cái gì thêm thì
+các bạn lưu, nhưng thường thì chúng ta hạn chế làm điều đó bởi vì nó tăng cái dung lượng token
+- signature: nghĩa là chữ ký, cái cách để tạo ra chữ ký sẽ mã hóa base64, của một cái chữ ký được sủ dụng hmacsha256 để mã hóa, nó sẽ dựa vào dữ liệu của header nối bằng dấu chấm 
+với cái dữ liệu của payload cộng với 1 cái secret key là một cái mã bí mật để nó tạo ra cái chữ ký.
+
+thì bây giờ các bạn hãy tưởng tượng, cái header, payload nó giống như việc các bạn gửi dữ liệu bằng cách là các bạn gửi thư ấy,
+header là những cái thông tin râu ria, những cái thông tin mang tính mô tả đường đi nước bước thì nó sẽ là cái thông tin ngoài phong bì.
+còn payload nó là cái ruột bên trong phong bì, nó chứa dữ liệu chính.
+chữ ký thì ngoài đời các bạn ký để làm gì, để chống giả mạo đúng không, để xác thực đúng không. đấy, thì cái này nó cũng vậy thôi
+
+thì đầu tiên các bạn nhìn thấy nó giải quyết vấn đề là không lưu dữ liệu ở trên máy chủ, bởi vì các bạn thấy nó lưu ở payload, thì đến lúc 
+cái token nó được gửi lên trên server ấy thì server nó sẽ đọc cái token để nó lấy ra được cái userId và nó sẽ query vào db để nó láy ra người
+dùng thôi chứ nó không cần phải ánh xạ từ sessionId tới session data nữa đúng không, nên là nó sẽ giải quyết được vấn đề này luôn
+
+ví dụ:
+b1. 
+tạo object header:
+    const header = {
+        "alg": "HS256",
+        "typ": "JWT"
+    };
+
+b2: 
+tạo object payload với data như sau, ví dụ có sub là user đang đăng nhập, hạn dùng của token này là 1h
+    const payload = {
+        sub: user.id,
+        exp: Date.now() + 360000
+    };
+
+b3: mã hóa base64 object header
+các bạn cần chuyển object header thành chuỗi, rồi các bạn muốn nó thành cái tham số đầu tiên trong token, các bạn phải biến nó thành chuỗi,
+rồi từ chuỗi, các bạn mã hóa base64.
+giải thích base64, giả sử bây giờ mình có 1 chuỗi là 'xin chào các bạn', thì trong javascript thì nó có hàm btoa('xin chào các bạn') thì nó sẽ mã hóa sang base64,
+đây là thuật toán mã hóa 2 chiều nên là các bạn có thể giải mã bằng atob('đưa cái mã đã mã hóa vô đây'), nó sẽ đưa lại kết quả của đoạn mã ta đã mã hóa.
+theo như đã phân tích ở trên, đầu tiên ta sẽ chuyển object header ở bước 1 qua chuỗi,
+
+JSON.stringify(): đấy, nó có sự tham gia của JSON đấy, nó là cái chữ J trong jwt đấy, J ở đây là json
+=> btoa(JSON.stringify(header)). cái bạn đưa cái JSON.stringify(header) vào trong btoa để nó mã hóa base64, nó sẽ đưa ra cho mình 1 chuỗi đã mã hóa.
+=> đây là thành phần đầu tiên trong 3 thành phần jwt đã nói ở trên, giá trị object header khác nhau nó sẽ sinh ra các chuỗi khác nhau
+=> đến lúc các bạn muốn đọc cái token thì các bạn sẽ đọc thế nào, làm ngược lại. 
+bước 1, giải mã, nhận lại JSON sử dụng atob('đưa cái mã đã mã hóa vô đây'). rồi cầm json này. JSON.parse('chuỗi json') nhận lại dữ liệu là kiểu object.
+code mẫu:
+    mã hóa base64:
+        btoa(JSON.stringify({
+            "alg": "HS256",
+            "typ": "JWT"
+        }));
+        => eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+    
+    giải mã và chuyển json thành object:
+        atob('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'); // '{"alg":"HS256","typ":"JWT"}'
+        JSON.parse('{"alg":"HS256","typ":"JWT"}');
+        => {
+            "alg": "HS256",
+            "typ": "JWT"
+        }
+=> const encoderHeader = btoa(JSON.stringify(header));
+
+b4: mã hóa base64 object payload
+Ta cũng sẽ dùng cách thức mã hóa base64 tương tự như trên cho object payload,
+=> const encoderPayload = btoa(JSON.stringify(payload));
+
+đến đây ta đã thu được 2 thành phần của jwt sau khi đã base64 là header và payload.
+rồi giờ chuyển qua bước 5 là tạo chữ ký signature
+
+b5: mã hóa chữ ký signature:
+trước tiên là sẽ nối chuỗi mã hóa của header với payload đã tạo ở bước 3, 4
+    const tokenData = `${encoderHeader}.${encoderPayload}`;
+tiếp theo chúng ta sẽ cần có 1 cái secret key, cái secret key này thì nó là cái mã bí mật, các bạn lưu ở server thôi, không được để lộ,
+để lộ là người ta sẽ giả mạo token của các bạn được. secret key các bạn viết linh tinh vào cũng được, nhưng thường thì mình sẽ search google
+là: node crypto generate jwt secret, xem cách thức tạo ra cái secret ngẫu nhiên này trong nodejs như thế nào.
+thì do trong nodejs có support cái thư viện crypto, nên ta có thể dùng như sau để tạo ra cái mã secret key ngẫu nhiên:
+node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
+nó sẽ sinh ra cho ta 1 cái mã, mà ta sẽ lấy cái mã này và tạo ra 1 biến secret key như bên dưới:
+    const jwtSecret = 'upGMCa/gJAksoG0dVvFwd0tgW1sJBdu4SwIlQmj/2eTeMUiGc0XfSPGWXp59hvh56xjiRDa68fcl2Ipk9MXbIUULXL8jZYaq3qSaR3SlC/MNDQU1jvTXSlRM3mb2a4hLfIOewlENP7GdlxdCGQA5FshnPUG2Mk2IxnsItDvXooUTZ/2ODQqc8IygtUrPJozvnWoBsjKbI/glQ9lmfVT2Ksc9O3H3Az0t0/duphRDYu9zmASFi+lT5c2VFbbu4pcTO8IpH70wVV0jfPBd0uJfioIB/nuFK7JBm+Oe+a7kccZsAavFmXW6jc+iqeta1YL1BXkkupm4Vct3w3Xkf7DRwA==';
+=> đến đây ta đã có jwtSecret + tokenData rồi, đủ tài nguyên rồi, việc tiếp theo là chúng ta phải sử dụng hmacsha256 để băm nó, đây là cái hàm băm 1 chiều, nó không như base64 các bạn mã hóa xong 
+rồi giải mã được đâu nhá, cái thằng này các bạn không giải mã được, và để bây giờ các bạn mã hóa được nó, thì các bạn sẽ sử dụng thư viện crypto của 
+nodejs
+    const crypto = require('crypto');
+
+    //thuật toán mã hóa, secret key
+    const hmac = crypto.createHmac('sha256', jwtSecret);
+
+    //đưa cái data muốn ký vào hàm update, thì đây là phương thức để nó ký các bạn nhé, nó sẽ trả ra 1 cái object hmac thôi. do đó ta dùng thêm hàm
+    //digest để nhận về dữ liệu, cụ thể là ở đây chúng ta nhận về base64url. thì các bạn nhận thấy rằng sau khi ký cái này chúng ta sẽ
+
+    const signature = hmac.update(tokenData).digest('base64url');
+
+ở đây cái const hmac = crypto.createHmac('sha256', jwtSecret); và hmac.update(tokenData) chính là cái hmacsha256, 
+còn cái hàm digest('base64url'); chính là cái vòng bao bên ngoài base64url.
+=> như vậy đến chỗ này ta đã có chữ ký, vậy từ các kết quả của b3, b4, b5. ta sẽ tạo ra cái token
+
+b6: tạo token từ những kết quả của bước 3, 4, 5
+    res.json({
+        token: `${tokenData}.${signature}`
+    })
+
+thì các bạn thây là với cái chữ ký signature, thì chúng ta đã dùng ăn sẵn của thư viện crypto rồi, là đã trả ra cái base64url, là an toàn với url rồi đúng không
+nhưng các bạn lưu ý, chúng ta đang có 2 thành phần đang mã hóa base64 đó chính là encoderHeader và encoderPayload
+thì 2 cái thằng này nó chưa được chuyển sang base64url, thế nên nó vẫn chưa an toàn với url nhá. và nó cũng chưa an toàn với cookie luôn, bởi vì sao
+base64 khi các bạn mã hóa nó sinh ra nó có thể chưa dấu bằng, dấu gạch chéo và dấu cộng nữa. đó là những ký tự nó sẽ gây hiểu nhầm khi mà các bạn lưa vào
+cookie hoặc là các bạn truyền nó ở trên cái url.
+
+các bạn hình dung nhé, trên url nó sẽ cái dấu cộng nó sẽ ứng với dấu cách đúng không
+dấu gạch chéo trên url nó là cái ký tự để ngăn cách giữa các giá trị ở trong đường dẫn đúng không
+còn trong cookie các bạn nhớ cú pháp để set cookie, ví dụ sessionId=value. thì có nghĩa là trong cái token base64 ấy nó sẽ có cái dấu bằng
+nên có thể nó sẽ bị hiểu nhầm với dấu bằng trong sessionId=value. nên là nó không an toàn với url và cookie.
+đó là lý do tại sao chúng ta cần chuyển qua base64url. thì giờ 2 thằng encoderHeader và encoderPayload nó chưa đủ an toàn
+=> các bạn tự viết 1 cái hàm để xử lý cho nó an toàn.
+tạo râ 1 file helper.js, trong này sẽ viết cái hàm 
+    const base64url = str => {
+        return btoa(str).replace(/\+/, '-') // thay thế tất cả dấu + thành dấu -
+        .replace(/\//, '-') // thay thế tất cả dấu / thành dấu -
+        .replace(/\=/, '') // tất cả dấu bằng thì sẽ bị loại bỏ đi
+    }
+    module.exports = { base64url }
+thì các bạn tuân theo đúng cái cách này nhé, để đảm bảo nó an toàn với url và base64 nó vẫn đúng
+chứ không phải là các bạn cứ thích thay linh tinh là được đâu. thay linh tinh nó sẽ sai base64 đi 
+và đến lúc nó sẽ không giải mã được đâu
+lúc này mình thay thế cái chỗ tạo encoderHeader và encoderPayload bằng cái hàm base64url mình vừa viết ở trên:
+    const encoderHeader = base64url(JSON.stringify(header));
+    const encoderPayload = base64url(JSON.stringify(payload));
+còn các cái khác thì vẫn để như cũ. thì sau khi trả về token cho client thì nó sẽ không tồn tại những ký tự nguy hiển nữa
+và đặc biệt là nó vẫn là base64 hợp lệ. lúc giải mã ra thì vẫn đúng như dữ liệu ta đã mã hóa.
+còn chữ ký thì các bạn đừng giải mã làm gì, nó là một hành động vô nghĩa thôi, bởi vì nó được ký bằng hmacsha256, nó băm ra
+thì không giải mã được đâu, cái này nó đang là base64 đấy, các bạn có giải mã ra được thì các bạn cũng không đọc được đâu nhá.
+
+thế bây giờ chúng ta sẽ tìm hiểu xem là với cơ chế có vẻ như phức tạp như vậy thì nó an toàn như thế nào nhé và nó được xác thực
+như thế nào nhé.
+================================
+khi chúng ta nhận được token đấy, thì các bạn có thể lưu vào localstorage hoặc là các bạn lại lưu vào cookie, nhưng các bạn lưu
+ý giúp mình 1 điều đó là nếu mà các bạn trả nó về client rồi các bạn lưu vào cookie ấy, thì nó sẽ không phải là httpOnlyCookie
+nên là nó dễ dàng lấy ra được, và kể cả các bạn lưu vào localstorage thì cũng thế, nó cũng có thể dễ dàng lấy ra được bằng một 
+đoạn javascript thôi, thế nên là khi các bạn lưu ở 2 chỗ này thì rủi ro nó sẽ cao hơn việc các bạn lưu cookie dạng httpOnly nhá
+nếu các bạn cần an toàn, mà các bạn có thể trả về từ server httpOnly thì các bạn cứ trả về httpOnly nhá.
+
+ở ví dụ này thì mình trả về token và FE sẽ lưu token này vào localstorage. với cả các bạn cũng không cần nghĩ ngợi quá nhiều về bảo
+mật này nếu mà cái ứng dụng của các bạn nó cũng không có gì gọi là không an toàn nhá, thường thì những cái trang web mà nó có những cái
+quyền lợi ấy, tức là người ta hách được tài khoàn người ta phải được cái lợi gì đấy, ví dụ như là chiếm dụng được 1 cái tài sản gì đấy
+thì nó mới là mục tiêu tấn công. nói chung là khi chúng ta chưa hiểu về cách thức hacker nó tấn công như thế nào ấy
+thì chúng ta đừng cố gắng bảo mật làm gì, nhiều bạn cứ băm nó nhỏ ra, xong các bạn lưu theo kiểu rất là phức tạp các thứ ấy
+nhưng thực ra nếu mà là hacker, cái người mà người ta tấn công ấy thì người ta hiểu hết cái cách làm đó của các bạn, có những cái 
+cách mà các bạn tốn bao nhiêu công sức để các bạn bày vẽ ra nhưng người ta mất vài giây thôi người ta đã giải được rồi.
+
+thì cái định nghĩa của jwt token thì nó vẫn tuân theo cái dạng bảo mật token thôi, đại khái là khi các bạn lưu ở client
+thì mỗi một request tiếp theo, các bạn sẽ phải gửi theo nó và các bạn đính vào header, header authorization nhá, thì bây giờ 
+ở api lấy dữ liệu người dùng đang đăng nhập, các bạn phải đính được vào cái request header với cái key là authorization để mang cái 
+token đấy đi nhá.
+
+khi chúng ta lấy dữ liệu, thì đối với những api cần bảo mật ấy, cần phải đăng nhập ấy thì các bạn sẽ truyền thêm cái header với cái key
+là Authorization, với loại token ở đây là jwt thì nó là Bearer token.
+headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+thì bây giờ cái request lấy dữ liệu này nó sẽ mang theo cái headers và cái headers này nó sẽ chứa cái token
+và server chúng ta sẽ xử lý cái chuỗi Bearer ${localStorage.getItem('token')} để chúng ta nhận được cái token nhé
+ở server cái Authorization nó sẽ tự viết thường cho nên để lấy ra chúng ta sẽ viết như sau:
+req.headers.authorization
+=> sau khi nhận được cái authorization dạng như này:
+    Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImV4cCI6MTcyNDU2NjY4OTg1M30.rnuqjluf9tNJiNDCQuBM2RCU3mlAFOmfOtNJDTtVp2s
+=> xử lý để bỏ đoạn "Bearer " đi, thì ta có nhiêu cách, thì có thể làm như này để lấy mỗi cái token thôi:
+const token = req.headers.authorization.slice(7);
+bây giờ sau khi có token thì ta sẽ lấy ra dữ liệu của token nhé
+thì bây giờ nó ngăn cách bằng dấu chấm thì các bạn có thể chặt nó bằng dấu chấm.
+    const tokens = token.split('.');
+=> ta sẽ có 3 đoạn, có thể viết gọn như sau:
+    const [encoderHeader, encoderPayload, tokenSignature] = token.split('.');
+thì bây giờ chúng ta sẽ xác thực bằng cách như này, các bạn sẽ lấy ra cái encoderHeader và encoderPayload, sau đó là các bạn tạo ra cái chữ ký
+các bạn không dùng cái chữ ký được gửi lên từ client, mà cái bạn lấy cái encoderHeader và encoderPayload tạo ra cái chữ ký,
+sau đó so sánh cái chữ ký này với chữ ký được gửi lên, nếu nó giống nhau thì là hợp lệ, còn nếu nó khác nhau ấy thì cái token này là 
+đã bị sửa đổi, nó là cái token không chuẩn nhá.
+    const [encoderHeader, encoderPayload, tokenSignature] = token.split('.');
+    const tokenData = `${encoderHeader}.${encoderPayload}`;
+    const hmac = crypto.createHmac('sha256', jwtSecret);
+    const signature = hmac.update(tokenData).digest('base64url');
+    if (signature === tokenSignature) {nếu true thì là đúng}
+
+tại sao chúng ta lại xác thực bằng cách này , và tại sao cái cơ chế này nó lại an toàn. 
+các bạn hãy hính dung nhé, khi chúng ta tạo ra token, tham số đầu vào của chữ ký là gì, à là cái header và payload cộng với cái jwtSecret
+đúng không thì nó sẽ tạo ra 1 cái chữ ký cụ thể là như const signature = hmac.update(tokenData).digest('base64url');
+khi đầu vào cố định là một giá trị gì đó thì nó sẽ luôn tạo ra 1 cái chữ ký cụ thể, nếu thay đổi đầu vào tức là sửa
+header hoặc là sửa payload ấy hoặc là sửa jwtSecret thì chữ ký sẽ thay đổi. thế nên trong tình huống này nếu mà cái token 
+nó mà không bị sửa đổi gì cả, thì các bạn lặp lại quá trình ký cái header, payload với cả vẫn là cái jwtSecret đó thì 
+chữ ký nó tạo ra thì vẫn như vậy thê nên là chúng ta mới ký lại để chúng ta so sánh cái chữ ký mới và chữ ký cũ xem nó có giống nhau không
+thì bây giờ nếu mà cái ông nào mà ông ấy định hack của các bạn ấy thì các bạn hình dung cái tư duy của ông ấy sẽ là như này
+họ sẽ paste cái token lấy được trong localStorage vào trang jwt.io sau đó nó sẽ phân tích ra cái payload,
+thì ông ấy sẽ nghĩ là à, cái userId bằng 1, bây giờ tôi muốn truy cập thằng userId bằng 10 đi, đê hack thằng admin đi bằng cách nào đấy
+nó biết 1 đối tượng admin hoặc nạn nhân có id bằng 10 đi, thì bây giờ nó nghĩ là nó sẽ dịch ngược cái phần payload ra bởi vì là base64 mà
+sai đó nó sửa cái userId bằng 10. sau đó nó lại đóng lại thành base64, sau đó nó sửa cái dữ liệu mới vào cái khúc ở giữa thứ 2 trong jwt,
+sau đó nó cầm cái chuỗi mã hóa 3 thành phần jwt và gửi lên server của các bạn, với cái mong ước là sẽ access được vào cái ông với userId là 10
+hoặc là cái token bị hết hạn đúng không, thì ông ta lại nghĩ là à chọc vào payload sửa cái exp đi thành 100 năm, sau đó ông ấy đóng thành base64
+và ông ấy thay vào khúc giữa và ông ta nghĩ sẽ làm 1 cái token hết hạn trở nên sống lại. thì cái việc làm đấy của ông ta nó sẽ dẫn tới thay đổi
+cái payload và chính vì vậy thì cái quá trình xác thực của chúng ta nó sẽ nhận được cái payload mới do ông ấy gài vào và chúng ta 
+thực hiện lại quá trình ký header với payload mới, vẫn là cái jwtSecret cũ, nó sẽ tạo ra 1 cái chữ ký mới, và chính vì cái chữ ký mới nó không bằng
+cái chữ ký ban đầu nữa và vì vậy các bạn sẽ phát hiện ra đây là cái token đã bị sửa và sẽ không thê vượt qua được các bạn nhé
+và đương nhiên cái chữ ký này ông ta sẽ không thể sửa được nên là ông ta phải giữ nguyên thôi, bởi vì ông ta làm sao đọc được cái signature này mà
+ông ta sửa nó là băm 1 chiều và đương nhiên nếu mà ông ta mà sửa đi ấy, đến lúc các bạn tạo ra cái chữ ký chuẩn, các bạn so sánh với cái chữ ký bị sửa
+nó cũng sẽ không bằng nhau, ông ta chỉ có một cách duy nhất ấy là ông ta phải biết được cái secret key của các bạn thì ông ta mới có thể sửa được cái
+token đê tạo ra cái signature là hợp lệ bởi vì khi các bạn ký là các bạn ký bằng jwtSecret key 
+thế nên các bạn phải cất nó ở server và tuyệt đối không để lộ nó, tức là các bạn không được để trong source code
+không push nó lên trên git, không dán nó vào bất cứ một công cụ chat hoặc bất cứ 1 nơi nào khác để nó an toàn
+
+nếu khi xác thực thành công, tức là kiểm tra cái if (signature === tokenSignature)
+thì chúng ta sẽ giải mã cái payload để nó trả về cho chúng ta JSON và từ JSON chúng ta parse để lấy ra object payload
+rồi sau đó chúng ta lấy ra cái sub với value là userId, sau đó từ cái userId này chúng ta sẽ chọc vào db để lấy ra user từ cái userId này
+
+thì đương nhiên là khi các bạn tạo token, các bạn cắm vào trong payload nhiều thôn tin để check choác thì các bạn lại phải check thêm, mình ví như các bạn
+check thời gian sống này thì các bạn phải check thêm không thì nó lại không hết hạn 
+    if (payload.exp < Date.now()) {
+        return res.status(401)
+            .json({
+                message: 'token expired'
+            });
+    }
+
+===============
+trong thực tế cái đoạn xử lý xác thực bên dưới đây ta sẽ viết ra một middleware để nó xử lý không bây giờ chỗ nào cũng phải lặp lại đoạn dưới đây thì 
+hơi dởm
+    const { email, password } = req.body;
+    const user = db.users.find(user => user.email === email && user.password === password);
+    if (!user) {
+        return res.status(401)
+            .json({
+                message: 'Unauthorized'
+            });
+    }
+
+    //1. tạo Dữ liệu header + payload
+    const header = {
+        "alg": "HS256",
+        "typ": "JWT"
+    };
+
+    //tạo payload, data cần lưu là gì:
+    const payload = {
+        sub: user.id,
+        exp: Date.now() + 360000,
+    };
+
+    //2. tạo mã hóa base64(json(header & payload))
+    const encoderHeader = base64url(JSON.stringify(header));
+    const encoderPayload = base64url(JSON.stringify(payload));
+
+    //3. tạo token data <header>.<payload>
+    const tokenData = `${encoderHeader}.${encoderPayload}`;
+
+    //4. tạo chữ ký
+    const hmac = crypto.createHmac('sha256', jwtSecret);
+    const signature = hmac.update(tokenData).digest('base64url');
+    res.json({
+        token: `${tokenData}.${signature}`
+    });
+
+
+
+
+
+
+
+
+
+
+
+
