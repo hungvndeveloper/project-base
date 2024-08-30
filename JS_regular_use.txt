@@ -1568,29 +1568,29 @@ Bạn có 1 ví dụ nào chi tiết hơn cho decorator pattern trong nodejs và
         Thứ nhất, chúng ta cần một component cơ bản:
 
         function Coffee() {
-        this.cost = function() {
-            return 1;
-        };
+            this.cost = function() {
+                return 1;
+            };
         }
 
         Tiếp theo, ta cần các decorators để mô tả các loại gia vị:
 
         function Milk(coffee) {
-        this.cost = function() {
-            return coffee.cost() + 0.5;
-        };
+            this.cost = function() {
+                return coffee.cost() + 0.5;
+            };
         }
 
         function Sugar(coffee) {
-        this.cost = function() {
-            return coffee.cost() + 0.2;
-        };
+            this.cost = function() {
+                return coffee.cost() + 0.2;
+            };
         }
 
         function Whip(coffee) {
-        this.cost = function() {
-            return coffee.cost() + 0.7;
-        };
+            this.cost = function() {
+                return coffee.cost() + 0.7;
+            };
         }
 
 
@@ -1639,12 +1639,12 @@ Nếu theo như bạn nói thì tôi thấy nếu chúng ta dùng object.prototy
         function Coffee() {}
 
         Coffee.prototype.cost = function() {
-        return 1;
+            return 1;
         };
 
         // Thêm chức năng mới vào prototype
         Coffee.prototype.serveWithMilk = function() {
-        return this.cost() + 0.5;
+            return this.cost() + 0.5;
         };
 
         let myCoffee = new Coffee();
@@ -1656,16 +1656,16 @@ Nếu theo như bạn nói thì tôi thấy nếu chúng ta dùng object.prototy
     #### Decorator Pattern Approach:
 
         function Coffee() {
-        this.cost = function() {
-            return 1;
-        };
+            this.cost = function() {
+                return 1;
+            };
         }
 
         // Decorator
         function Milk(coffee) {
-        this.cost = function() {
-            return coffee.cost() + 0.5;
-        };
+            this.cost = function() {
+                return coffee.cost() + 0.5;
+            };
         }
 
         let someCoffee = new Coffee();
@@ -1678,6 +1678,94 @@ Nếu theo như bạn nói thì tôi thấy nếu chúng ta dùng object.prototy
     thì thêm vào Object.prototype là phù hợp. Trong khi đó, nếu bạn muốn thêm chức năng cho từng đối tượng một cách độc lập, thì Decorator Pattern là lựa chọn tốt hơn.
 
 ---------------------------------------
+call(), bind(), apply() function trong javascript
+- cả 3 call, apply. và bind đều thay đổi vai trò của this. khác nhau là cách sử dụng call, apply là 1 phe, còn bind là 1 phe.
+- B.apply(A, arguments): nghĩa là object A áp dụng method B. arguments = 1 array [1,2,3]
+- B.call(A, agruments): nghĩa là object A gọi method B. agruments = 1, 2, 3
+    const girl = {
+        amount: 10,
+        unit: 'USD'
+    }
+
+    function goShopping(item, quantity, price) {
+        const totalCost = price * quantity;
+        if (this.amount < totalCost) {
+            console.log(`Not enough money to by the product!`)
+        } else {
+            console.log(`Girl went shopping and bought ${quantity} ${item} for ${totalCost} ${this.unit}`);
+        }
+    }
+
+    // goShopping.call(girl, 'shoes', 2, 100);
+
+    //lam quen a boy
+
+    const boy = {
+        amount: 100000,
+        unit: 'USD'
+    }
+
+    // goShopping(boy, 'shoes', 2, 100); // => kết quả: Girl went shopping and bought shoes [object Object] for NaN undefined
+
+    // goShopping.call(boy, 'shoes', 2, 100); // => kết quả: Girl went shopping and bought 2 shoes for 200 USD
+
+    goShopping.apply(boy, ['shoes', 2, 100]);
+
+
+khi sử dụng call và apply thì nó sẽ thực hiện ngay lập tức, riêng bind sẽ không thực hiện ngay lập tức mà nó sẽ tạo ra 1 function
+khác và thực thi sau(tức là gán giá trị và thực thi sau). tức là khi sử dụng bind thì kết quả chưa được thực thi, 
+nghĩa là nó gắn cho 1 nhiệm vụ khi cần thì nó mới thực thi.
+
+Ví dụ: 
+    // xin tien
+    console.log(`bat dau xin tien`);
+    const boundShopping = goShopping.bind(boy);
+    console.log(`sau do di mua cai khac`);
+    boundShopping('iPhone14', 3, 1000)
+    // hoặc có thể viết thế này thì nó sẽ thực thi ngay:
+    goShopping.bind(boy)('iPhone14', 3, 1000);
+
+
+    ===============
+
+    function log(msg) {
+        console.log(msg);
+    }
+
+    log(1);
+    log(1, 2);
+
+với function log ở trên, thì nó chỉ in ra 1 tham số thôi, khả năng mở rộng kém. nên để giải quyết bài toán là ta muốn số lượng
+agruments tăng lên thì có thể sử dụng apply như sau:
+
+    function logApply() {
+        console.log.apply(console, arguments);
+    }
+    logApply(1);
+    logApply(1, 2);
+
+trong js trước phiên bản ES6 không có từ khóa extends, giống như ngôn ngữ cấp cao khác như c#, java.
+nên trước ES6 js không có khái niệm kế thừa, mà muốn kế thừa thì có các phương pháp như trong ES5 như:
+prototype, constructor functions,mixin pattern. Trong ES3, muốn kế thừa thì phải dùng call và apply
+thì nó mới nhận ra chức năng này thì nên do đó call với apply mới ra đời. ví dụ:
+
+    function Animal(name, weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    function Cat() {
+        //supper
+        Animal.call(this, 'cat', 50);
+        // Animal.apply(this, ['cat', 50]);
+        this.say = function() {
+            console.log(`I am ${this.name}, My weight is ${this.weight}`);
+        }
+    }
+
+    const cat = new Cat();
+    catch.say();
+====================================================================================
 Hãy giúp tôi hiểu rõ cách áp dụng các function call, bind, apply trong nodejs và javascript nhé
 
 Ồ, đây là ba chức năng thú vị trong JavaScript, mà nếu bạn nắm vững thì sẽ thấy rất là "cool" đấy! 😎
