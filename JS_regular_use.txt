@@ -3445,6 +3445,37 @@ tôi có đoạn code sau trong 1 file register như sau, bạn hãy giúp tôi 
 
     exports.Register = Register;
 
+- Cách sủ dụng:
+    function validateRegisterForm(form) {
+        var registerForm = require('*/cartridge/scripts/lib/register');
+        var newRegistration = new registerForm.Register();
+        newRegistration.firstName = form.firstName;
+        newRegistration.lastName = form.lastName;
+        newRegistration.firstnameFurigana = form.firstnameFurigana;
+        newRegistration.lastnameFurigana = form.lastnameFurigana;
+        newRegistration.prefecture = form.prefecture;
+        newRegistration.postalCode = form.postalCode;
+        newRegistration.postalCode2 = form.postalCode2;
+        newRegistration.address1 = form.address1;
+        newRegistration.address2 = form.address2;
+        newRegistration.phone = form.phone;
+        newRegistration.email = form.email;
+        newRegistration.password = form.password;
+        newRegistration.passwordConfirmation = form.passwordConfirmation;
+        newRegistration.gender = form.gender;
+        newRegistration.yearOfBirth = form.yearOfBirth;
+        newRegistration.monthOfBirth = form.monthOfBirth;
+        newRegistration.dayOfBirth = form.dayOfBirth;
+        newRegistration.directMessage = form.directMessage;
+        newRegistration.isMember = form.isMember;
+        if (newRegistration.isMember) {
+            newRegistration.memberID = form.memberID;
+            newRegistration.memberPin = form.memberPin;
+        }
+        newRegistration.newsletter = form.newsletter;
+        newRegistration.token = form.token;
+        return newRegistration;
+    }
 => Giải thích đoạn code:
 1. Mục đích của đoạn code:
     Đoạn code này định nghĩa một lớp JavaScript có tên là Register để quản lý việc đăng ký người dùng. Lớp này thực hiện các chức năng sau:
