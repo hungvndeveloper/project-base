@@ -3869,3 +3869,67 @@ Tóm lại
 
     Cả hai đều có thể dùng cho mục đích kế thừa, nhưng vai trò của chúng là khác nhau: prototype dành cho kế thừa phương thức, 
     còn Object.defineProperty/Object.defineProperties thường hỗ trợ kiểm soát thuộc tính trong hệ thống kế thừa.
+============================================================
+file checkout.js:
+    'use strict';
+
+    var base = require('base/checkout/checkout');
+    var billingHelpers = require('./billing');
+    var summaryHelpers = require('./summary');
+
+    [billingHelpers, summaryHelpers].forEach(function (library) {
+        Object.keys(library).forEach(function (item) {
+            if (typeof library[item] === 'object') {
+                exports[item] = $.extend({}, exports[item], library[item]);
+            } else {
+                exports[item] = library[item];
+            }
+        });
+    });
+
+module.exports = base;
+
+trong file trên, đoạn code:
+    [billingHelpers, summaryHelpers].forEach(function (library) {
+        Object.keys(library).forEach(function (item) {
+            if (typeof library[item] === 'object') {
+                exports[item] = $.extend({}, exports[item], library[item]);
+            } else {
+                exports[item] = library[item];
+            }
+        });
+    });
+không có ý nghĩa gì cả, vì object được export ra là object trong dòng: module.exports = base;
+trong file mà tồn tại cả exports và module.exports thì object trong module.exports sẽ overwrite cái exports
+code trong file checkout.js trên vẫn chạy là vì webpack sẽ gom tất cả các code trong các file nhỏ vào 1 file lớn, kể cả 
+trong file nhỏ có require hoặc import thì nó cũng sẽ gom cả file được require và import vào file lớn vào luôn.
+như trong file trên thì nó lấy code của:
+
+var billingHelpers = require('./billing');
+var summaryHelpers = require('./summary');
+
+và gom vào 1 file lớn luôn. function của các file này được gọi trong file checkout.js base, nên nó sẽ hoạt động Được
+
+như vậy để đoạn code trên hoạt động thì chỉ cần viết như bên dưới là đủ:
+    'use strict';
+
+    var base = require('base/checkout/checkout');
+    var billingHelpers = require('./billing');
+    var summaryHelpers = require('./summary');
+
+    module.exports = base;
+
+Như vậy sau này nếu mình có viết các đoạn script rồi muốn nó được gom vào file lớn thì có thể viết theo kiểu: 
+    1. viết file js bình thường, sử dụng processInclude(require file cần thực thi) để loop qua các attribute của file này
+    và gọi function thực thi động mà không cần biết chính xác tên hàm đó là gì.
+    'use strict';
+
+    var processInclude = require('base/util');
+
+    $(document).ready(function () {
+        processInclude(require('./checkout/checkout'));
+        processInclude(require('./checkout/netprotections'));
+    });
+    2. viết file js bình thường, sau đó require file đó, và gọi thực thi thủ công từng hàm 1. cái này cần biết tên hàm chính xác để gọi.
+
+=> webpack sẽ gom các code của các file lớn chứa toàn bộ code js cho phía client side.
