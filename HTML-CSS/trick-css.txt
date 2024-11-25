@@ -701,3 +701,178 @@ Tóm lại:
     - Chọn absolute khi cần định vị tương đối với phần tử cha cụ thể.
     - Chọn fixed khi muốn phần tử luôn ở vị trí cố định trong cửa sổ.
     - Chọn sticky khi muốn phần tử cố định linh hoạt khi cuộn.
+
+=============================================================================
+BEM
+Để giúp bạn dễ hiểu cách đặt tên class theo BEM, tôi sẽ trình bày một cách đơn giản và có hệ thống, 
+đặc biệt dành cho trường hợp có nhiều khối con hoặc phần tử lồng nhau.
+
+1. Nguyên tắc cơ bản của BEM
+    - Block (B): Khối độc lập, là thành phần giao diện chính.
+    - Element (E): Phần tử con, là thành phần phụ thuộc nằm trong một block.
+    - Modifier (M): Biến thể, dùng để điều chỉnh hoặc tạo phiên bản khác của block/element.
+    - Cú pháp:
+        .block {}
+        .block__element {}
+        .block--modifier {}
+        .block__element--modifier {}
+2. Quy tắc đặt tên trong các trường hợp lồng nhau
+    a. Nhiều phần tử (elements) lồng nhau trong một block
+        Ví dụ: Một khối card có:
+            - Ảnh.
+            - Tiêu đề.
+            - Nội dung.
+            - Nút bấm.
+        - Cấu trúc HTML:
+            <div class="card">
+                <img class="card__image" src="image.jpg" alt="Card image">
+                <h3 class="card__title">Card Title</h3>
+                <p class="card__content">This is card content.</p>
+                <button class="card__button">Click Me</button>
+            </div>
+        - Giải thích:
+            - card: Đây là block, đại diện cho khối chính.
+            - card__image: Phần tử con (element), vì nó nằm trong khối card.
+            - card__title, card__content, card__button: Các phần tử con khác thuộc khối card.
+        - Lưu ý: Dù phần tử lồng nhau (như card__content và card__button), bạn không cần tạo thêm block mới nếu chúng vẫn thuộc khối card.
+
+    b. Khi có khối con bên trong block
+        - Nếu một block chứa một block khác (khối con), block con nên được đặt tên độc lập.
+        - Ví dụ: Một khối header chứa khối search-bar:
+            <header class="header">
+                <div class="header__logo">Logo</div>
+                <div class="header__search">
+                    <div class="search-bar">
+                        <input class="search-bar__input" type="text" placeholder="Search">
+                        <button class="search-bar__button">Go</button>
+                    </div>
+                </div>
+            </header>
+        - Giải thích:
+            - header: Block chính.
+            - header__search: Element của header.
+            - search-bar: Block con, độc lập với header.
+            - search-bar__input, search-bar__button: Elements thuộc block search-bar.
+        - Quy tắc: Khi phần tử có logic/phạm vi hoạt động riêng (như search-bar), hãy coi nó là một block riêng.
+
+    c. Modifier cho block và element
+        - Modifier được dùng khi bạn muốn thay đổi trạng thái hoặc kiểu dáng.
+        - Ví dụ: Một khối button có nhiều trạng thái:
+            <button class="button button--primary">Primary</button>
+            <button class="button button--secondary">Secondary</button>
+            <button class="button button--disabled">Disabled</button>
+        - Giải thích:
+            - button: Block chính.
+            - button--primary, button--secondary, button--disabled: Modifiers để biểu thị trạng thái/kiểu dáng.
+        - Modifier cũng có thể dùng cho element:
+            <div class="card">
+                <h3 class="card__title card__title--highlighted">Highlighted Title</h3>
+            </div>
+        - card__title--highlighted: Là phiên bản đặc biệt của card__title.
+
+3. Quy tắc xử lý lồng ghép phức tạp
+    - Khi một block có nhiều lớp lồng nhau, hãy:
+        - Chia nhỏ vấn đề: Xác định block chính, và xem xét từng element trực thuộc nó.
+        - Đừng tạo quá nhiều block: Chỉ tách thành block con nếu thành phần đó đủ phức tạp hoặc tái sử dụng.
+    - Ví dụ: Phần Testimonials phức tạp:
+        <section class="testimonials">
+            <div class="testimonials__container">
+                <h2 class="testimonials__title">What Our Students Say</h2>
+                <ul class="testimonials__list">
+                    <li class="testimonials__item">
+                        <p class="testimonials__quote">"Amazing platform!"</p>
+                        <span class="testimonials__author">- John Doe</span>
+                    </li>
+                    <li class="testimonials__item">
+                        <p class="testimonials__quote">"Very helpful courses."</p>
+                        <span class="testimonials__author">- Jane Smith</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    - Giải thích:
+        - testimonials: Block chính.
+        - testimonials__container: Element chứa toàn bộ nội dung.
+        - testimonials__list: Danh sách các nhận xét.
+        - testimonials__item: Mỗi nhận xét riêng lẻ là một phần tử.
+        - testimonials__quote, testimonials__author: Elements của từng nhận xét.
+4. Tips để đặt tên hiệu quả
+    - Suy nghĩ theo khối độc lập:
+        Mỗi khối (block) cần rõ ràng và độc lập.
+        Ví dụ: header, card, button.
+    - Không đặt tên quá dài:
+        - Chỉ giữ tên class đủ mô tả.
+        - Ví dụ: Dùng card__title thay vì card__main-title-for-header.
+    - Không nhầm lẫn giữa block và element:
+        - Nếu thành phần là một phần cố định trong block, nó là element.
+        - Nếu nó hoạt động độc lập hoặc tái sử dụng, nó là block.
+    - Khi nghi ngờ, hãy hỏi:
+        - "Thành phần này có thể tách ra và sử dụng lại không?"
+            - Nếu có → Block.
+            - Nếu không → Element.
+--------------------------------------------------------------------------------
+Trong BEM, dấu - có ý nghĩa gì?
+Trong BEM, dấu gạch ngang đơn (-) thực sự không được dùng để phân chia các thành phần chính như Block, Element, hay Modifier. 
+Tuy nhiên, nó có thể được sử dụng trong tên của Block, Element, hoặc Modifier để tăng tính mô tả.
+    - Block, Element, Modifier được phân tách rõ ràng bởi:
+        - __: Phân tách giữa Block và Element.
+        - --: Phân tách giữa Block/Element và Modifier.
+        - Ví dụ đúng chuẩn BEM:
+            - Block:
+                <div class="menu"></div>
+            - Block với Modifier:
+                <div class="menu menu--dark"></div>
+            - Block với Element:
+                <div class="menu">
+                    <div class="menu__item"></div>
+                    <div class="menu__icon"></div>
+                </div>
+            - Element với Modifier:
+                <div class="menu__item menu__item--selected"></div>
+
+    - Sự khác biệt: Dấu - trong tên của Block, Element hoặc Modifier
+        - BEM cho phép bạn sử dụng dấu gạch ngang (-) bên trong tên của Block, Element, hoặc Modifier như một phần của từ.
+        - Ví dụ:
+            - Block với tên dài hơn sử dụng -:
+                <div class="search-box"></div>
+                Ở đây, search-box là một Block, và dấu - được dùng để mô tả tên rõ ràng hơn.
+            - Element sử dụng dấu -:
+                <div class="search-box__input-field"></div>
+                search-box__input-field là một Element của Block search-box.
+            - Modifier sử dụng dấu -:
+                <div class="search-box search-box--with-border"></div>
+                search-box--with-border là một Modifier của Block search-box.
+        - Quan trọng: Dấu gạch ngang đơn (-) không thay thế cho __ (phân tách Block-Element) hoặc -- (phân tách Modifier), mà chỉ bổ sung vào để giúp tên class dễ hiểu hơn.
+
+    - Sự nhầm lẫn khi so sánh với cách đặt tên không theo BEM
+        - Nếu chỉ thấy một class như menu-item, bạn có thể nhầm lẫn:
+            - Đây không phải là BEM nếu không sử dụng các quy tắc __ và --.
+            - Trong BEM, cách viết tương đương sẽ là menu__item.
+            - Ví dụ:
+                - Không phải BEM:
+                    <div class="menu-item"></div>
+                    Đây có thể là cách viết đơn giản không có mối quan hệ Block/Element.
+                - Theo BEM:
+                    <div class="menu">
+                        <div class="menu__item"></div>
+                    </div>
+                    Cách viết này đúng chuẩn, thể hiện mối quan hệ rõ ràng giữa Block (menu) và Element (menu__item).
+    - Tại sao https://getbem.com/ lại có dấu - trong tên?
+        - https://getbem.com/ cho phép dùng dấu - trong tên Block hoặc Element, vì nó giúp:
+            - Mô tả tốt hơn: Đặt tên dài hơn nhưng rõ ràng (ví dụ: search-box thay vì searchbox).
+            - Thân thiện với các convention phổ biến: Kebab-case (-) thường được dùng trong CSS.
+        - Tuy nhiên, điều quan trọng là vẫn phải giữ:
+            - __ để tách Block và Element.
+            - -- để tách Modifier.
+    - Dấu - không phải là quy tắc chính mà chỉ là một công cụ bổ sung trong cách đặt tên.
+-------------------------------------
+Các lỗi thường gặp khi dùng BEM
+1. Dùng dấu - sai cách:
+    - Ví dụ, không đặt tên như menu-item-active, vì đây là cách viết không tuân BEM.
+    - Thay vào đó, dùng: menu__item menu__item--active.
+
+2. Tên quá dài và phức tạp:
+    - Tránh đặt tên như card__header__icon__close. Nếu cần, hãy tạo block riêng như icon.
+
+3. Dùng BEM không đồng nhất:
+    - Ví dụ, trong cùng dự án, có nơi dùng block__element, nơi khác dùng block-element.
