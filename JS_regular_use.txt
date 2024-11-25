@@ -3933,3 +3933,15 @@ Như vậy sau này nếu mình có viết các đoạn script rồi muốn nó 
     2. viết file js bình thường, sau đó require file đó, và gọi thực thi thủ công từng hàm 1. cái này cần biết tên hàm chính xác để gọi.
 
 => webpack sẽ gom các code của các file lớn chứa toàn bộ code js cho phía client side.
+========================================================================================
+Khi các element trong cùng một block đều gắn cùng với 1 event như: click, mouseover... thì ví dụ:
+Click con thì click cha, click cha thì chỉ click cha.
+tức là nếu gắn 2 event click vào 2 element cha và con, thì nếu click vào element con thì event của con được kích
+hoạt và đồng thời cũng kích hoạt event của element cha.
+còn nếu chỉ click mình element cha thì chỉ event của element cha được kích hoạt
+để tránh trường hợp này, ta dùng: event.stopPropagation(); cho phần tử con thì chỉ kích hoạt event của element con, 
+chứ không kích hoạt event của tất cả các element cha chứa nó.
+
+$("element con").click(function(event){
+  event.stopPropagation();
+});
