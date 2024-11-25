@@ -1,0 +1,451 @@
+========================================================
+tìm hiểu về các thuộc tính căn giữa và box-sizing
+đoạn code sau có ý nghĩa gì?
+    height: auto;
+    left: 50%;
+    -o-object-position: center;
+    object-position: center;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+
+Đoạn code CSS này được sử dụng để căn giữa một phần tử (ví dụ: hình ảnh, div, v.v.) trong một khung chứa (container) theo cả chiều ngang và chiều dọc. 
+Cùng phân tích từng thuộc tính:
+
+    1. height: auto;
+        Điều chỉnh chiều cao của phần tử dựa trên tỷ lệ khung hình của nội dung (nếu là hình ảnh) hoặc nội dung bên trong.
+    2. left: 50%;
+        Đặt phần tử cách mép trái của khung chứa 50% chiều rộng khung chứa.
+    3. -o-object-position: center; và object-position: center;
+        Dành cho các phần tử như hình ảnh hoặc video. Đặt nội dung của phần tử được căn giữa bên trong khung chứa của nó.
+        -o-object-position là cú pháp cũ dành riêng cho Opera.
+    4. position: absolute;
+        Đặt phần tử ở vị trí tuyệt đối trong khung chứa. Phần tử sẽ được định vị dựa trên các thuộc tính như top, left, bottom, right.
+    5. top: 50%;
+        Đặt phần tử cách mép trên của khung chứa 50% chiều cao khung chứa.
+    6. transform: translate(-50%, -50%);
+        Dịch chuyển phần tử theo cả chiều ngang và chiều dọc.
+    7. translate(-50%, -50%) sẽ đẩy phần tử lên và sang trái 50% kích thước của chính nó, giúp căn giữa chính xác.
+    8. width: 100%;
+        Đặt chiều rộng của phần tử bằng với 100% chiều rộng của khung chứa.
+    Tóm lại:
+        - Đoạn CSS này thường được sử dụng để:
+            - Căn giữa một phần tử hoàn toàn chính giữa khung chứa.
+            - Ví dụ phổ biến là căn giữa một hình ảnh hoặc hộp văn bản trong màn hình.
+        - Ví dụ HTML:
+            <div class="container">
+                <img src="example.jpg" alt="Example" class="center-image">
+            </div>
+
+        - Với CSS:
+            .container {
+                position: relative;
+                width: 300px;
+                height: 300px;
+                border: 1px solid #ccc;
+            }
+
+            .center-image {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: auto;
+            }
+-----------------------------------------------------------
+theo ví dụ của bạn, nếu chỉ áp dụng css cho container:
+.container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #ccc;
+}
+thì nếu tôi có 1 ảnh có kích thước là 805x942 với class .center-image
+thì nó sẽ vượt ra ngoài container đúng không? nếu nó vượt ra ngoài như vậy thì nó còn thuộc container không?
+=>
+Nếu chỉ áp dụng CSS cho .container như bạn đã chỉ định và không có quy định gì cụ thể cho .center-image,
+thì hình ảnh có kích thước 805x942 sẽ vượt ra ngoài .container. Cùng phân tích:
+
+Tình huống:
+1. CSS áp dụng cho .container:
+    .container có kích thước cố định là 300x300px.
+2. Hình ảnh .center-image:
+    Hình ảnh có kích thước nguyên bản là 805x942px, lớn hơn kích thước của .container.
+3. Hiệu ứng:
+    - Hình ảnh vẫn thuộc DOM và là một phần tử con của .container.
+    - Tuy nhiên, do không có quy định về kích thước hay vị trí của .center-image, phần hình ảnh vượt ra ngoài kích thước của .container sẽ không bị giới hạn,
+    trừ khi bạn áp dụng thêm các thuộc tính CSS như overflow, max-width, hoặc clip-path.
+
+----Hình ảnh có còn "thuộc" .container không?----
+- Về mặt DOM, hình ảnh vẫn nằm bên trong .container, vì nó là phần tử con trong cấu trúc HTML.
+- Về mặt hiển thị, hình ảnh có thể tràn ra ngoài vùng hiển thị của .container.
+  Nếu .container không có thuộc tính overflow: hidden, phần hình ảnh vượt ra ngoài vẫn sẽ hiển thị bên ngoài khung .container.
+
+Cách xử lý để hình ảnh không vượt ra ngoài .container:
+    - Nếu bạn muốn hình ảnh luôn nằm gọn trong .container và không vượt ra ngoài, bạn có thể sử dụng một trong các cách sau:
+
+    1. Dùng max-width và max-height:
+        - Giới hạn kích thước tối đa của hình ảnh sao cho nó không vượt quá kích thước của .container.
+            .center-image {
+                max-width: 100%;
+                max-height: 100%;
+            }
+    2. Dùng object-fit:
+        - Cách này giúp hình ảnh tự điều chỉnh kích thước để phù hợp với kích thước của .container mà vẫn giữ nguyên tỷ lệ.
+            .center-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+    3. Dùng overflow: hidden:
+        - Nếu bạn muốn chỉ hiển thị phần hình ảnh nằm trong .container và cắt bỏ phần vượt ra ngoài:
+            .container {
+                position: relative;
+                width: 300px;
+                height: 300px;
+                border: 1px solid #ccc;
+                overflow: hidden;
+            }
+            .center-image {
+                position: absolute;
+                width: auto;
+                height: auto;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+    Kết luận:
+    Hình ảnh sẽ vẫn thuộc .container nhưng nếu không có giới hạn, nó có thể hiển thị vượt ra ngoài. 
+    Điều này không ảnh hưởng đến mối quan hệ DOM, nhưng sẽ ảnh hưởng đến giao diện hiển thị. 
+    Việc xử lý phụ thuộc vào yêu cầu cụ thể về giao diện của bạn.
+-----------------------------------------------------------------
+nếu như vậy thì sẽ bị vỡ layout đúng không?
+=> Đúng vậy, nếu hình ảnh vượt ra ngoài kích thước của .container mà không có xử lý thích hợp, rất dễ dẫn đến vỡ layout. 
+Nguyên nhân và cách khắc phục phụ thuộc vào cách bố trí tổng thể của trang web:
+
+Nguyên nhân vỡ layout:
+    - Kích thước ảnh lớn hơn container:
+        - Hình ảnh lớn sẽ che lấp hoặc đẩy các phần tử khác ra khỏi vị trí dự kiến.
+        - Khi không có giới hạn về kích thước, hình ảnh có thể gây tràn sang các phần tử bên cạnh hoặc bên dưới.
+    - Không có xử lý overflow:
+        - Nếu không sử dụng overflow: hidden trên .container, phần hình ảnh vượt ra ngoài sẽ lấn vào các phần khác của trang.
+    - Tương tác với các phần tử khác:
+        - Các phần tử liên quan có thể bị đẩy lệch, che khuất, hoặc tạo ra thanh cuộn ngoài ý muốn trên trình duyệt.
+
+Biểu hiện vỡ layout:
+    - Hình ảnh tràn ra khỏi khu vực .container và che lấp các phần tử xung quanh.
+    - Thanh cuộn ngang/đứng xuất hiện (nếu không mong muốn).
+    - Layout tổng thể không còn cân đối hoặc bị phá vỡ.
+Cách khắc phục để tránh vỡ layout:
+    1. Giới hạn kích thước ảnh bằng max-width và max-height:
+        - Đảm bảo hình ảnh không vượt quá kích thước của .container, đồng thời duy trì tỷ lệ khung hình của ảnh.
+            .center-image {
+                max-width: 100%;
+                max-height: 100%;
+            }
+    2. Dùng object-fit để tự động điều chỉnh kích thước:
+        - Khi muốn hình ảnh luôn phù hợp với kích thước container mà không làm méo ảnh.
+            .center-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* hoặc 'contain' */
+            }
+
+            - object-fit: cover: Hình ảnh lấp đầy .container, cắt bớt các phần dư.
+            - object-fit: contain: Hình ảnh nằm gọn trong .container, có thể xuất hiện khoảng trống.
+    3. Ẩn phần dư thừa bằng overflow: hidden:
+        - Cắt bỏ phần hình ảnh vượt ra ngoài .container.
+            .container {
+                overflow: hidden;
+            }
+    4. Căn chỉnh lại hình ảnh bằng position và transform:
+        - Đảm bảo hình ảnh nằm chính giữa .container nếu cần:
+            .container {
+                position: relative;
+                overflow: hidden; /* Ẩn phần tràn */
+            }
+
+            .center-image {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+            }
+Tóm lại:
+Nếu không xử lý kích thước hình ảnh hoặc phần tràn, layout sẽ dễ bị vỡ. Để tránh điều này, bạn cần:
+    - Giới hạn kích thước ảnh.
+    - Xử lý phần tràn với overflow.
+    - Căn chỉnh hợp lý với object-fit hoặc position.
+Tùy thuộc vào mục đích hiển thị mà bạn chọn giải pháp phù hợp nhất.
+---------------------------------------------------------------------------
+vậy lúc này kích thước của container có bị thay đổi không và nó có liên quan gì đến ảnh không
+=> Trong trường hợp bạn chỉ định kích thước cụ thể cho .container bằng CSS (ví dụ, width: 300px; height: 300px;)
+kích thước của .container sẽ không thay đổi bất kể kích thước của ảnh bên trong. 
+Tuy nhiên, cách hình ảnh hiển thị bên trong .container có thể ảnh hưởng đến trải nghiệm hiển thị hoặc layout tổng thể. Dưới đây là một số chi tiết:
+
+    1. Kích thước của .container có bị thay đổi không?
+        - Không, kích thước .container vẫn giữ nguyên:
+            - Vì bạn đã chỉ định kích thước cố định cho .container (width và height), kích thước này sẽ không tự động thay đổi dù ảnh bên trong có lớn hơn.
+            - .container sẽ hoạt động như một khung chứa cố định, và bất kỳ nội dung nào vượt ra ngoài sẽ không ảnh hưởng trực tiếp đến kích thước của .container.
+    2. Ảnh có liên quan gì đến .container không?
+        - Có, nhưng chỉ trong cách hiển thị:
+            - Hình ảnh bên trong .container là phần tử con, và cách hiển thị của nó sẽ phụ thuộc vào các thuộc tính CSS bạn áp dụng cho cả .container và hình ảnh.
+            - Nếu hình ảnh lớn hơn .container, phần hình ảnh vượt ra ngoài sẽ hiển thị (trừ khi bạn dùng overflow: hidden).
+            - Nếu bạn áp dụng các quy tắc như max-width, max-height, hoặc object-fit, thì hình ảnh sẽ được điều chỉnh để nằm gọn trong .container.
+    3. Tình huống cụ thể khi hình ảnh lớn hơn .container:
+        - Trường hợp 1: Không xử lý gì đặc biệt
+            - Hình ảnh vượt ra ngoài .container.
+            - .container vẫn giữ nguyên kích thước cố định.
+            - Layout có thể bị phá vỡ nếu các phần tử xung quanh bị che khuất.
+        - Trường hợp 2: Sử dụng overflow: hidden
+            - Phần hình ảnh vượt ra ngoài sẽ bị cắt.
+            - Hình ảnh sẽ không ảnh hưởng đến kích thước của .container.
+                .container {
+                    width: 300px;
+                    height: 300px;
+                    overflow: hidden; /* Cắt bỏ phần tràn */
+                    position: relative;
+                }
+
+                .center-image {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+        - Trường hợp 3: Dùng object-fit để căn chỉnh ảnh
+            - Hình ảnh sẽ tự động điều chỉnh kích thước để nằm gọn trong .container hoặc lấp đầy nó.
+            - Kích thước .container không bị ảnh hưởng, và hình ảnh cũng không vượt ra ngoài.
+                .center-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain; /* Hoặc 'cover' */
+                }
+        - Trường hợp 4: Dùng max-width và max-height
+            - Hình ảnh được giới hạn kích thước tối đa dựa trên kích thước .container.
+            - .container giữ nguyên kích thước cố định, và hình ảnh sẽ không vượt ra ngoài.
+                .center-image {
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+    4. Liên quan giữa .container và hình ảnh:
+        - .container và ảnh bên trong có mối quan hệ bố cục:
+            - .container là vùng hiển thị giới hạn.
+            - Ảnh bên trong cần được xử lý để phù hợp với kích thước của .container (nếu không sẽ vượt ra ngoài và gây vỡ layout).
+        - .container không tự động thay đổi kích thước dựa trên hình ảnh (nếu kích thước .container đã cố định bằng width và height).
+
+Tóm lại:
+    - Kích thước của .container không thay đổi và không bị ảnh hưởng trực tiếp bởi kích thước ảnh.
+    - Tuy nhiên, nếu không xử lý hiển thị của ảnh, nó có thể gây vỡ layout hoặc tràn nội dung ra ngoài .container.
+    - Bạn cần sử dụng các kỹ thuật như overflow, object-fit, hoặc giới hạn kích thước ảnh để duy trì tính nhất quán của layout.
+
+------------------------------------------------------------------------------------------------------------------------------------
+như vậy nếu không set kích thước cố định cho container thì mặc định là kích thước của container sẽ bằng kích thươc ảnh đúng không? 
+bạn hãy nói chi tiết cho tôi các tính tích thước tổng thể chung của 1 container luôn nhé
+
+=> Nếu bạn không set kích thước cố định cho .container, thì kích thước của .container sẽ tự động phụ thuộc vào nội dung bên trong. 
+Trong trường hợp này, nếu .container chỉ chứa một hình ảnh, kích thước của nó sẽ bằng kích thước tự nhiên (intrinsic size) của hình ảnh đó, 
+trừ khi có các thuộc tính CSS ảnh hưởng đến cách nội dung hiển thị (như padding, border, margin, hoặc quy định kích thước cho .container).
+
+- Chi tiết về tính kích thước tổng thể của một container
+    1. Mặc định không set kích thước cho .container:
+        - Nếu không quy định width và height cho .container, kích thước của nó sẽ được tính toán dựa trên nội dung bên trong.
+        - Nếu .container chỉ chứa một ảnh, thì:
+            - Chiều rộng (width) của .container = chiều rộng của ảnh.
+            - Chiều cao (height) của .container = chiều cao của ảnh.
+        - Ví dụ:
+            html
+            <div class="container">
+                <img src="example.jpg" alt="Example">
+            </div>
+        - Nếu hình ảnh có kích thước gốc là 805x942px, thì .container sẽ tự động có kích thước:
+            - width: 805px;
+            - height: 942px;
+    2. Khi có thêm các yếu tố ảnh hưởng kích thước container: Kích thước tổng thể của container còn phụ thuộc vào các yếu tố sau:
+        a. Nội dung bên trong:
+            - Nếu .container chứa nhiều phần tử hoặc các phần tử có kích thước riêng, kích thước của .container sẽ bao bọc toàn bộ kích thước của các phần tử con.
+                Ví dụ:
+                    html
+                    <div class="container">
+                        <p>Text content</p>
+                        <img src="example.jpg" alt="Example">
+                    </div>
+            - Chiều rộng của .container sẽ là chiều rộng lớn nhất trong số các phần tử con.
+            - Chiều cao sẽ là tổng chiều cao của tất cả các phần tử con (kèm theo khoảng cách giữa chúng, nếu có).
+        b. Padding của container:
+            - padding là không gian bên trong container nhưng bao quanh nội dung.
+            - Kích thước tổng thể container sẽ tăng thêm phần padding.
+                - Công thức:
+                    - Tổng chiều rộng:
+                        width = chiều rộng nội dung + padding-left + padding-right
+                    - Tổng chiều cao:
+                        height = chiều cao nội dung + padding-top + padding-bottom
+                - Ví dụ:
+                    .container {
+                        padding: 20px;
+                    }
+                - Nếu hình ảnh bên trong có kích thước 805x942px, thì .container sẽ có:
+                    - Chiều rộng: 805 + 20 + 20 = 845px
+                    - Chiều cao: 942 + 20 + 20 = 982px
+        c. Border của container:
+            - border là viền bao quanh container và cũng được tính vào kích thước tổng thể.
+                - Công thức:
+                    - Tổng chiều rộng:
+                        width = chiều rộng nội dung + padding-left + padding-right + border-left + border-right
+                    - Tổng chiều cao:
+                        height = chiều cao nội dung + padding-top + padding-bottom + border-top + border-bottom
+                    - Ví dụ:
+                        .container {
+                            border: 10px solid black;
+                        }
+                    - Nếu hình ảnh bên trong có kích thước 805x942px, và có padding: 20px:
+                        - Chiều rộng: 805 + 20 + 20 + 10 + 10 = 865px
+                        - Chiều cao: 942 + 20 + 20 + 10 + 10 = 1002px
+        d. Margin của container:
+            - margin là khoảng cách bên ngoài container, không ảnh hưởng trực tiếp đến kích thước container 
+              nhưng tác động đến cách container chiếm không gian trên trang.
+    3. Các thuộc tính CSS khác ảnh hưởng đến kích thước:
+        a. box-sizing:
+            - Mặc định, trình duyệt sử dụng giá trị box-sizing: content-box;, nghĩa là width và height chỉ tính phần nội dung, không bao gồm padding và border.
+            - Nếu bạn dùng box-sizing: border-box;, width và height sẽ bao gồm cả nội dung, padding, và border.
+            - Ví dụ:
+                .container {
+                    width: 300px;
+                    padding: 20px;
+                    border: 10px solid black;
+                    box-sizing: border-box;
+                }
+            Với box-sizing: border-box, kích thước .container vẫn sẽ là:
+                - Chiều rộng: 300px (bao gồm cả padding và border).
+                - Chiều cao: 300px (tương tự).
+        b. overflow:
+            - Nếu nội dung bên trong container lớn hơn kích thước container và overflow: hidden không được áp dụng, 
+              kích thước container có thể trông như tăng thêm (nếu có thanh cuộn).
+-----------------------------------------------------
+    4. Tóm tắt cách tính kích thước tổng thể của container:
+        - Công thức chung: 
+            - Kích thước tổng = Nội dung + Padding + Border
+            - Chiều rộng tổng: width = content-width + padding-left + padding-right + border-left + border-right
+            - Chiều cao tổng: height = content-height + padding-top + padding-bottom + border-top + border-bottom
+        - Lưu ý:
+            - Nếu không set kích thước, container sẽ tự động điều chỉnh kích thước dựa trên nội dung.
+            - Bạn có thể kiểm soát kích thước và cách hiển thị nội dung bên trong bằng cách sử dụng box-sizing, overflow, 
+              hoặc các thuộc tính kích thước cụ thể (width, height).
+-------------------------------------------------------------
+nếu trường hợp content nó có kích thước lớn hơn kích thước content của container thì sao?
+=> Khi nội dung bên trong container lớn hơn kích thước của container, một số hiện tượng và cách xử lý sau đây có thể xảy ra, 
+tùy thuộc vào cách bạn sử dụng các thuộc tính CSS như overflow, height, và width. Dưới đây là phân tích chi tiết:
+
+    - Hiện tượng khi nội dung lớn hơn container
+        1. Nội dung vượt ra ngoài container:
+            - Nếu bạn không dùng overflow, phần nội dung vượt quá kích thước container sẽ vẫn hiển thị bên ngoài container.
+            - Kích thước của container (nếu đã cố định) không thay đổi, nhưng giao diện có thể bị phá vỡ.
+            - Ví dụ:
+                <div class="container">
+                    <img src="large-image.jpg" alt="Large image">
+                </div>
+
+                .container {
+                    width: 300px;
+                    height: 300px;
+                    border: 1px solid #ccc;
+                }
+                - Nếu hình ảnh có kích thước tự nhiên là 800x600px, phần hình ảnh vượt ngoài container sẽ vẫn hiển thị.
+
+    - Cách xử lý nội dung lớn hơn container
+        1. Dùng overflow: Thuộc tính overflow quy định cách xử lý phần nội dung tràn ra ngoài container.
+            a. overflow: visible (mặc định):
+                - Nội dung vượt quá container sẽ vẫn hiển thị đầy đủ.
+                - Điều này có thể gây vỡ layout nếu nội dung tràn quá nhiều.
+            b. overflow: hidden:
+                - Nội dung vượt ra ngoài container sẽ bị cắt bỏ, chỉ phần nằm trong container được hiển thị.
+                - Dùng khi bạn muốn giới hạn hiển thị và tránh giao diện bị tràn.
+                    .container {
+                        width: 300px;
+                        height: 300px;
+                        overflow: hidden;
+                    }
+            c. overflow: scroll:
+                - Thêm thanh cuộn để người dùng cuộn và xem toàn bộ nội dung.
+                - Thanh cuộn xuất hiện ngay cả khi không cần thiết.
+                    .container {
+                        width: 300px;
+                        height: 300px;
+                        overflow: scroll;
+                    }
+            d. overflow: auto:
+                - Tự động thêm thanh cuộn chỉ khi cần thiết (nội dung lớn hơn container).
+                - Đây là cách thường dùng để duy trì giao diện gọn gàng.
+                    .container {
+                        width: 300px;
+                        height: 300px;
+                        overflow: auto;
+                    }
+        2. Dùng max-width và max-height cho nội dung:
+            - Giới hạn kích thước tối đa của nội dung để nó không vượt ra ngoài container.
+                .content {
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+            - Ví dụ: Nếu .container có kích thước 300x300px, và hình ảnh bên trong có kích thước gốc là 800x600px, 
+              thuộc tính max-width: 100% và max-height: 100% sẽ thu nhỏ hình ảnh để phù hợp với container.
+
+        3. Dùng object-fit với hình ảnh hoặc video:
+            - Khi nội dung là hình ảnh hoặc video, dùng object-fit để điều chỉnh cách nội dung hiển thị bên trong container.
+                .container {
+                    width: 300px;
+                    height: 300px;
+                }
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain; /* hoặc cover */
+                }
+            - object-fit: contain: Nội dung sẽ co lại để nằm gọn trong container, giữ nguyên tỷ lệ khung hình.
+            - object-fit: cover: Nội dung sẽ lấp đầy container, cắt bớt các phần dư thừa.
+
+        4. Dùng CSS Grid hoặc Flexbox để kiểm soát kích thước:
+            - Dùng Flexbox hoặc Grid Layout để giới hạn nội dung trong container mà vẫn duy trì bố cục.
+            - Ví dụ với Flexbox:
+                .container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 300px;
+                    height: 300px;
+                    overflow: hidden;
+                }
+
+                .content {
+                    flex-shrink: 1; /* Thu nhỏ nội dung nếu nó quá lớn */
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+        5. Dùng JavaScript để xử lý nội dung lớn hơn container:
+            - Nếu cần kiểm tra và điều chỉnh kích thước nội dung theo ý muốn, bạn có thể dùng JavaScript để tự động tính toán và áp dụng các thay đổi.
+            - Ví dụ:
+                const container = document.querySelector('.container');
+                const content = document.querySelector('.content');
+
+                if (content.scrollWidth > container.clientWidth || content.scrollHeight > container.clientHeight) {
+                    content.style.maxWidth = '100%';
+                    content.style.maxHeight = '100%';
+                }
+    - Khi nào container thay đổi kích thước theo nội dung?
+        - Nếu bạn không cố định kích thước container (width và height), container sẽ tự động mở rộng kích thước để bao bọc toàn bộ nội dung bên trong.
+            - Nếu bạn đặt overflow: hidden hoặc cố định kích thước container, nội dung sẽ bị cắt hoặc cuộn, nhưng kích thước container không thay đổi.
+        - Để container tự động điều chỉnh kích thước theo nội dung, không đặt width hoặc height cố định.
+    Tóm lại:
+        - Khi nội dung lớn hơn container, nó có thể:
+            - Tràn ra ngoài (overflow: visible).
+            - Bị cắt (overflow: hidden).
+            - Hiển thị thanh cuộn (overflow: scroll/auto).
+        - Nếu không cố định kích thước container, container sẽ mở rộng để bao hết nội dung bên trong.
+        - Dùng các giải pháp CSS như overflow, max-width, max-height, hoặc object-fit để quản lý kích thước và hiển thị nội dung hiệu quả.
