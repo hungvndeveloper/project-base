@@ -876,3 +876,155 @@ Các lỗi thường gặp khi dùng BEM
 
 3. Dùng BEM không đồng nhất:
     - Ví dụ, trong cùng dự án, có nơi dùng block__element, nơi khác dùng block-element.
+=======================================================
+Danh sách đầy đủ các CSS Selector được sử dụng phổ biến
+    1. Selector cơ bản
+        - Universal Selector (*):
+            Áp dụng cho tất cả các phần tử.
+                * {
+                    margin: 0;
+                }
+        - Type Selector (Tag):
+            Áp dụng cho tất cả các phần tử của một loại cụ thể (ví dụ: div, p, a).
+                p {
+                    color: blue;
+                }
+        - Class Selector (.class-name):
+            Áp dụng cho các phần tử có class cụ thể.
+                .highlight {
+                    background-color: yellow;
+                }
+        - ID Selector (#id):
+            - Áp dụng cho một phần tử với ID cụ thể.
+                #main-header {
+                    font-size: 24px;
+                }
+    2. Selector kết hợp
+        - Group Selector (dấu ,):
+            Áp dụng cùng thuộc tính cho nhiều selector.
+                h1, h2, h3 {
+                    font-family: Arial;
+                }
+        - Descendant Selector (dấu cách):
+            Áp dụng cho các phần tử con cháu trong cây DOM.
+                div p {
+                    color: red;
+                }
+        - Child Selector (>):
+            Áp dụng cho các phần tử là con trực tiếp của phần tử khác.
+                div > p {
+                    font-weight: bold;
+                }
+        - Adjacent Sibling Selector (+):
+            Áp dụng cho phần tử ngay sau phần tử cùng cấp.
+                h1 + p {
+                    margin-top: 10px;
+                }
+        - General Sibling Selector (~):
+            - Áp dụng cho tất cả các phần tử cùng cấp phía sau một phần tử.
+                h1 ~ p {
+                    color: gray;
+                }
+    3. Attribute Selector
+        - Chính xác giá trị ([attr=value]):
+            Chọn phần tử có thuộc tính cụ thể với giá trị tương ứng.
+                input[type="text"] {
+                    border: 1px solid black;
+                }
+        - Giá trị bắt đầu bằng ([attr^=value]):
+            a[href^="https://"] {
+                color: green;
+            }
+        - Giá trị kết thúc bằng ([attr$=value]):
+            img[src$=".jpg"] {
+                border-radius: 5px;
+            }
+        - Giá trị chứa ([attr*=value]):
+            a[href*="google"] {
+                text-decoration: underline;
+            }
+    4. Pseudo-class Selector
+        - Trạng thái phần tử:
+            - :hover – Khi phần tử được di chuột qua.
+                button:hover {
+                    background-color: lightblue;
+                }
+            - :focus – Khi phần tử (như input) được nhấn vào.
+                input:focus {
+                    outline: 2px solid blue;
+                }
+        - Cấu trúc trong cây DOM:
+            - :first-child – Phần tử con đầu tiên.
+                li:first-child {
+                    font-weight: bold;
+                }
+            - :last-child – Phần tử con cuối cùng.
+                li:last-child {
+                    color: red;
+                }
+            - :nth-child(n) – Phần tử con thứ n.
+                li:nth-child(2) {
+                    background-color: yellow;
+                }
+        - Trạng thái đặc biệt:
+            - :checked – Input được chọn (checkbox, radio).
+                input:checked {
+                    border: 2px solid green;
+                }
+            - :disabled – Input bị vô hiệu hóa.
+                button:disabled {
+                    opacity: 0.5;
+                }
+    5. Pseudo-element Selector
+        - ::before và ::after: Thêm nội dung trước/sau phần tử.
+            p::before {
+                content: "Note: ";
+                font-weight: bold;
+            }
+        - ::first-letter: Chọn ký tự đầu tiên.
+            p::first-letter {
+                font-size: 2em;
+            }
+        - ::first-line: Chọn dòng đầu tiên.
+            p::first-line {
+                color: blue;
+            }
+    6. Selector nâng cao
+        - Not Selector (:not()):
+            Chọn phần tử không khớp với selector bên trong.
+                div:not(.active) {
+                    opacity: 0.5;
+                }
+        - Only-child (:only-child):
+            Chọn phần tử là con duy nhất.
+                p:only-child {
+                    color: purple;
+                }
+        - Only-of-type (:only-of-type):
+            Chọn phần tử duy nhất thuộc loại của nó.
+                h1:only-of-type {
+                    text-align: center;
+                }
+    7. CSS Selector kết hợp với SCSS hoặc SASS
+        Trong SCSS hoặc SASS, các selector có thể được viết dạng lồng ghép để ngắn gọn hơn.
+            .container {
+                .child {
+                    color: red;
+                }
+                &:hover {
+                    background-color: lightgray;
+                }
+            }
+    8. Bộ chọn nâng cao (Chỉ có trong jQuery)
+        - :contains(text)
+            Chọn phần tử chứa văn bản cụ thể.
+                $("p:contains('Hello')").css("color", "green");
+        - :has(selector)
+            Chọn phần tử chứa selector con.
+                $("div:has(p)").css("border", "1px solid red");
+        - :not(selector)
+            Chọn phần tử không khớp với selector.
+                $("div:not(.active)").fadeOut();
+        - :parent
+            Chọn phần tử có ít nhất một phần tử con.
+                $("div:parent").css("background-color", "lightblue");
