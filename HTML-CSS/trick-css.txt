@@ -925,6 +925,11 @@ Danh sách đầy đủ các CSS Selector được sử dụng phổ biến
                 h1 ~ p {
                     color: gray;
                 }
+        - Combination Selector (element.class hoặc .class.class hoặc #id.class):
+            - Class Selector Kết Hợp với Type Selector (element.class): Áp dụng cho các phần tử cụ thể (theo loại tag) có chứa một class nhất định.
+                img.recently {
+                    border: 2px solid blue;
+                }
     3. Attribute Selector
         - Chính xác giá trị ([attr=value]):
             Chọn phần tử có thuộc tính cụ thể với giá trị tương ứng.
