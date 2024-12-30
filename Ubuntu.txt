@@ -2,6 +2,8 @@ học cơ bản và nâng cao về về shell và bash cho ngưới mới
 Để học Shell và Bash từ cơ bản đến nâng cao, bạn cần có một lộ trình cụ thể, bắt đầu từ những kiến thức cơ bản, 
 sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dưới đây là một lộ trình mà bạn có thể tham khảo:
 
+
+
 1. Kiến thức cơ bản về Shell và Bash
     - Shell là gì? Bash là gì?
         + Shell là môi trường dòng lệnh cho phép bạn tương tác với hệ điều hành (như GNU/Linux, macOS, v.v.).
@@ -20,6 +22,115 @@ sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dư�
         + Các lệnh đặc biệt:
             man (tra cứu tài liệu).
             history (xem lịch sử lệnh).
+
+    * Chi tiết và ví dụ về các khái niệm cơ bản:
+
+        - Điều hướng hệ thống tệp:
+            - cd: Thay đổi thư mục. Ví dụ: cd /home/user/documents (di chuyển đến thư mục documents), cd .. (lên một cấp thư mục), cd ~ (về thư mục home).
+            - ls: Liệt kê nội dung thư mục. Ví dụ: ls -l (liệt kê chi tiết), ls -a (hiển thị cả file ẩn), ls -lh (hiển thị kích thước file dạng người đọc).
+            - pwd: In ra đường dẫn thư mục hiện tại.
+            - mkdir: Tạo thư mục. Ví dụ: mkdir my_folder.
+            - rmdir: Xóa thư mục trống. Ví dụ: rmdir empty_folder.
+            - rm: Xóa tệp hoặc thư mục. Ví dụ: rm my_file.txt, rm -r my_folder (xóa cả thư mục và nội dung bên trong).
+            - touch: Tạo tệp trống hoặc cập nhật thời gian truy cập của tệp. Ví dụ: touch new_file.txt.
+
+        - Làm việc với tệp:
+            - cat: Hiển thị nội dung tệp. Ví dụ: cat my_file.txt.
+            - less: Xem nội dung tệp theo từng trang (cho tệp lớn).
+            - head: Hiển thị vài dòng đầu của tệp. Ví dụ: head -n 10 my_file.txt (hiển thị 10 dòng đầu).
+            - tail: Hiển thị vài dòng cuối của tệp. Ví dụ: tail -f my_log_file.log (theo dõi log file liên tục).
+            - cp: Sao chép tệp. Ví dụ: cp my_file.txt my_file_copy.txt.
+            - mv: Di chuyển hoặc đổi tên tệp. Ví dụ: mv my_file.txt new_location/, mv old_name.txt new_name.txt.
+            - chmod (Change Mode): Thay đổi quyền truy cập (read, write, execute) của tệp và thư mục. Sử dụng dạng số: chmod 755 my_script.sh (rwx cho user, rx cho group và others).
+            - chown (Change Owner): Thay đổi chủ sở hữu và/hoặc nhóm sở hữu của tệp và thư mục.
+                - cú pháp: chown [OPTIONS] [USER][:GROUP] FILE(S)
+                    + USER: Tên người dùng mới làm chủ sở hữu.
+                    + GROUP: Tên nhóm mới sở hữu (tùy chọn).
+                    + FILE(S): Tên tệp hoặc thư mục cần thay đổi quyền sở hữu.
+                    + OPTIONS: Các tùy chọn điều khiển hành vi của lệnh.
+                - Các tùy chọn phổ biến:
+                    + -R hoặc --recursive: Thay đổi quyền sở hữu đệ quy cho tất cả các tệp và thư mục con bên trong một thư mục.
+                    + -v hoặc --verbose: Hiển thị chi tiết các thay đổi được thực hiện.
+                    + --from=CURRENT_OWNER: Chỉ thay đổi quyền sở hữu nếu chủ sở hữu hiện tại là CURRENT_OWNER.
+
+        - Đầu vào/Đầu ra và ống dẫn:
+            - >: Chuyển hướng đầu ra vào tệp (ghi đè). Ví dụ: ls -l > file_list.txt.
+            - >>: Nối đầu ra vào tệp. Ví dụ: date >> file_list.txt.
+            - <: Chuyển hướng đầu vào từ tệp. Ví dụ: wc -l < file_list.txt (đếm số dòng trong tệp).
+            - |: Ống dẫn, chuyển đầu ra của lệnh này thành đầu vào của lệnh khác. Ví dụ: ls -l | grep "txt" (liệt kê các file có đuôi txt).
+            - Biến môi trường: echo $PATH (hiển thị các đường dẫn tìm kiếm lệnh), export EDITOR=vim (thiết lập biến môi trường EDITOR).
+
+        - Biểu thức chính quy (Regular Expression):
+            - grep: Tìm kiếm chuỗi. Ví dụ: grep "error" logfile.txt.
+            - sed: Thay thế chuỗi. Ví dụ: sed 's/old/new/g' file.txt.
+            - awk: Xử lý dữ liệu dạng cột. Ví dụ: awk '{print $1}' file.txt (in ra cột đầu tiên).
+
+        - Ví dụ script đơn giản:
+            #!/bin/bash
+
+            # In ra thông tin hệ thống
+            echo "Ten nguoi dung: $USER"
+            echo "Ngay gio hien tai: $(date)"
+            echo "Cac file trong thu muc hien tai:"
+            ls -l
+
+            # Hoi ten nguoi dung va in loi chao
+            read -p "Nhap ten cua ban: " name
+            echo "Xin chao, $name!"
+    - Ứng dụng của Shell và Bash trong DevOps:
+
+        - Bash scripting đóng vai trò quan trọng trong tự động hóa và quản lý hệ thống trong môi trường DevOps. Dưới đây là một số ứng dụng cụ thể:
+
+            - Tự động hóa triển khai (Deployment Automation): Viết script để tự động triển khai ứng dụng lên server, bao gồm sao chép file, cài đặt dependencies, cấu hình server, restart service.
+                Ví dụ: Script tự động triển khai ứng dụng web lên server Apache/Nginx.
+
+            - Quản lý cấu hình (Configuration Management): Sử dụng script để tự động cấu hình server, cài đặt phần mềm, tạo user, thiết lập firewall.
+                Ví dụ: Script cài đặt và cấu hình web server, database server.
+            
+            - Xây dựng và tích hợp liên tục (CI/CD): Bash script được sử dụng để tích hợp vào các pipeline CI/CD, thực hiện các bước build, test, deploy.
+                Ví dụ: Script chạy unit test, build package, deploy lên môi trường staging/production.
+            
+            - Giám sát và logging (Monitoring and Logging): Viết script để thu thập log, giám sát tài nguyên hệ thống (CPU, RAM, disk), gửi cảnh báo khi có sự cố.
+                Ví dụ: Script kiểm tra dung lượng ổ đĩa, gửi email cảnh báo khi dung lượng gần đầy.
+            
+            - Quản lý cơ sở hạ tầng (Infrastructure as Code - IaC): Kết hợp với các công cụ như Terraform, Ansible, Bash script giúp tự động hóa việc tạo và quản lý hạ tầng trên cloud.
+                Ví dụ: Script tạo instance EC2 trên AWS, cấu hình network, cài đặt phần mềm.
+            
+            - Backup và Restore: Tự động sao lưu dữ liệu và khôi phục khi cần.
+        - Ví dụ cụ thể về ứng dụng trong DevOps (CI/CD):
+            - Giả sử bạn có một ứng dụng web và muốn tự động hóa quá trình build và deploy. Bạn có thể viết một script bash như sau:
+                #!/bin/bash
+
+                # Thu muc chua code
+                CODE_DIR="/path/to/your/code"
+
+                # Thu muc build
+                BUILD_DIR="/path/to/build/directory"
+
+                # Thu muc deploy tren server
+                DEPLOY_DIR="/var/www/html"
+
+                # Buoc 1: Kiem tra code moi nhat tu Git
+                cd $CODE_DIR
+                git pull origin main
+
+                # Buoc 2: Build ung dung (vi du: build project Java voi Maven)
+                cd $CODE_DIR
+                mvn clean package -DskipTests
+
+                # Buoc 3: Sao chep file build vao thu muc deploy
+                rm -rf $DEPLOY_DIR/*
+                cp $BUILD_DIR/target/your-app.war $DEPLOY_DIR/
+
+                # Buoc 4: Khoi dong lai web server (vi du: Tomcat)
+                sudo systemctl restart tomcat
+
+                echo "Deploy thanh cong!"
+        - Script này sẽ được tích hợp vào hệ thống CI/CD (ví dụ: Jenkins, GitLab CI) và tự động chạy mỗi khi có code mới được push lên repository.
+
+        - Mở rộng:
+            Kết hợp với các công cụ DevOps khác: Bash script thường được sử dụng kết hợp với các công cụ DevOps khác như Docker, Kubernetes, Ansible để tạo ra các giải pháp tự động hóa mạnh mẽ hơn.
+            Sử dụng các công cụ quản lý cấu hình: Mặc dù Bash script có thể được sử dụng để quản lý cấu hình, nhưng các công cụ chuyên dụng như Ansible, Chef, Puppet sẽ cung cấp khả năng quản lý cấu hình phức tạp và khả năng mở rộng tốt hơn.
 
 2. Lập trình Shell cơ bản
     - Cấu trúc lệnh cơ bản
