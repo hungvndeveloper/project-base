@@ -668,6 +668,47 @@ tạp hơn. Nếu cần mình hỗ trợ tạo bài tập thực hành hoặc gi
     - Bài tập 2: Viết script tự động backup database MySQL và lưu vào thư mục /backup/db/.
     - Bài tập 3: Tích hợp Bash với API để tự động gửi tin nhắn lên Slack khi script hoàn thành.
 Mỗi ví dụ được thiết kế để bạn áp dụng ngay và thực hành thêm. 
+
+Ví dụ thêm:
+    - Tạo cron job để chạy một script mỗi phút trên Ubuntu. Script này sẽ kiểm tra sự tồn tại của một file, tạo file nếu nó chưa tồn tại, và ghi thời gian hiện tại vào file đó.
+        - Tạo script: Tạo một file script, ví dụ my_script.sh, với nội dung sau:
+            #!/bin/bash
+
+            # Đặt đường dẫn đến file bạn muốn tạo/ghi
+            file_path="/home/james/logger_test.txt"
+
+            # Kiểm tra xem file đã tồn tại chưa
+            if [ ! -f "$file_path" ]; then
+            # Tạo file nếu nó chưa tồn tại
+            touch "$file_path"
+            echo "File created at: $(date)" >> "$file_path" # Ghi thời gian tạo file
+            fi
+
+            # Ghi thời gian hiện tại vào file
+            echo "Current time: $(date)" >> "$file_path"
+            - Giải thích:
+
+                - #!/bin/bash: Dòng shebang, cho biết script này được chạy bằng bash.
+                - file_path="/path/to/your/file.txt": Thay /path/to/your/file.txt bằng đường dẫn đầy đủ đến file bạn muốn tạo hoặc ghi vào. Ví dụ: /home/user/my_file.txt.
+                - if [ ! -f "$file_path" ]: Kiểm tra xem file có tồn tại hay không. ! -f nghĩa là "không phải là file".
+                - touch "$file_path": Tạo file trống nếu nó chưa tồn tại.
+                - echo "File created at: $(date)" >> "$file_path": Ghi thời gian tạo file vào file. >> dùng để ghi thêm vào cuối file, không ghi đè nội dung cũ.
+                - echo "Current time: $(date)" >> "$file_path": Ghi thời gian hiện tại vào file. $(date) lấy thời gian hiện tại.   
+        - Cấp quyền thực thi cho script:
+            chmod +x my_script.sh
+        - Mở crontab để chỉnh sửa:
+            crontab -e
+        - Thêm cron job:
+            * * * * * /home/james/my_script.sh
+            - Giải thích cú pháp cron: * * * * * có nghĩa là:
+                *: Mỗi phút
+                *: Mỗi giờ
+                *: Mỗi ngày trong tháng
+                *: Mỗi tháng
+                *: Mỗi ngày trong tuần (0 là Chủ Nhật, 6 là Thứ Bảy)
+            Vì vậy, * * * * * có nghĩa là "chạy mỗi phút".
+        - Lưu thay đổi
+
 =============================================================================================================
 curl là gì và các thông số của nó
     - curl là một công cụ dòng lệnh và thư viện được sử dụng để truyền tải dữ liệu qua các giao thức mạng,
