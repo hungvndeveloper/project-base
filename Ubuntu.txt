@@ -57,7 +57,7 @@ sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dư�
             - >: Chuyển hướng đầu ra vào tệp (ghi đè). Ví dụ: ls -l > file_list.txt.
             - >>: Nối đầu ra vào tệp. Ví dụ: date >> file_list.txt.
             - <: Chuyển hướng đầu vào từ tệp. Ví dụ: wc -l < file_list.txt (đếm số dòng trong tệp).
-            - |: Ống dẫn, chuyển đầu ra của lệnh này thành đầu vào của lệnh khác. Ví dụ: ls -l | grep "txt" (liệt kê các file có đuôi txt).
+            - |: Ống dẫn, chuyển đầu ra của lệnh này thành đầu vào của lệnh khác. Ví dụ: ls -l | grep "txt" (liệt kê các file có đuôi txt). Kết quả của lệnh bên trái là đầu vào của lệnh bên phải
             - Biến môi trường: echo $PATH (hiển thị các đường dẫn tìm kiếm lệnh), export EDITOR=vim (thiết lập biến môi trường EDITOR).
 
         - Biểu thức chính quy (Regular Expression):
