@@ -30,6 +30,77 @@ sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dư�
         export DB_PASSWORD='your-db-password'
         export MAGE_MODE='production'
     - Sau khi thêm các dòng trên, hãy chạy lệnh source ~/.bashrc hoặc source ~/.bash_profile để làm mới cấu hình.
+- Để Magento 2 có thể đọc các biến môi trường từ hệ thống (mà không cần dùng .env),
+  bạn cần sửa file app/etc/env.php để Magento có thể lấy giá trị từ các biến môi trường đã được thiết lập trên hệ thống.
+    - Dưới đây là các bước cụ thể:
+        - Sửa file env.php để sử dụng các biến môi trường
+            - Trong file app/etc/env.php, thay vì cứng giá trị thông tin cấu hình (ví dụ: thông tin kết nối cơ sở dữ liệu), bạn sẽ sử dụng hàm getenv()
+              để lấy giá trị từ các biến môi trường mà bạn đã thiết lập trước đó (trên máy chủ hoặc trong CI/CD pipeline).
+            - Ví dụ về cách sửa file env.php:
+                <?php
+                    return [
+                        'db' => [
+                            'table_prefix' => '',
+                            'connection' => [
+                                'default' => [
+                                    'host' => getenv('DB_HOST'),      // Lấy giá trị từ biến môi trường DB_HOST
+                                    'dbname' => getenv('DB_NAME'),    // Lấy giá trị từ biến môi trường DB_NAME
+                                    'username' => getenv('DB_USER'),  // Lấy giá trị từ biến môi trường DB_USER
+                                    'password' => getenv('DB_PASSWORD'), // Lấy giá trị từ biến môi trường DB_PASSWORD
+                                    'active' => '1',
+                                ],
+                            ],
+                        ],
+                        'crypt' => [
+                            'key' => getenv('MAGENTO_CRYPTO_KEY'),  // Lấy giá trị từ biến môi trường MAGENTO_CRYPTO_KEY
+                        ],
+                        'session' => [
+                            'save' => 'files',
+                        ],
+                    ];
+            - Trong ví dụ trên:
+                - getenv('DB_HOST') sẽ lấy giá trị của biến môi trường DB_HOST mà bạn đã thiết lập trên hệ thống (hoặc trong GitHub Secrets nếu sử dụng CI/CD).
+                - Các biến khác như DB_NAME, DB_USER, DB_PASSWORD, và MAGENTO_CRYPTO_KEY cũng sẽ được lấy từ các biến môi trường.
+        - Thiết lập biến môi trường trên hệ thống
+            - Để Magento có thể đọc các giá trị này, bạn cần đảm bảo rằng các biến môi trường đã được thiết lập đúng cách trên hệ thống.
+              Đây là cách bạn có thể thiết lập các biến môi trường trên VPS hoặc trong CI/CD pipeline.
+                - Trên VPS (ví dụ: với Linux):
+                    - Bạn có thể thêm các biến môi trường vào file cấu hình shell như .bashrc hoặc .profile:
+                        export DB_HOST='your-db-host'
+                        export DB_NAME='your-db-name'
+                        export DB_USER='your-db-user'
+                        export DB_PASSWORD='your-db-password'
+                        export MAGENTO_CRYPTO_KEY='your-magento-crypto-key'
+                        Sau khi thay đổi, hãy chạy lệnh source ~/.bashrc hoặc source ~/.profile để làm mới cấu hình.
+        - Trong CI/CD (ví dụ: GitHub Actions):
+            - Nếu bạn đang sử dụng GitHub Actions, bạn có thể sử dụng Secrets để thiết lập các biến môi trường và xuất chúng vào môi trường trong pipeline.
+                jobs:
+                deploy:
+                    runs-on: ubuntu-latest
+                    steps:
+                    - name: Checkout code
+                        uses: actions/checkout@v2
+
+                    - name: Set environment variables
+                        run: |
+                        echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+                        echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+                        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+                        echo "MAGENTO_CRYPTO_KEY=${{ secrets.MAGENTO_CRYPTO_KEY }}" >> $GITHUB_ENV
+
+                    - name: Deploy to VPS
+                        run: |
+                        # Các bước triển khai khác
+        - Magento tự động sử dụng biến môi trường
+            - Khi bạn đã thiết lập các biến môi trường và sửa file env.php, Magento sẽ tự động sử dụng giá trị từ các 
+              biến môi trường mà không cần phải đưa vào file .env hay các cấu hình cứng khác.
+
+        - Tóm lại:
+            - Sửa file env.php: Để Magento có thể lấy giá trị từ các biến môi trường, bạn sử dụng hàm getenv() để lấy giá trị.
+            - Thiết lập các biến môi trường trên hệ thống: Đảm bảo rằng các biến môi trường như DB_HOST, DB_USER, DB_PASSWORD, v.v. đã được thiết lập đúng cách trên VPS
+              hoặc trong pipeline CI/CD.
+            - Magento sẽ tự động đọc các giá trị này từ môi trường khi khởi động và trong suốt quá trình hoạt động.
+            - Với cách này, bạn có thể bảo mật các thông tin nhạy cảm mà không cần phải đưa chúng vào mã nguồn hoặc file .env.
 
 1. Kiến thức cơ bản về Shell và Bash
     - Shell là gì? Bash là gì?
