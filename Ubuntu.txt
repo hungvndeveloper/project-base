@@ -161,6 +161,72 @@ sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dư�
     - Quản lý Process và Jobs
         + Lệnh liên quan:
             ps, top, kill, jobs, bg, fg.
+            - ps (Process Status)
+                - Lệnh ps dùng để hiển thị thông tin về các tiến trình hiện tại trên hệ thống.
+                - ps: Hiển thị các tiến trình của người dùng hiện tại.
+                - ps aux: Hiển thị tất cả các tiến trình đang chạy trên hệ thống, bao gồm các tiến trình của người dùng khác và hệ thống.
+                - ps -ef: Cung cấp thông tin chi tiết về tiến trình, với định dạng khác (thường dùng cho các hệ thống Unix).
+                - Ví dụ: ps aux | grep bin/magento
+            - whoami:
+                - Lệnh whoami trong Ubuntu (và các hệ thống Unix/Linux khác) được sử dụng để hiển thị tên người dùng hiện tại đang đăng nhập vào hệ thống. 
+                  Nó trả về tên tài khoản người dùng mà bạn đang sử dụng trong phiên làm việc hiện tại.
+                - Bạn có thể chạy lệnh whoami trong khi thực thi bin/magento để xem user hiện tại. 
+                    - Ví dụ: php bin/magento <command> && whoami
+                - Cách này sẽ thực hiện lệnh bin/magento và sau đó in ra user đang thực thi.
+            - top
+                - Lệnh top hiển thị các tiến trình đang chạy và các tài nguyên hệ thống như CPU, RAM, và swap đang được sử dụng theo thời gian thực.
+                - Bạn có thể sử dụng các phím để thay đổi cách hiển thị, sắp xếp các tiến trình theo tài nguyên sử dụng, v.v.
+                - Ví dụ: top
+            - htop
+                - Lệnh htop là một phiên bản nâng cao của top, cung cấp giao diện đồ họa và khả năng tương tác mạnh mẽ hơn. Bạn có thể cuộn lên xuống, tìm kiếm tiến trình và thậm chí kill tiến trình trực tiếp từ giao diện.
+                - Ví dụ: htop
+                - Lệnh này cần phải cài đặt thêm bằng cách: sudo apt install htop
+            - kill
+                - Lệnh kill dùng để kết thúc một tiến trình đang chạy dựa trên PID (Process ID).
+                    - kill <PID>: Gửi tín hiệu mặc định (SIGTERM) yêu cầu tiến trình kết thúc.
+                    - kill -9 <PID>: Gửi tín hiệu mạnh mẽ (SIGKILL) để buộc tiến trình kết thúc ngay lập tức.
+                    - Ví dụ: kill 1234
+            - killall
+                - Lệnh killall dùng để kết thúc tất cả các tiến trình có tên giống nhau, không cần biết PID.
+                - killall <tên tiến trình>: Kết thúc tất cả các tiến trình có tên này.
+                - Ví dụ: killall firefox
+            - pkill
+                - Lệnh pkill cũng tương tự như killall, nhưng hỗ trợ nhiều tùy chọn mạnh mẽ hơn. Bạn có thể kết thúc tiến trình dựa trên tên, người dùng, hoặc các tiêu chí khác.
+                - Ví dụ: pkill -f firefox
+            - bg và fg
+                - bg: Đưa một tiến trình đã tạm dừng (sử dụng Ctrl+Z) vào chế độ nền (background).
+                - fg: Đưa một tiến trình đang chạy ở chế độ nền trở lại chế độ foreground.
+                - Ví dụ:
+                    - bg %1  # Tiến trình 1 chạy ở chế độ nền
+                    - fg %1  # Tiến trình 1 chạy ở chế độ foreground
+            - nice và renice
+                - nice: Được dùng để chạy một tiến trình với mức độ ưu tiên (priority) thấp hơn so với mặc định.
+                - renice: Được dùng để thay đổi mức độ ưu tiên của một tiến trình đang chạy.
+                - Ví dụ:
+                    - nice -n 10 <lệnh>  # Chạy một tiến trình với độ ưu tiên thấp
+                    - renice 15 -p 1234  # Thay đổi độ ưu tiên của tiến trình PID 1234
+            - nohup
+                - Lệnh nohup giúp chạy một tiến trình trong nền ngay cả khi bạn thoát khỏi phiên làm việc hoặc đăng xuất.
+                - Ví dụ: nohup python3 script.py &
+            - screen và tmux
+                - Các công cụ này cung cấp khả năng quản lý các phiên làm việc trong môi trường dòng lệnh. Bạn có thể chạy các tiến trình trong một phiên riêng biệt và tiếp tục làm việc trên các tiến trình này sau khi thoát khỏi phiên làm việc hiện tại.
+                    - screen: Tạo các phiên làm việc ảo.
+                    - tmux: Tương tự screen nhưng với tính năng và giao diện mạnh mẽ hơn.
+                    - Ví dụ: screen
+            - wait
+                - Lệnh wait được sử dụng để chờ một tiến trình con (child process) hoàn thành, đặc biệt hữu ích trong các script shell.
+                - Ví dụ: wait $pid  # Chờ tiến trình với PID là $pid hoàn thành
+            - pstree
+                - Lệnh pstree hiển thị các tiến trình dưới dạng cây, cho thấy mối quan hệ giữa các tiến trình cha và con.
+
+            - Ví dụ: pstree
+        - Jobs:
+            - Lệnh jobs trong Ubuntu (và các hệ thống Unix/Linux khác) dùng để liệt kê các tiến trình đang chạy trong nền (background) 
+              hoặc bị tạm dừng (suspended) trong phiên làm việc hiện tại của người dùng.
+            - Cách hoạt động của lệnh jobs:
+                - Lệnh jobs hiển thị danh sách các tiến trình được điều khiển bởi shell, với các thông tin về trạng thái của các tiến trình này,
+                  bao gồm tiến trình đang chạy, tạm dừng, hoặc đã bị gửi vào nền.
+            - Ví dụ Liệt kê các tiến trình với lệnh jobs: jobs
     - Lệnh và kỹ thuật nâng cao
         + Chuyển hướng (Redirection):
             >: Ghi đè vào tệp.
