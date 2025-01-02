@@ -22,6 +22,14 @@ sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dư�
         - Kết luận:
             - Bạn có thể ghi vào thư mục B mà không cần có quyền ghi vào thư mục A, vì quyền truy cập vào thư mục B được quy định riêng biệt và độc lập với thư mục A. 
               Thư mục cha không cần phải có quyền ghi miễn là thư mục con có quyền ghi.
+- Thêm các biến môi trường trong ubuntu:
+    - Ví dụ: Mở file .bashrc hoặc .bash_profile và thêm các biến môi trường sau:
+        export DB_HOST='your-db-host'
+        export DB_NAME='your-db-name'
+        export DB_USER='your-db-user'
+        export DB_PASSWORD='your-db-password'
+        export MAGE_MODE='production'
+    - Sau khi thêm các dòng trên, hãy chạy lệnh source ~/.bashrc hoặc source ~/.bash_profile để làm mới cấu hình.
 
 1. Kiến thức cơ bản về Shell và Bash
     - Shell là gì? Bash là gì?
