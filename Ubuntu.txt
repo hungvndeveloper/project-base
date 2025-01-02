@@ -2,7 +2,26 @@ học cơ bản và nâng cao về về shell và bash cho ngưới mới
 Để học Shell và Bash từ cơ bản đến nâng cao, bạn cần có một lộ trình cụ thể, bắt đầu từ những kiến thức cơ bản, 
 sau đó dần đi vào các khái niệm và kỹ thuật nâng cao hơn. Dưới đây là một lộ trình mà bạn có thể tham khảo:
 
-
+- Để thêm một user vào một group trong Linux, bạn sử dụng lệnh usermod với tùy chọn -aG. Cụ thể như sau:
+    - cú pháp: sudo usermod -aG <group_name> <user_name>
+    - ví dụ: sudo usermod -aG www-data your_user
+    - -a: Thêm user vào group mà không xóa các nhóm khác mà user đã thuộc.
+    - -G: Chỉ định các nhóm mà user sẽ được thêm vào.
+    - Để user nhận được quyền từ group mới, bạn cần thực hiện một trong các bước sau:
+        - Đăng xuất và đăng nhập lại
+        - Chạy lại lệnh newgrp: newgrp www-data  (tên group)
+- Bạn có thể ghi vào thư mục con (thư mục B trong trường hợp của bạn) mà không cần phải có quyền ghi trong thư mục cha (thư mục A), 
+  miễn là quyền ghi được cấp cho thư mục con.
+    - Giải thích:
+        - Trong hệ thống Unix/Linux, quyền truy cập vào một thư mục và tệp được xác định bởi quyền của chính thư mục hoặc tệp đó, 
+          không phụ thuộc vào quyền của thư mục cha. Vì vậy, nếu thư mục con (thư mục B) có quyền ghi cho group, 
+          bạn có thể ghi vào đó mà không cần phải có quyền ghi trong thư mục cha (thư mục A).
+            - Thư mục A (quyền 755): UserA thuộc nhóm www-data có quyền đọc và thực thi, nhưng không có quyền ghi vào thư mục A. 
+              Tuy nhiên, việc ghi vào thư mục con B là hoàn toàn khả thi miễn là thư mục B có quyền ghi cho nhóm www-data.
+            - Thư mục B (quyền 775): UserA có quyền đọc, ghi, và thực thi vì thư mục B có quyền ghi cho nhóm www-data.
+        - Kết luận:
+            - Bạn có thể ghi vào thư mục B mà không cần có quyền ghi vào thư mục A, vì quyền truy cập vào thư mục B được quy định riêng biệt và độc lập với thư mục A. 
+              Thư mục cha không cần phải có quyền ghi miễn là thư mục con có quyền ghi.
 
 1. Kiến thức cơ bản về Shell và Bash
     - Shell là gì? Bash là gì?
