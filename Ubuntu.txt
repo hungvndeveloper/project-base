@@ -872,6 +872,94 @@ Ví dụ thêm:
                 *: Mỗi ngày trong tuần (0 là Chủ Nhật, 6 là Thứ Bảy)
             Vì vậy, * * * * * có nghĩa là "chạy mỗi phút".
         - Lưu thay đổi
+    
+    - Tạo file stop.sh:
+        #!/bin/bash
+
+        stop_service() {
+            local service_name=$1
+            if sudo service "$service_name" stop; then
+                echo "✅ Successfully stopped $service_name"
+            else
+                echo "❌ Failed to stop $service_name"
+            fi
+        }
+
+        # Stop services
+        stop_service elasticsearch
+        stop_service mysql
+        stop_service nginx
+        stop_service php8.1-fpm
+
+        - Giải thích:
+            - Hàm stop_service:
+
+                - Hàm này nhận tên dịch vụ làm tham số.
+                - Chạy lệnh sudo service [service_name] stop.
+                - Kiểm tra trạng thái trả về:
+                    - Nếu thành công (exit code 0), hiển thị thông báo "✅ Successfully stopped [service_name]".
+                    - Nếu thất bại, hiển thị thông báo "❌ Failed to stop [service_name]".
+            - Gọi hàm stop_service:
+                - Danh sách các dịch vụ (elasticsearch, mysql, nginx, php8.1-fpm) được truyền lần lượt vào hàm.
+            - Thông báo trực quan hơn:
+                - Sử dụng biểu tượng ✅ và ❌ để làm rõ trạng thái thành công hoặc thất bại.
+            - Cách sử dụng:
+                - Cấp quyền thực thi cho script nếu chưa thực hiện:
+                    chmod +x stop.sh
+                - Chạy script:
+                    ./stop.sh
+        
+        - Trong shell script (bash), việc gọi hàm mà không cần truyền tham số trực tiếp vào trong dấu () nhưng nó vẫn chạy đúng là vì các biến được xử lý linh hoạt thông qua tham số của dòng lệnh (arguments). Để hiểu rõ hơn, hãy phân tích từng phần của đoạn script:
+
+            - Định nghĩa hàm stop_service:
+                stop_service() {
+                    local service_name=$1
+                    if sudo service "$service_name" stop; then
+                        echo "✅ Successfully stopped $service_name"
+                    else
+                        echo "❌ Failed to stop $service_name"
+                    fi
+                }
+            - Cách hoạt động của hàm trong Bash:
+                - Khi gọi hàm, bạn truyền đối số (arguments) sau tên hàm, giống như khi gọi một lệnh shell:
+                    - stop_service elasticsearch
+                    - Trong hàm, Bash tự động gán các đối số này vào các biến đặc biệt như $1, $2, v.v.:
+                        - $1: Đối số đầu tiên được truyền vào hàm.
+                        - $2: Đối số thứ hai (nếu có).
+                        - Và cứ thế tiếp tục...
+                    - Biến local service_name=$1:
+                        - local chỉ định rằng biến service_name chỉ có phạm vi trong hàm.
+                        - Biến service_name được gán giá trị của $1, tức là đối số đầu tiên được truyền vào hàm.
+                    - Gọi hàm với đối số: stop_service elasticsearch
+                        - Khi bạn gọi stop_service elasticsearch, Bash:
+                            - Đưa elasticsearch vào vị trí $1 trong hàm.
+                            - Hàm xử lý local service_name=$1, gán elasticsearch cho biến service_name.
+                            - Dòng lệnh sudo service "$service_name" stop thực sự là:
+                                sudo service elasticsearch stop
+                            - Nếu lệnh thành công, hiển thị:
+                                ✅ Successfully stopped elasticsearch
+                - Tại sao không cần dùng () khi gọi hàm?
+                    - Trong Bash, việc gọi hàm không sử dụng () là một tính năng mặc định:
+                        - Hàm trong Bash chỉ được xác định bằng tên, và các tham số được truyền trực tiếp sau tên hàm.
+                        - Điều này khác với nhiều ngôn ngữ lập trình như Python hoặc Java, nơi tham số phải nằm trong dấu ().
+                    - Ví dụ minh họa:
+                        my_function() {
+                            echo "Argument 1: $1"
+                            echo "Argument 2: $2"
+                        }
+
+                        my_function "Hello" "World"
+                    - Kết quả:
+                        Argument 1: Hello
+                        Argument 2: World
+                - Ưu điểm của cách này trong Bash:
+                    - Linh hoạt và đơn giản hóa việc truyền tham số.
+                    - Hỗ trợ xử lý không giới hạn số lượng tham số bằng các biến $@ (tất cả tham số) hoặc $* (các tham số dưới dạng một chuỗi).
+            - Kết luận:
+                - Trong script của bạn:
+                    - Hàm stop_service nhận tham số từ dòng lệnh khi gọi.
+                    - Tham số được tự động gán vào các biến đặc biệt ($1, $2, ...).
+                    - Điều này cho phép Bash chạy lệnh mà không cần sử dụng ().
 
 =============================================================================================================
 curl là gì và các thông số của nó
