@@ -1,3 +1,125 @@
+khi import/export hay require file thì file đó sẽ được thực thi luôn sao? 
+trước h tôi cứ tưởng là nó như kiểu sẽ include đoạn code của file đó vào trong
+file require hay import/export nó kia mà không thực thi gì cả
+
+=>  Hiểu lầm của bạn khá phổ biến! Nhiều người nhầm lẫn rằng require hoặc import/export giống như một dạng copy-paste code từ file này sang file khác, 
+    nhưng thực tế không phải như vậy. Khi bạn require hoặc import một file trong Node.js (hoặc nhiều ngôn ngữ khác như Python, PHP),
+    file đó sẽ được thực thi ngay lập tức tại thời điểm require/import được gọi. Dưới đây là lý do và cách hoạt động chi tiết:
+
+        1. Tại sao file được thực thi khi require/import?
+            - Nguyên nhân:
+                - Cơ chế của module:
+                    - Khi bạn require hoặc import, Node.js thực sự chạy file đó để có thể hiểu và xử lý những gì file trả về (ví dụ: một giá trị, một hàm, một đối tượng).
+                    - Các đoạn mã bên ngoài hàm hoặc lớp trong file được chạy ngay lập tức.
+                - Không phải "copy-paste":
+                    - require hoặc import không phải là "copy toàn bộ mã nguồn từ file được gọi" rồi dán vào file hiện tại.
+                    - Thay vào đó, Node.js thực thi toàn bộ mã trong file đó (một lần duy nhất) và trả về kết quả của module.exports (CommonJS) hoặc các export (ESM).
+        
+        2. Sự khác biệt với ý tưởng "include" code
+            - Ý tưởng sai: copy-paste
+                - Bạn có thể nghĩ rằng: const myModule = require('./myModule');
+            - Sẽ giống như:
+                // Copy toàn bộ nội dung của ./myModule.js
+                const myModule = {
+                    // Định nghĩa hàm, giá trị, v.v. từ myModule.js
+                };
+            - Nhưng thực tế không như vậy.
+            - Thực tế: Thực thi file ngay lập tức
+                - Khi bạn require('./myModule'):
+                    - Node.js tìm và đọc file myModule.js.
+                    - Node.js thực thi mã trong file đó trong một môi trường độc lập (gói bên trong một hàm).
+                    - Kết quả của module.exports được trả về cho bạn sử dụng.
+
+        3. Ví dụ minh họa
+            - File a.js:
+                console.log('File a.js is being executed');
+                const message = 'Hello from a.js';
+                module.exports = message;
+            - File b.js:
+                const a = require('./a');
+                console.log(a);
+            - Khi chạy node b.js:
+                - File a.js được thực thi, in ra:
+                    File a.js is being executed
+                - Giá trị 'Hello from a.js' được trả về từ module.exports và gán vào biến a.
+                - File b.js in ra:
+                    Hello from a.js
+
+            - Tình huống không thực thi ngay
+                - Nếu trong file a.js, bạn chỉ định nghĩa hàm mà không thực thi nó:
+                    const sayHello = () => {
+                        console.log('Hello from a.js');
+                    };
+                    module.exports = sayHello; // Chỉ export hàm, không gọi nó
+                - Trong file b.js:
+                    const a = require('./a'); // Không chạy gì cả
+                    a(); // Gọi hàm, file mới thực thi dòng console.log
+                    Khi chạy node b.js, bạn sẽ không thấy gì xảy ra cho đến khi gọi a().
+
+        4. Cách hoạt động chi tiết của require trong Node.js
+        Khi gọi require, Node.js xử lý như sau:
+
+            - 4.1. Đóng gói file
+                Node.js đóng gói toàn bộ nội dung của file vào một hàm wrapper như sau:
+
+                    (function (exports, require, module, __filename, __dirname) {
+                        // Nội dung file của bạn ở đây
+                    });
+
+                    - exports: Đối tượng để xuất các giá trị từ file.
+                    - require: Hàm để import module khác.
+                    - module: Đối tượng đại diện cho module hiện tại.
+                    - __filename: Đường dẫn đầy đủ của file.
+                    - __dirname: Thư mục chứa file hiện tại.
+
+                - Ví dụ: File a.js sau:
+                    console.log('Hello, Node.js');
+                    module.exports = 42;
+                - Sẽ được đóng gói thành:
+                    (function (exports, require, module, __filename, __dirname) {
+                        console.log('Hello, Node.js');
+                        module.exports = 42;
+                    });
+            - 4.2. Cache module
+                - Khi một file được require, Node.js lưu kết quả vào bộ nhớ cache.
+                - Nếu bạn require file đó lần thứ hai, Node.js không thực thi lại, mà lấy kết quả từ cache.
+
+                - Ví dụ: File a.js:
+                    console.log('Executing a.js');
+                    module.exports = 'Hello from a.js';
+                - File b.js:
+                    require('./a');
+                    require('./a');
+                - Khi chạy node b.js, bạn sẽ thấy:
+                    Executing a.js
+                    Dòng console.log chỉ chạy một lần.
+
+        5. So sánh với các ngôn ngữ khác
+            - 5.1. Python
+                - Trong Python:
+                    - # file a.py
+                        print("File a.py is being executed")
+                        message = "Hello from a.py"
+                    - # file b.py
+                        import a
+                        print(a.message)
+
+                - File a.py được thực thi ngay khi import.
+                - Python cũng sử dụng cơ chế cache: Nếu import lại, file không thực thi lần thứ hai.
+
+            - 5.2. PHP
+                - PHP không sử dụng cơ chế cache khi include hoặc require. Mỗi lần bạn gọi:
+                    include 'file.php';
+                    PHP sẽ đọc và thực thi file đó mỗi lần.
+
+        6. Tổng kết
+            - Khi require hoặc import trong Node.js, file sẽ được thực thi ngay lập tức tại thời điểm được gọi.
+            - Mã bên ngoài các hàm trong file được chạy ngay.
+            - Node.js lưu kết quả thực thi trong cache, tránh việc thực thi lại.
+            - Không phải là copy-paste code, mà Node.js chạy file như một module riêng biệt, trả về kết quả qua module.exports.
+
+=> Nếu bạn cần mã chỉ được chạy khi bạn gọi, hãy định nghĩa nó trong một hàm hoặc lớp và gọi khi cần.
+================================================================
 - Node.js treats each file in a Node project as a module that can export values and functions from the file.
 - Declare Objects with const
         - Declaring objects with const will prevent any accidental change of type:
