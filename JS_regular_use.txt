@@ -1288,6 +1288,148 @@ Kết luận:
 - Kết luận:
     - Hàm next là một phần quan trọng trong việc xử lý các yêu cầu trong ứng dụng Express. 
     - Nó cho phép bạn kiểm soát luồng yêu cầu và chuyển tiếp yêu cầu đến các middleware khác nhau.
+##################################################################################################
+các loại middleware trong express, tại sao có loại 2, 3 or 4 tham số?
+=> Trong Express.js, middleware là các hàm trung gian được sử dụng để xử lý các yêu cầu (requests) và phản hồi (responses). Có nhiều loại middleware trong Express, 
+và số lượng tham số trong hàm middleware (2, 3 hoặc 4 tham số) quyết định vai trò và cách sử dụng của nó.
+    - Middleware với 2 tham số (req, res):
+        - Cách dùng: app.use((req, res) => { ... })
+        - Mục đích: Xử lý yêu cầu và gửi phản hồi, thường dùng cho các middleware cuối cùng trong chuỗi xử lý.
+        - Ví dụ:
+            app.use((req, res) => {
+                res.send('Hello World');
+            });
+
+    - Middleware với 3 tham số (req, res, next):
+        - Cách dùng: app.use((req, res, next) => { ... })
+        - Mục đích: Xử lý yêu cầu hoặc chỉnh sửa đối tượng req hoặc res, sau đó gọi next() để chuyển sang middleware tiếp theo.
+        - Ví dụ:
+            app.use((req, res, next) => {
+                console.log('Middleware được gọi!');
+                next();  // Chuyển sang middleware tiếp theo
+            });
+
+    - Middleware xử lý lỗi với 4 tham số (err, req, res, next):
+        - Cách dùng: app.use((err, req, res, next) => { ... })
+        - Mục đích: Xử lý lỗi xảy ra trong chuỗi middleware. Express tự động chuyển lỗi sang middleware có 4 tham số.
+        - Ví dụ:
+            app.use((err, req, res, next) => {
+                console.error(err.stack);
+                res.status(500).send('Có lỗi xảy ra!');
+            });
+
+    - Tại sao có sự khác biệt?
+        - Số lượng tham số xác định vai trò của middleware trong luồng xử lý yêu cầu. Middleware với 4 tham số dành riêng để xử lý lỗi, 
+          trong khi middleware với 2 hoặc 3 tham số được dùng cho các nhiệm vụ khác nhau như xác thực, ghi log, và chỉnh sửa phản hồi.
+        - next() trong middleware cho phép chuyển luồng xử lý sang middleware tiếp theo. Nếu không gọi next(), chuỗi middleware sẽ bị chặn lại tại điểm đó.
+
+    - Tóm tắt:
+            Loại                        Middleware	                Số Tham Số	Vai Trò
+        Regular Middleware	        2 (req, res)	            Gửi phản hồi hoặc kết thúc chuỗi xử lý
+        Regular Middleware	        3 (req, res, next)	        Xử lý yêu cầu và chuyển tiếp
+        Error-Handling Middleware	4 (err, req, res, next)	    Xử lý lỗi
+
+    - Sử dụng đúng loại middleware giúp quản lý tốt luồng xử lý và đảm bảo hiệu suất của ứng dụng Express.
+==========================================================================================================
+Việc sử dụng middleware với 2 tham số cho controller xử lý thông thường và cho trang 404 cùng với middleware 4 tham số cho trang 500
+là đúng và phổ biến trong thực tiễn phát triển ứng dụng với Express.js. Dưới đây là giải thích chi tiết:
+
+    - Middleware 2 tham số cho controller và trang 404
+        - Controller thông thường
+            - Controller trong Express thường là các middleware có 2 hoặc 3 tham số (req, res, next):
+                - Nếu controller là điểm cuối cùng xử lý một yêu cầu, nó sẽ chỉ dùng req và res.
+                - Ví dụ:
+                    app.get('/products', (req, res) => {
+                        res.send('List of products');
+                    });
+                - Middleware này chỉ dùng 2 tham số và gửi phản hồi ngay lập tức.
+
+        - Middleware cho trang 404
+            - Trang 404 thường là middleware nằm ở cuối cùng trong chuỗi xử lý vì nó chỉ được dùng khi không có route nào khớp với yêu cầu:
+                app.use((req, res) => {
+                    res.status(404).send('Page not found');
+                });
+                -> Middleware này chỉ có 2 tham số (req, res) vì nó không cần gọi next() do đây là điểm cuối của luồng xử lý.
+    - Middleware 4 tham số cho trang 500 (error-handling middleware)
+        - Middleware với 4 tham số (err, req, res, next) được dùng để xử lý lỗi. Express tự động nhận diện middleware này khi một lỗi được truyền vào hàm next(err) ở các middleware trước đó.
+        - Ví dụ:
+            app.use((err, req, res, next) => {
+                console.error(err.stack);
+                res.status(500).send('Internal Server Error');
+            });
+        - Middleware này chỉ được gọi khi có lỗi xảy ra.
+        - Express phân biệt middleware thông thường và middleware xử lý lỗi dựa vào số lượng tham số.
+
+    - Cách hoạt động chuỗi middleware với 404 và 500
+        - Nếu không có route nào khớp, middleware 404 sẽ được gọi.
+        - Nếu trong bất kỳ middleware nào lỗi xảy ra và được truyền bằng next(err), Express sẽ bỏ qua tất cả các middleware còn lại cho đến khi tìm thấy middleware có 4 tham số.
+        - Ví dụ đầy đủ:
+            app.get('/', (req, res) => {
+                res.send('Welcome to the homepage');
+            });
+
+            app.use((req, res) => {
+                res.status(404).send('Sorry, page not found');
+            });
+
+            app.use((err, req, res, next) => {
+                console.error(err.stack);
+                res.status(500).send('Something broke!');
+            });
+    - Tóm tắt
+        Loại	                    Số tham số	Mục đích
+        Controller hoặc trang 404	2 (req, res) hoặc 3 (req, res, next)	Xử lý yêu cầu bình thường hoặc phản hồi trang không tìm thấy
+        Middleware lỗi	            4 (err, req, res, next)	                Xử lý lỗi trong chuỗi middleware
+    - Sử dụng các loại middleware như vậy là đúng chuẩn và giúp quản lý lỗi tốt hơn trong ứng dụng Express.
+========================================================================
+Dưới đây là danh sách các status code thông dụng trong HTTP, cách sử dụng chúng trong Express.js, và loại middleware phù hợp để xử lý.
+    1. Status Code 2xx (Thành công)
+        Mã	    Mô tả	                                Loại Middleware	                                    Ví dụ
+        200	    OK - Yêu cầu thành công	                Middleware xử lý route hoặc controller (req, res)	res.status(200).send('Success')
+        201	    Created - Tài nguyên mới đã được tạo	Middleware xử lý controller	                        res.status(201).send('Resource created')
+    2. Status Code 3xx (Chuyển hướng)
+        Mã	    Mô tả	                    Loại Middleware	            Ví dụ
+        301	    Moved Permanently	        Middleware xử lý route	    res.redirect(301, '/new-url')
+        302	    Found (Temporary Redirect)	Middleware xử lý route	    res.redirect(302, '/temp-url')
+    3. Status Code 4xx (Lỗi phía client)
+        Mã	    Mô tả	        Loại Middleware	                                    Ví dụ
+        400	    Bad Request	    Middleware controller hoặc middleware tùy chỉnh	    res.status(400).send('Invalid data')
+        401	    Unauthorized	Middleware xác thực	                                res.status(401).send('Unauthorized')
+        403	    Forbidden	    Middleware phân quyền	                            res.status(403).send('Forbidden')
+        404	    Not Found	    Middleware xử lý cuối cùng (req, res)	            app.use((req, res) => res.status(404).send('Not found'))
+    4. Status Code 5xx (Lỗi phía server)
+        Mã	    Mô tả	                Loại Middleware	                                Ví dụ
+        500	    Internal Server Error	Middleware xử lý lỗi (err, req, res, next)	    app.use((err, req, res, next) => res.status(500).send('Internal Server Error'))
+        503	    Service Unavailable	    Middleware xử lý lỗi	                        res.status(503).send('Service unavailable')
+    - Tổng hợp loại middleware phù hợp
+        Mã trạng thái	    Loại Middleware	                                Mục đích
+        2xx	                Middleware controller hoặc route (req, res)	    Trả phản hồi thành công
+        3xx	                Middleware chuyển hướng (req, res)	            Chuyển hướng
+        4xx (trừ 404)	    Middleware tùy chỉnh hoặc xác thực	            Phân quyền, kiểm tra dữ liệu
+        404	                Middleware xử lý không tìm thấy (req, res)	    Xử lý trang không tồn tại
+        5xx	                Middleware xử lý lỗi (err, req, res, next)	    Xử lý lỗi hệ thống
+    - Ví dụ đầy đủ
+        // Route xử lý thành công
+        app.get('/success', (req, res) => {
+            res.status(200).send('Request was successful');
+        });
+
+        // Route xác thực thất bại
+        app.get('/unauthorized', (req, res) => {
+            res.status(401).send('Unauthorized');
+        });
+
+        // Middleware 404 (Trang không tìm thấy)
+        app.use((req, res) => {
+            res.status(404).send('Page not found');
+        });
+
+        // Middleware 500 (Lỗi server)
+        app.use((err, req, res, next) => {
+            console.error(err.stack);
+            res.status(500).send('Internal Server Error');
+        });
+    - Các status code khác có thể được sử dụng tùy thuộc vào yêu cầu cụ thể, nhưng phân loại này giúp bạn dễ dàng xác định loại middleware phù hợp.
 ################################################
 - Mình có một website, mình muốn website đó được hiển thị lên tìm kiếm của google thì mình cần thiết lập những gì?
     Để website của bạn được hiển thị lên kết quả tìm kiếm của Google, bạn cần chú ý đến những yếu tố sau:
