@@ -1137,3 +1137,35 @@ Dưới đây là các cách phổ biến để căn giữa phần tử và nộ
         line-height	                        Dọc (văn bản)	            Chỉ cho một dòng văn bản
     
     - Sử dụng Flexbox hoặc Grid là cách hiện đại, dễ dùng và được khuyến nghị để căn giữa phần tử trong các dự án hiện đại.
+==================================================================
+Khi bạn đặt thuộc tính max-width cho một phần tử con, điều đó có nghĩa là bạn đang đặt giới hạn tối đa cho chiều rộng của phần tử đó,
+bất kể phần tử cha có kích thước như thế nào.
+    - Ví dụ cụ thể:
+        - Giả sử bạn có một thẻ div làm cha (container) và bên trong nó là một thẻ div con. 
+        - Bạn muốn thẻ con này không bao giờ rộng hơn 500px, dù cho thẻ cha có rộng bao nhiêu đi nữa. Bạn sẽ viết CSS như sau:
+            .container {
+            width: 800px; /* Thẻ cha rộng 800px */
+            }
+
+            .child {
+            max-width: 500px; /* Thẻ con có chiều rộng tối đa là 500px */
+            margin: 0 auto; /* Căn giữa thẻ con */
+            }
+        - Trong trường hợp này:
+            - Thẻ con sẽ luôn có chiều rộng tối đa là 500px, dù cho thẻ cha có rộng đến 800px hay bất kỳ kích thước nào khác.
+            - Nếu thẻ cha nhỏ hơn 500px, thẻ con sẽ tự động thu nhỏ lại để vừa với thẻ cha.
+            - Thuộc tính margin: 0 auto; giúp căn giữa thẻ con bên trong thẻ cha.
+
+        - Tại sao lại sử dụng max-width cho phần tử con?
+
+            - Tạo layout linh hoạt: Giúp phần tử con thích ứng với các kích thước màn hình khác nhau, đảm bảo giao diện đẹp
+              mắt trên mọi thiết bị.
+            - Bảo vệ bố cục: Ngăn chặn phần tử con chiếm quá nhiều không gian, làm phá vỡ bố cục chung của trang web.
+            - Tạo các layout responsive: Kết hợp với các media query, bạn có thể tạo ra các layout khác nhau tùy thuộc
+              vào kích thước màn hình.
+
+        - Một số lưu ý khi sử dụng max-width:
+            - Đơn vị: Bạn có thể sử dụng các đơn vị khác nhau như px, em, rem, %... để xác định giá trị max-width.
+            - Các thuộc tính liên quan: width, min-width cũng có thể được sử dụng kết hợp với max-width để tạo ra các layout phức tạp hơn.
+            - Tính kế thừa: Thuộc tính max-width có thể được kế thừa từ phần tử cha xuống các phần tử con, 
+              tuy nhiên bạn có thể override nó bằng cách khai báo lại cho phần tử con.
