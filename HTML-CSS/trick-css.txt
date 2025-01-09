@@ -1033,3 +1033,107 @@ Danh sách đầy đủ các CSS Selector được sử dụng phổ biến
         - :parent
             Chọn phần tử có ít nhất một phần tử con.
                 $("div:parent").css("background-color", "lightblue");
+############################################################################
+Khi bạn áp dụng margin: 0 auto; cho một phần tử, 
+nó sẽ căn giữa phần tử đó bên trong phần tử cha của nó theo trục ngang, không căn giữa các phần tử con bên trong phần tử đó.
+
+    - Giải thích chi tiết
+        - margin: 0: Thiết lập margin trên và dưới của phần tử bằng 0.
+        - auto: Tự động tính toán và phân bổ khoảng cách margin ở hai bên trái và phải sao cho phần tử được căn giữa trong phần tử chứa nó (parent element).
+        - Ví dụ minh họa
+            <div class="wrapper">
+            <div class="container">
+                <div class="child">This is a child element</div>
+            </div>
+            </div>
+
+            .wrapper {
+                width: 80%;
+                margin: 0 auto; /* Căn giữa wrapper trong phần tử cha (thường là body) */
+                background-color: lightblue;
+            }
+
+            .container {
+                width: 100%; /* Chiều rộng container đầy đủ bên trong wrapper */
+                background-color: lightgreen;
+            }
+
+            .child {
+                width: 50%;
+                background-color: yellow;
+            }
+            
+            - wrapper sẽ được căn giữa bên trong phần tử cha của nó (ví dụ body).
+            - container và child bên trong wrapper sẽ không được căn giữa trừ khi chúng cũng có margin: 0 auto; với chiều rộng cụ thể.
+    - Kết luận
+        - margin: 0 auto; căn giữa một phần tử trong phần tử cha của nó.
+        - Các phần tử con không bị ảnh hưởng bởi margin này, trừ khi được áp dụng thuộc tính tương tự hoặc các quy tắc khác.
+======================================================================
+Dưới đây là các cách phổ biến để căn giữa phần tử và nội dung trong CSS, bao gồm cả căn giữa theo chiều ngang và chiều dọc.
+    1. Căn giữa phần tử (Horizontal & Vertical Centering)
+        1.1. margin: auto;
+            - Dùng để căn giữa phần tử có chiều rộng cố định trong phần tử cha.
+            - Chỉ hoạt động khi phần tử có width xác định.
+            - Ví dụ:
+                .center {
+                width: 50%;
+                margin: 0 auto; /* Căn giữa theo chiều ngang */
+                }
+        1.2. Sử dụng Flexbox
+            - Cách đơn giản và hiện đại nhất để căn giữa cả phần tử và nội dung.
+                .parent {
+                    display: flex;
+                    justify-content: center; /* Căn giữa theo chiều ngang */
+                    align-items: center; /* Căn giữa theo chiều dọc */
+                    height: 300px; /* Cần chiều cao để căn giữa dọc */
+                }
+        1.3. Sử dụng Grid Layout
+            - Grid cũng là cách hiện đại để căn giữa phần tử.
+                .parent {
+                    display: grid;
+                    place-items: center; /* Căn giữa theo cả hai chiều */
+                    height: 300px;
+                }
+        1.4. Căn giữa bằng position: absolute và transform
+            - Phương pháp này hoạt động trên bất kỳ phần tử nào với vị trí tương đối hoặc tuyệt đối.
+                .center {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+    2. Căn giữa nội dung bên trong phần tử
+        2.1. Căn giữa văn bản theo chiều ngang
+            .text-center {
+                text-align: center;
+            }
+
+        2.2. Căn giữa nội dung theo cả hai chiều bằng Flexbox
+            .container {
+                display: flex;
+                justify-content: center; /* Căn giữa theo chiều ngang */
+                align-items: center; /* Căn giữa theo chiều dọc */
+                height: 100px;
+            }
+        2.3. Căn giữa nội dung theo cả hai chiều bằng Grid
+            .container {
+                display: grid;
+                place-items: center;
+            }
+        2.4. Căn giữa nội dung bằng line-height (cho văn bản)
+            Phương pháp này chỉ áp dụng cho văn bản trong một dòng.
+            .text {
+                height: 100px;
+                line-height: 100px; /* Đặt bằng chiều cao của phần tử */
+                text-align: center;
+            }
+    - Tóm tắt
+        Phương pháp	                        Loại căn giữa	            Ghi chú
+        margin: auto;	                    Chiều ngang	                Yêu cầu width cố định
+        text-align: center;	                Nội dung văn bản ngang	    Cho văn bản
+        display: flex;	                    Cả ngang và dọc	            Hỗ trợ tất cả phần tử
+        display: grid;	                    Cả ngang và dọc	            Đơn giản và mạnh mẽ
+        position: absolute; + transform	    Cả ngang và dọc	            Yêu cầu phần tử cha có position: relative;
+        line-height	                        Dọc (văn bản)	            Chỉ cho một dòng văn bản
+    
+    - Sử dụng Flexbox hoặc Grid là cách hiện đại, dễ dùng và được khuyến nghị để căn giữa phần tử trong các dự án hiện đại.
