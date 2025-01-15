@@ -267,4 +267,440 @@ vậy nếu như có nhiều cấp lồng nhau thì làm sao để biết đâu 
     </body>
 
 </html>
-=============================================================================================
+################################################################################
+:root {
+    /* Colors */
+    --primary-color: #ff817e;
+    --text-color: #231f20;
+    --gray-dark: #263a41;
+    --gray-light: #888;
+    --white: #FFFFFF;
+    --black: #000000;
+    --bg-block: #fff9f8;
+    --header-bg: #212121;
+
+    /* Typography */
+    --primary-font: "Roboto", sans-serif;
+    --secondary-font: "Rufina", serif;
+    
+    /* Layout */
+    --wrapper-width: 192rem;
+    --container-width: 177.5rem;
+    
+    /* Transitions */
+    --transition-base: all 0.3s ease-in-out;
+
+    /* Breakpoints */
+    --breakpoint-mobile: 480px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-desktop: 1024px;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: var(--primary-font);
+    font-weight: 400;
+    color: var(--text-color);
+    background-color: var(--white);
+    line-height: 2.1rem;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+}
+
+.site-wrapper {
+    max-width: var(--wrapper-width);
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px;
+}
+
+.header {
+    background-color: #212121;
+    padding: 10px 0;
+}
+
+.header__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 139rem;
+    padding: 0 1.5rem;
+}
+
+.header__logo {
+    max-width: 150px;
+}
+
+.header__nav {
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.header__menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.header__menu-item {
+    margin: 0 1rem;
+}
+
+.header__menu-item a {
+    color: var(--white);
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.header__menu-item a:hover,
+.header__button:hover {
+    color: var(--primary-color);
+    transition: var(--transition-base);
+}
+
+.header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.header__search {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.header__search i {
+    color: var(--white);
+    font-size: 2rem;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header__search input {
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-size: 1.4rem;
+    font-weight: 400;
+    background-color: transparent;
+    padding: 8px 10px 8px 40px;
+}
+
+.header__button {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+/* Mobile menu button */
+.mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2.4rem;
+    cursor: pointer;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+    html {
+        font-size: 55%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header__content {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .header__logo {
+        order: 1;
+    }
+
+    .header__nav {
+        order: 3;
+        width: 100%;
+        margin: 1.5rem 0 0;
+    }
+
+    .header__menu {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 1rem;
+    }
+
+    .header__menu-item {
+        margin: 5px 10px 5px 0;
+    }
+
+    .header__actions {
+        order: 2;
+    }
+
+    .header__search input {
+        width: 150px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .mobile-menu-button {
+        display: block;
+        order: 2;
+    }
+
+    .header__nav {
+        display: none;
+        transition: var(--transition-base);
+    }
+
+    .header__nav.is-active {
+        display: block;
+    }
+
+    .header__actions {
+        order: 3;
+    }
+
+    .header__search {
+        display: none;
+    }
+
+    .header__button {
+        font-size: 1.8rem;
+    }
+}
+
+.search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search__icon {
+    color: var(--white);
+    font-size: 2rem;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search__input {
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-size: 1.4rem;
+    font-weight: 400;
+    background-color: transparent;
+    padding: 8px 10px 8px 40px;
+    width: 200px;
+}
+
+.search__input::placeholder {
+    color: var(--white);
+    opacity: 0.7;
+}
+
+/* Cải thiện focus states */
+.header__menu-link:focus,
+.header__button:focus,
+.search__input:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Thêm styles cho keyboard navigation */
+.header__menu-link:focus-visible,
+.header__button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Thêm reduced motion cho người dùng có vấn đề về chuyển động */
+@media (prefers-reduced-motion: reduce) {
+    .header__menu-item a,
+    .header__button,
+    .header__nav {
+        transition: none;
+    }
+}
+
+/* Sử dụng mobile-first approach */
+@media screen and (min-width: 481px) {
+    .mobile-menu-button {
+        display: none;
+    }
+    
+    .header__nav {
+        display: block;
+    }
+}
+
+==================================================================
+1. Tổ chức CSS Variables:
+    :root {
+        /* Nhóm theo chức năng */
+        /* Colors */
+        /* Typography */
+        /* Layout */
+        /* Transitions */
+        /* Breakpoints */
+    }
+2. Cấu trúc file CSS nên theo thứ tự:
+    /* 1. Reset/Normalize */
+    /* 2. Base styles (typography, base elements) */
+    /* 3. Layout/Grid */
+    /* 4. Components */
+    /* 5. Utilities */
+    /* 6. Media queries */
+3. Quy tắc đặt tên class theo BEM:
+    .block {}                     /* Block: header */
+    .block__element {}           /* Element: header__menu */
+    .block__element--modifier {} /* Modifier: header__menu--active */
+4. Mobile-first Approach:
+    /* Base styles cho mobile trước */
+    .element {
+        width: 100%;
+    }
+
+    /* Sau đó mới đến tablet và desktop */
+    @media (min-width: 768px) {
+        .element {
+            width: 50%;
+        }
+    }
+5. Tối ưu Performance:
+    /* Sử dụng các thuộc tính hiệu quả */
+    /* Thay vì */
+    .element {
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        transform: translate3d(0,0,0);
+    }
+
+    /* Nên dùng */
+    .element {
+        will-change: transform;
+        transform: translateZ(0);
+    }
+6. Accessibility:
+    /* Focus states */
+    :focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            transition: none !important;
+        }
+    }
+7. Tổ chức Media Queries:
+    /* Định nghĩa breakpoints */
+    :root {
+        --mobile: 320px;
+        --tablet: 768px;
+        --desktop: 1024px;
+    }
+
+    /* Sử dụng nhất quán */
+    @media (min-width: 768px) {...}
+8. Comments và Documentation:
+    /* ==========================================================================
+    Header Component
+    ========================================================================== */
+
+    /**
+    * 1. Đảm bảo header luôn nổi trên cùng
+    * 2. Thêm shadow để tạo depth
+    */
+
+    .header {
+        z-index: 100; /* 1 */
+        box-shadow: 0 2px 4px rgba(0,0,0,.1); /* 2 */
+    }
+9. Tối ưu Selector:
+    /* Tránh selector quá sâu */
+    /* Không tốt */
+    .header .nav .menu .item {...}
+
+    /* Tốt */
+    .header__menu-item {...}
+10. Sử dụng CSS Modern Features:
+    /* Sử dụng CSS Grid và Flexbox */
+    .layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    /* Sử dụng CSS Custom Properties */
+    .element {
+        color: var(--primary-color);
+        transition: var(--transition-base);
+    }
+11. Maintainable & Scalable:
+    /* Tách components */
+    @import 'components/header';
+    @import 'components/navigation';
+    @import 'components/buttons';
+
+    /* Sử dụng utility classes */
+    .d-flex { display: flex; }
+    .align-center { align-items: center; }
+12. File Organization:
+    styles/
+    ├── base/
+    │   ├── _reset.css
+    │   ├── _typography.css
+    │   └── _variables.css
+    ├── components/
+    │   ├── _header.css
+    │   └── _navigation.css
+    ├── layouts/
+    │   └── _grid.css
+    ├── utilities/
+    │   └── _helpers.css
+    └── main.css
+
+Áp dụng các best practices này sẽ giúp:
+    - Code dễ bảo trì và mở rộng
+    - Tối ưu performance
+    - Cải thiện accessibility
+    - Dễ dàng làm việc theo team
+    - Giảm thiểu conflicts khi merge code
+    - Tăng tính tái sử dụng của code
