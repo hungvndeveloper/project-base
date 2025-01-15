@@ -206,67 +206,208 @@ vậy nếu như có nhiều cấp lồng nhau thì làm sao để biết đâu 
 <html lang="en">
 
 <head>
+    <!-- Meta tags cho SEO và responsive -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- Liên kết các file CSS -->
+    <link rel="stylesheet" href="reset.css">  <!-- Reset CSS để chuẩn hóa styles across browsers -->
+    <link rel="stylesheet" href="style.css">  <!-- File CSS chính của project -->
+    
+    <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400|Rufina:400,700&display=swap" rel="stylesheet">
+    
     <title>Coolmate copy</title>
 </head>
 
-    <body>
-        <div class="site-wrapper">
-            <header class="header">
-                <div class="container">
-                    <div class="header__content">
-                        <img class="header__logo" src="https://www.coolmate.me/images/logo-coolmate-new.svg?v=1" alt="Coolmate logo">
-                        
-                        <nav class="header__nav">
-                            <ul class="header__menu">
-                                <li class="header__menu-item">
-                                    <a href="#sale" class="header__menu-link">Giảm đến 50%</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#products" class="header__menu-link">Sản phẩm</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#underwear" class="header__menu-link">Đồ lót</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#sport" class="header__menu-link">Đồ thể thao</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#daily" class="header__menu-link">Mặc hàng ngày</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#custom" class="header__menu-link">Sản xuất riêng</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#care" class="header__menu-link">CARE & SHARE</a>
-                                </li>
-                            </ul>
-                        </nav>
+<body>
+    <!-- Wrapper chính của website -->
+    <div class="site-wrapper">
+        <!-- Header section -->
+        <header class="header">
+            <!-- Container để giới hạn width của content -->
+            <div class="container">
+                <!-- Header content wrapper -->
+                <div class="header__content">
+                    <!-- Logo -->
+                    <img class="header__logo" src="https://www.coolmate.me/images/logo-coolmate-new.svg?v=1" alt="Coolmate logo">
+                    
+                    <!-- Navigation chính -->
+                    <nav class="header__nav">
+                        <!-- Menu chính -->
+                        <ul class="header__menu">
+                            <!-- Các menu items -->
+                            <li class="header__menu-item">
+                                <a href="#sale" class="header__menu-link">Giảm đến 50%</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#products" class="header__menu-link">Sản phẩm</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#underwear" class="header__menu-link">Đồ lót</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#sport" class="header__menu-link">Đồ thể thao</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#daily" class="header__menu-link">Mặc hàng ngày</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#custom" class="header__menu-link">Sản xuất riêng</a>
+                            </li>
+                            <li class="header__menu-item">
+                                <a href="#care" class="header__menu-link">CARE & SHARE</a>
+                            </li>
+                        </ul>
+                    </nav>
 
-                        <div class="header__actions">
-                            <div class="search header__search">
-                                <i class="search__icon fa-solid fa-magnifying-glass"></i>
-                                <input type="text" class="search__input" placeholder="Tìm kiếm sản phẩm">
-                            </div>
-                            <button class="header__button header__button--user" aria-label="User account">
-                                <i class="fa-regular fa-user"></i>
-                            </button>
-                            <button class="header__button header__button--cart" aria-label="Shopping cart">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </button>
+                    <!-- Header actions (search, user, cart) -->
+                    <div class="header__actions">
+                        <!-- Search component -->
+                        <div class="search header__search">
+                            <!-- Search icon -->
+                            <i class="search__icon fa-solid fa-magnifying-glass"></i>
+                            <!-- Search input -->
+                            <input type="text" class="search__input" placeholder="Tìm kiếm sản phẩm">
                         </div>
+                        
+                        <!-- User account button -->
+                        <button class="header__button header__button--user" aria-label="User account">
+                            <i class="fa-regular fa-user"></i>
+                        </button>
+                        
+                        <!-- Shopping cart button -->
+                        <button class="header__button header__button--cart" aria-label="Shopping cart">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
                     </div>
                 </div>
-            </header>
-        </div>
-    </body>
+            </div>
+        </header>
+    </div>
+</body>
 
 </html>
+===============================================================================
+giải thích chi tiết các cấu trúc của file index.html này
+
+Tôi sẽ giải thích chi tiết cấu trúc của file index.html:
+    1. Cấu trúc cơ bản HTML5:
+        <!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <!-- Chứa các meta tags và resources -->
+            </head>
+            <body>
+                <!-- Chứa nội dung trang web -->
+            </body>
+        </html>
+    2. Phần Head (Meta & Resources):
+        <head>
+            <!-- SEO & Responsive Meta Tags -->
+            <meta charset="UTF-8">  <!-- Định dạng ký tự UTF-8 -->
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Cấu hình responsive -->
+            
+            <!-- CSS Files -->
+            <link rel="stylesheet" href="reset.css">  <!-- Reset default browser styles -->
+            <link rel="stylesheet" href="style.css">  <!-- Custom styles -->
+            
+            <!-- Third-party Resources -->
+            <!-- Font Awesome - Thư viện icon -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            
+            <!-- Google Fonts - Typography -->
+            <link href="https://fonts.googleapis.com/css?family=Roboto:300,400|Rufina:400,700&display=swap" rel="stylesheet">
+        </head>
+   3. Cấu trúc Body theo BEM:
+        <body>
+            <!-- Site Wrapper - Block độc lập -->
+            <div class="site-wrapper">
+                <!-- Header Component - Block chính -->
+                <header class="header">
+                    <!-- Container - Block layout -->
+                    <div class="container">
+                        <!-- Header Content - Element của header -->
+                        <div class="header__content">
+                            <!-- Các thành phần con -->
+                        </div>
+                    </div>
+                </header>
+            </div>
+        </body>
+
+    4. Header Component:
+        <!-- Logo Element -->
+        <img class="header__logo" src="..." alt="Coolmate logo">
+
+        <!-- Navigation Component -->
+        <nav class="header__nav">
+            <ul class="header__menu">
+                <li class="header__menu-item">
+                    <a href="#" class="header__menu-link">Menu Item</a>
+                </li>
+                <!-- Các menu items khác -->
+            </ul>
+        </nav>
+
+        <!-- Actions Component -->
+        <div class="header__actions">
+            <!-- Search Block -->
+            <div class="search header__search">
+                <i class="search__icon fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search__input" placeholder="Tìm kiếm sản phẩm">
+            </div>
+            
+            <!-- User & Cart Buttons -->
+            <button class="header__button header__button--user">...</button>
+            <button class="header__button header__button--cart">...</button>
+        </div>
+
+    5. Phân tích BEM trong code:
+        - Blocks:
+            - site-wrapper: Block wrapper chính
+            - header: Block header
+            - container: Block layout
+            - search: Block độc lập cho chức năng search
+        - Elements:
+            - header__content: Element của header
+            - header__logo: Element logo của header
+            - header__nav: Element navigation
+            - header__menu: Element menu
+            - header__menu-item: Element menu item
+            - header__menu-link: Element link trong menu
+            - header__actions: Element chứa các actions
+            - header__button: Element button trong header
+            - search__icon: Element icon của search
+            - search__input: Element input của search
+        - Modifiers:
+            - header__button--user: Modifier cho user button
+            - header__button--cart: Modifier cho cart button
+    6. Accessibility Features:
+        <!-- ARIA labels cho buttons -->
+        <button class="header__button" aria-label="User account">
+            <i class="fa-regular fa-user"></i>
+        </button>
+
+        <!-- Alt text cho images -->
+        <img class="header__logo" alt="Coolmate logo" src="...">
+
+        <!-- Semantic HTML -->
+        <header>, <nav>, <button>
+    7. Responsive Considerations:
+        - Viewport meta tag cho responsive design
+        - Container class để kiểm soát layout
+        - Flexbox layout cho responsive navigation
+        - BEM structure cho dễ dàng style responsive
+    8. Cấu trúc này tuân thủ:
+        - Semantic HTML5
+        - BEM Methodology
+        - Accessibility standards
+        - Responsive design principles
+        - Clean code practices
 ################################################################################
 :root {
     /* Colors */
