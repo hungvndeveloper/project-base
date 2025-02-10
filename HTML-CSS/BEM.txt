@@ -845,3 +845,305 @@ a {
     - Dễ dàng làm việc theo team
     - Giảm thiểu conflicts khi merge code
     - Tăng tính tái sử dụng của code
+======================================================================================================
+Cấu trúc html/css của một dự án website bán hàng đơn giản:
+1. html:
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Bán Hàng</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="container header__inner">
+                <div class="header__logo">Shop Logo</div>
+                <nav class="header__nav">
+                    <ul class="header__menu">
+                        <li class="header__menu-item"><a href="#">Trang chủ</a></li>
+                        <li class="header__menu-item"><a href="#">Sản phẩm</a></li>
+                        <li class="header__menu-item"><a href="#">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header__cart">
+                    <span class="header__cart-icon">🛒</span>
+                    <span class="header__cart-count">3</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero__banner">
+                    <h1 class="hero__title">Giảm giá lên đến 50%!</h1>
+                    <button class="hero__button">Mua ngay</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Danh sách sản phẩm -->
+        <section class="product-list">
+            <div class="container">
+                <div class="product-list__grid">
+                    <article class="product-card product-card--sale">
+                        <img class="product-card__image" src="product.jpg" alt="Sản phẩm">
+                        <h3 class="product-card__title">Tên sản phẩm</h3>
+                        <p class="product-card__price product-card__price--discounted">$99</p>
+                        <button class="product-card__button">Thêm vào giỏ</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sidebar / Bộ lọc -->
+        <aside class="sidebar">
+            <div class="container">
+                <h2 class="sidebar__title">Lọc sản phẩm</h2>
+                <div class="sidebar__filter">
+                    <label class="sidebar__filter-label">
+                        <input type="checkbox" class="sidebar__filter-checkbox"> Giảm giá
+                    </label>
+                    <label class="sidebar__filter-label">
+                        <input type="checkbox" class="sidebar__filter-checkbox"> Hàng mới
+                    </label>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Giỏ hàng -->
+        <section class="cart">
+            <div class="container">
+                <h2 class="cart__title">Giỏ hàng</h2>
+                <ul class="cart__list">
+                    <li class="cart__item">
+                        <img class="cart__item-image" src="product.jpg" alt="Sản phẩm">
+                        <p class="cart__item-name">Tên sản phẩm</p>
+                        <p class="cart__item-price">$99</p>
+                        <button class="cart__item-remove">Xóa</button>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__links">
+                    <a href="#" class="footer__link">Chính sách bảo mật</a>
+                    <a href="#" class="footer__link">Điều khoản dịch vụ</a>
+                </div>
+                <p class="footer__copyright">© 2025 Shop Name</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
+---------------------------------
+Đánh giá cấu trúc BEM hiện tại
+    Cấu trúc hiện tại của bạn đã rất chuẩn, áp dụng đúng nguyên tắc BEM và best practice trong việc tổ chức layout:
+        - Có .wrapper để giữ bố cục tổng thể.
+        - Có .container trong từng block chính giúp kiểm soát kích thước nội dung.
+        - Áp dụng đúng quy tắc đặt tên BEM, giúp code dễ bảo trì.
+        - Phân chia các block chính (header, hero, product-list, sidebar, cart, footer) rõ ràng.
+    Có thể áp dụng cho mọi dự án không?
+    ✅ Có thể áp dụng cho phần lớn các dự án web, đặc biệt là:
+        - Website thương mại điện tử
+        - Trang landing page, blog
+        - Ứng dụng web có bố cục nhiều phần
+    🚀 Tuy nhiên, có thể tối ưu hơn nếu:
+        - Thêm lớp layout nếu cần:
+            - Nếu có nhiều phần như sidebar, main content, có thể dùng <div class="layout"> để giữ các phần này.
+        - Bổ sung biến CSS hoặc flexbox/grid:
+            - Dùng CSS Grid hoặc Flexbox giúp quản lý layout dễ hơn.
+            - Dùng CSS Variables để dễ chỉnh sửa màu sắc, font, khoảng cách.
+-------------------------------
+CSS:
+/* Định nghĩa biến CSS để dễ chỉnh sửa */
+:root {
+    --primary-color: #ff6f61;
+    --secondary-color: #333;
+    --background-color: #f8f8f8;
+    --text-color: #222;
+    --font-family: 'Arial', sans-serif;
+    --wrapper-width: 1440px;
+    --container-width: 1210px;
+}
+
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.wrapper {
+    max-width: var(--wrapper-width);
+    margin: 0 auto;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* Header */
+.header {
+    background: var(--secondary-color);
+    color: #fff;
+    padding: 15px 0;
+}
+
+Chỗ này có thể sử dụng 1 trong 2 cách dưới đâu là: .header .container hoặc tạo class riêng .header__inner
+/* .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} */
+
+.header__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__menu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.header__menu-item a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Hero Section */
+.hero {
+    background: var(--primary-color);
+    color: #fff;
+    text-align: center;
+    padding: 50px 0;
+}
+
+.hero__title {
+    font-size: 2rem;
+}
+
+.hero__button {
+    background: #fff;
+    color: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+/* Product List */
+.product-list__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.product-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.product-card__image {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.product-card__title {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.product-card__price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.product-card__button {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Sidebar */
+.sidebar {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+/* Cart */
+.cart {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.cart__list {
+    list-style: none;
+}
+
+.cart__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart__item-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+.cart__item-remove {
+    background: red;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Footer */
+.footer {
+    background: var(--secondary-color);
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+}
+
+--------------------------
+Tôi đã tạo file CSS với các cải tiến:
+    ✅ Dùng biến CSS để dễ chỉnh sửa màu sắc, font, layout.
+    ✅ Dùng Flexbox & Grid để sắp xếp nội dung linh hoạt.
+    ✅ Responsive tốt với grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)).
