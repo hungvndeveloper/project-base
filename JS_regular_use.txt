@@ -4209,3 +4209,91 @@ chứ không kích hoạt event của tất cả các element cha chứa nó.
 $("element con").click(function(event){
   event.stopPropagation();
 });
+=========================================================================================
+Trong JavaScript (trình duyệt) và Node.js, bạn có thể tạo và lắng nghe sự kiện tùy chỉnh bằng cách sử dụng các API khác nhau. Dưới đây là hướng dẫn chi tiết:
+
+1. Tạo và Lắng nghe sự kiện tùy chỉnh trong JavaScript (trình duyệt)
+    Trong trình duyệt, bạn có thể sử dụng EventTarget hoặc CustomEvent để tạo sự kiện tùy chỉnh.
+    - Ví dụ 1: Sử dụng CustomEvent
+        // Tạo sự kiện tùy chỉnh với dữ liệu kèm theo
+        const myEvent = new CustomEvent("customEvent", {
+            detail: { message: "Xin chào từ sự kiện tùy chỉnh!" }
+        });
+
+        // Đối tượng lắng nghe sự kiện
+        document.addEventListener("customEvent", (event) => {
+            console.log("Sự kiện được kích hoạt!", event.detail);
+        });
+
+        // Kích hoạt sự kiện
+        document.dispatchEvent(myEvent);
+
+        Giải thích:
+            - CustomEvent cho phép truyền dữ liệu bổ sung thông qua detail.
+            - document.addEventListener dùng để lắng nghe sự kiện.
+            - document.dispatchEvent để kích hoạt sự kiện.
+
+    - Ví dụ 2: Sử dụng EventTarget
+        Bạn có thể tạo một đối tượng EventTarget để quản lý sự kiện một cách riêng biệt.
+            class MyEmitter extends EventTarget {
+                triggerEvent(data) {
+                    this.dispatchEvent(new CustomEvent("myEvent", { detail: data }));
+                }
+            }
+
+            const emitter = new MyEmitter();
+
+            // Lắng nghe sự kiện
+            emitter.addEventListener("myEvent", (event) => {
+                console.log("Nhận sự kiện:", event.detail);
+            });
+
+            // Gửi sự kiện
+            emitter.triggerEvent({ message: "Hello từ EventTarget!" });
+
+2. Tạo và Lắng nghe sự kiện tùy chỉnh trong Node.js
+    Trong Node.js, ta sử dụng EventEmitter từ module events.
+    - Ví dụ 1: Sử dụng EventEmitter
+        const EventEmitter = require("events");
+
+        class MyEmitter extends EventEmitter {}
+
+        const myEmitter = new MyEmitter();
+
+        // Lắng nghe sự kiện
+        myEmitter.on("customEvent", (data) => {
+            console.log("Nhận sự kiện:", data);
+        });
+
+        // Gửi sự kiện
+        myEmitter.emit("customEvent", { message: "Xin chào từ Node.js!" });
+
+        - Giải thích:
+            - EventEmitter giúp tạo và lắng nghe sự kiện.
+            - .on("tên_sự_kiện", callback) để lắng nghe.
+            - .emit("tên_sự_kiện", dữ liệu) để kích hoạt sự kiện.
+
+    - Ví dụ 2: Lắng nghe một lần (once)
+        - Nếu bạn muốn sự kiện chỉ kích hoạt một lần duy nhất, hãy dùng .once():
+            myEmitter.once("oneTimeEvent", (data) => {
+                console.log("Sự kiện xảy ra một lần:", data);
+            });
+
+            myEmitter.emit("oneTimeEvent", { message: "Lần đầu tiên" });
+            myEmitter.emit("oneTimeEvent", { message: "Lần thứ hai" }); // Không được gọi
+
+3. So sánh giữa JavaScript (trình duyệt) và Node.js
+    Tính năng	            JavaScript (Trình duyệt)	        Node.js
+    API sự kiện	            CustomEvent, EventTarget	        EventEmitter
+    Lắng nghe sự kiện	    addEventListener	                .on(), .once()
+    Kích hoạt sự kiện	    dispatchEvent	                    .emit()
+    Có thể truyền dữ liệu?	Có (detail)	                        Có (tham số emit())
+    Ứng dụng thực tế	    DOM events, Custom UI events	    Hệ thống logging, IPC, event-driven apps
+
+4. Ứng dụng thực tế
+    - Trình duyệt:
+        - Tạo sự kiện khi dữ liệu từ API được tải xong.
+        - Thông báo khi người dùng hoàn thành một hành động.
+    - Node.js:
+        - Gửi sự kiện giữa các phần trong ứng dụng (ví dụ: giữa server và worker).
+        - Xử lý sự kiện log, kết nối WebSocket, IPC (Inter-Process Communication).
