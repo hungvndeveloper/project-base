@@ -4197,6 +4197,37 @@ Như vậy sau này nếu mình có viết các đoạn script rồi muốn nó 
     2. viết file js bình thường, sau đó require file đó, và gọi thực thi thủ công từng hàm 1. cái này cần biết tên hàm chính xác để gọi.
 
 => webpack sẽ gom các code của các file lớn chứa toàn bộ code js cho phía client side.
+--------------------------
+Note:
+    trong đoạn code này, việc require các module billingHelpers và summaryHelpers có hai ý nghĩa chính:
+
+    - Thực thi mã bên trong module:
+        Khi bạn require các module này, toàn bộ mã trong chúng sẽ được thực thi. Điều này có thể nhằm mục đích kích hoạt các side-effect, 
+        như đăng ký sự kiện, cấu hình ban đầu, hay thực hiện một số thao tác cần thiết khác ngay khi module được load.
+
+    - Đảm bảo webpack gom chúng vào bundle:
+        Dù bạn không sử dụng trực tiếp các đối tượng hoặc hàm từ billingHelpers và summaryHelpers trong file hiện tại, 
+        việc require chúng sẽ buộc webpack đưa mã của chúng vào file bundle cuối cùng. Điều này đảm bảo rằng các code cần thiết, 
+        dù chỉ dùng để thực thi side-effect, đều có mặt trong bundle.
+
+    Nếu như không có side-effect nào cần thiết từ hai module này, bạn có thể cân nhắc loại bỏ chúng để tránh nhập những mã không cần thiết. 
+    Tuy nhiên, nếu các file này có chức năng tự động đăng ký hoặc khởi tạo một số thiết lập khi được load, 
+    thì việc require là cần thiết để đảm bảo toàn bộ ứng dụng hoạt động đúng.
+
+    ví dụ tôi có function này trong billing thì nó cũng sẽ tự thực thi ở client mà không cần gọi sao: 
+        function updateCheckoutData(response) {
+            console.log(12345);
+            // các đoạn code xử lý khác
+        }
+    => Việc require module chỉ thực thi các đoạn code ở cấp độ ngoài cùng của module đó. Nếu bên trong module billing bạn chỉ định nghĩa function như:
+        function updateCheckoutData(response) {
+            console.log(12345);
+            // các đoạn code xử lý khác
+        }
+
+        thì function này sẽ chỉ được định nghĩa, chứ không tự động chạy. Nó sẽ chỉ thực thi khi có đoạn code nào đó gọi đến nó, ví dụ như:
+        updateCheckoutData(someResponse);
+        Nếu bạn muốn function tự chạy ngay khi module được require, bạn cần gọi nó ngay trong module đó hoặc sử dụng IIFE (Immediately Invoked Function Expression).
 ========================================================================================
 Khi các element trong cùng một block đều gắn cùng với 1 event như: click, mouseover... thì ví dụ:
 Click con thì click cha, click cha thì chỉ click cha.
