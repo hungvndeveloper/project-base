@@ -5765,13 +5765,13 @@ ChatGPT đã nói:
             console.log("🛍️ Danh sách sản phẩm:", products); // Chỉ chạy khi có data
         2. Promise
             fetchProducts().then(products => {
-            console.log("🛍️ Danh sách sản phẩm:", products); // Có data rồi mới in
+                console.log("🛍️ Danh sách sản phẩm:", products); // Có data rồi mới in
             });
         3. Callback
             fetchProducts(products => {
-            console.log("🛍️ Danh sách sản phẩm:", products); // Chờ xong mới chạy
+                console.log("🛍️ Danh sách sản phẩm:", products); // Chờ xong mới chạy
             });
-✅ Tóm lại:
+✅ Tóm lại: *****************************************************************
     - Khi cần làm gì đó sau khi dữ liệu đã được xử lý xong, thì:
         - 👉 Hãy đặt logic bên trong nơi xử lý kết quả:
             - Sau await
