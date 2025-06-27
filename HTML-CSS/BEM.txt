@@ -1,3 +1,7 @@
+- Kiểm tra tính độc lập:
+        - Nếu có thể di chuyển component đến vị trí khác mà vẫn hoạt động → Block mới
+        - Nếu không thể tách rời khỏi parent → Element
+=========================================================================================================
 Tôi sẽ giải thích chi tiết về BEM và best practices khi triển khai HTML/CSS dựa trên code mẫu của bạn.
     1. BEM (Block Element Modifier) là gì?
         BEM là một phương pháp đặt tên class CSS với cú pháp:
