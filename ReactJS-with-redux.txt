@@ -1,0 +1,187 @@
+eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOGYxMmI3YmY3ZTVhYzcyYjY1OWFmZjk2MDMyZGQ0NiIsIm5iZiI6MTc0MjAyNDY4OC4zOTYsInN1YiI6IjY3ZDUyZmYwNzkwZDc4NjMzYTAxMWE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NK8pbkb4dXiet9hJ1R3WIeRhgDmllYNVpveOjrBaS50
+
+UI riêng lẻ là các component
+
+React là thư viện, còn vue và angular là framework, thì thư viện nó chỉ cung cấp cho bạn những 
+cái công cụ có sẵn để bạn có thể sử dụng và bạn muốn sử dụng sao thì sử dụng, bạn muốn sử dụng 
+cách nào thì sẽ theo ý muốn của bạn. framework thì nó có một chuẩn code riêng mà bạn phải làm theo
+những quy tắc của nó. framework thì nó sẽ cung cấp cho mình nhiều công cụ hơn và những cái tool có sẵn
+còn React thì mình sẽ phải cài thêm khá nhiều các thứ khác nữa.
+
+- Vite là 1 công cụ hỗ trợ để build những cái code trong dự án React của bạn nó thành cái code js duy nhất
+trước đây React người ta khởi tạo bằng webpack thì nó sẽ gom lại những cái hình, rồi code js, html, css của bạn
+nó gom lại thành 1 file js duy nhất, từ file này nó sẽ thực hiện trên trình duyệt của bạn.
+
+- package.json: khai báo những cái lệnh mà bạn sẽ thực thi trong project này, rồi những cái thư viện, những package
+để mà bạn cần để mà run dự án.
+
+- ./public: dùng để mà các bạn chưa những cái file tĩnh trong cái app của bạn như hình, fontsize, style css tĩnh thôi cũng được
+mà không cần phải build, không cần phải sử dụng cái vite.config.js để nó build ra thì bạn sẽ bỏ vào cái public này
+
+- ./src: chứa những file cấu hình của bạn, trong này có nhiều file và folder khác nữa nhưng cơ bản thì sẽ có nhưng file và folder sau:
+./src/assets: để chứa hình, App.jsx, file main.jsx dùng để mà khởi tạo cái React Dom
+
+- thư viện Tailwind CSS giúp cho bạn code những cái class thay vì các bạn phải code class name rồi bạn đi vào trong cái 
+file css bạn code cái style cho cái class name đó thì cái Tailwind CSS này nó hỗ trợ sẵn cho bạn những cái class name và những cái 
+class name này nó đã có sẵn style ở trong đó rồi. bạn không cần tạo thêm file css và cũng không cần nghĩ tới cái chỗ này nên đặt tên class
+là gì, nó tiết kiệm thời gian và bạn sẽ có rất nhanh.
+
+- useContext: giống kiểu tạo 1 component cha bao hết tất cả các component lại, và mình thao tác ở trong component cha và mình chỉ
+chỉ truyền value xuống những component con mà nó bọc thôi, và các component con có quyền sử dụng các thuộc tính mà component cha đang giữ
+Nếu mình bọc cái toàn bộ các component trong file App của mình bằng 1 context Provider component, lúc này Provider đóng vai trò là thẻ cha còn 
+và các thẻ con của nó có thể sử dụng những state của thẻ cha thông qua việc sử dụng context mà thẻ cha không cần phải truyền prop xuống. không cần set 
+prop cho các thẻ con mà nếu được bọc trong 1 provider thì có thể dùng những thuộc tính mà thẻ cha cung cấp, những thuộc tính mà thẻ cha có thể cung cấp
+sẽ nằm trong biến value trong Provider. function, biến...
+
+- props và state: 
+    + props: có nghĩa là 1 cái giá trị mà ở component cha nó truyền xuống cho component con thì component con sẽ sử dụng cái props đó, thì nó có phạm vi sử dụng
+             từ cha xuống con. Mục đích của cái props là bạn sẽ truyền cái data từ component cha xuống component con bằng prop và component con nó sẽ show cái dữ liệu đó 
+             ra. Thì cái prop này cái quy tắc của nó là không được thay đổi ở dưới component con có nghĩa là cái tên của biến prop(là đại diện thôi, muốn đặt là gì cũng được vd: title, objectA,...)
+
+    + state: còn nếu bạn muốn thay đổi những cái giá trị của riêng component con thì sử dụng state
+===============================================================================
+Để giúp bạn dễ dàng tiếp cận với Context và Redux Toolkit, mình sẽ giải thích từng cái một cách đơn giản và sau đó chỉ cho bạn cách triển khai chúng trong ứng dụng React.
+
+1. Context API trong React
+    Context API là một cách để chia sẻ dữ liệu giữa các component mà không cần phải truyền props qua nhiều lớp component. Nó hữu ích khi bạn có một giá trị hoặc trạng thái cần được chia sẻ rộng rãi trong ứng dụng mà không cần phải truyền qua props giữa các component cha-con.
+
+    - Lý do dùng Context:
+
+        - Khi bạn có các dữ liệu hoặc trạng thái cần được chia sẻ toàn cục trong ứng dụng (ví dụ: theme, user data, ngôn ngữ, v.v).
+        - Giảm thiểu việc phải truyền props qua nhiều component.
+
+    - Các bước triển khai Context API:
+
+        - Tạo Context: Đầu tiên, bạn cần tạo một Context để chứa dữ liệu bạn muốn chia sẻ.
+        - Provider: Sử dụng <Context.Provider> để bao bọc các component và cung cấp dữ liệu cho chúng.
+        - Consumer hoặc useContext Hook: Các component con có thể sử dụng useContext để lấy dữ liệu từ Context.
+
+    - Ví dụ triển khai Context API:
+        // 1. Tạo Context
+        import React, { createContext, useState, useContext } from 'react';
+
+        // Tạo Context cho User
+        const UserContext = createContext();
+
+        // 2. Tạo Provider để cung cấp dữ liệu
+        export const UserProvider = ({ children }) => {
+        const [user, setUser] = useState({ name: 'John Doe', age: 30 });
+
+        return (
+            <UserContext.Provider value={{ user, setUser }}>
+            {children}
+            </UserContext.Provider>
+        );
+        };
+
+        // 3. Sử dụng Context trong component con
+        const UserProfile = () => {
+        const { user } = useContext(UserContext);  // Lấy dữ liệu từ Context
+
+        return <div>User Name: {user.name}</div>;
+        };
+
+        // 4. Sử dụng Provider trong ứng dụng
+        const App = () => (
+            <UserProvider>
+                <UserProfile />
+            </UserProvider>
+        );
+
+        export default App;
+2. Redux Toolkit
+    - Redux là một thư viện quản lý trạng thái toàn cục trong ứng dụng. Redux Toolkit là một cách đơn giản và mạnh mẽ để làm việc với Redux, giúp giảm thiểu việc viết boilerplate code.
+    - Lý do dùng Redux:
+        - Khi ứng dụng của bạn trở nên phức tạp và cần quản lý nhiều trạng thái, việc sử dụng Redux giúp bạn tổ chức và quản lý trạng thái một cách rõ ràng và hiệu quả.
+        - Redux Toolkit giúp bạn dễ dàng cài đặt và giảm thiểu lỗi trong việc quản lý trạng thái.
+    - Các bước triển khai Redux Toolkit:
+        - Tạo Store: Store là nơi chứa toàn bộ trạng thái của ứng dụng.
+        - Tạo Slice: Slice là nơi bạn định nghĩa reducer (xử lý trạng thái) và action (thao tác thay đổi trạng thái).
+        - Cung cấp Store: Sử dụng <Provider> để cung cấp store cho ứng dụng.
+        - Sử dụng Dispatch: Các component có thể sử dụng useDispatch để gửi action và useSelector để lấy dữ liệu từ store.
+    - Ví dụ triển khai Redux Toolkit:
+        - Cài đặt Redux Toolkit:
+            npm install @reduxjs/toolkit react-redux
+        - Tạo Slice và Store:
+            // src/store.js
+            import { configureStore, createSlice } from '@reduxjs/toolkit';
+
+            // Tạo Slice cho user
+            const userSlice = createSlice({
+            name: 'user',
+            initialState: { name: 'John Doe', age: 30 },
+            reducers: {
+                updateUser: (state, action) => {
+                state.name = action.payload.name;
+                state.age = action.payload.age;
+                },
+            },
+            });
+
+            export const { updateUser } = userSlice.actions;
+
+            const store = configureStore({
+            reducer: {
+                user: userSlice.reducer,
+            },
+            });
+
+            export default store;
+
+    - Cung cấp Store cho ứng dụng:
+        // src/index.js
+        import React from 'react';
+        import ReactDOM from 'react-dom';
+        import { Provider } from 'react-redux';
+        import App from './App';
+        import store from './store';
+
+        ReactDOM.render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        document.getElementById('root')
+        );
+    - Sử dụng Redux trong Component:
+        // src/App.js
+        import React from 'react';
+        import { useDispatch, useSelector } from 'react-redux';
+        import { updateUser } from './store';
+
+        const UserProfile = () => {
+        const user = useSelector((state) => state.user);  // Lấy dữ liệu từ Redux Store
+        const dispatch = useDispatch();  // Để gửi action
+
+        const handleChangeName = () => {
+            dispatch(updateUser({ name: 'Jane Doe', age: 25 }));
+        };
+
+        return (
+            <div>
+            <p>User Name: {user.name}</p>
+            <p>User Age: {user.age}</p>
+            <button onClick={handleChangeName}>Update User</button>
+            </div>
+        );
+        };
+
+        export default UserProfile;
+
+- So sánh giữa Context API và Redux Toolkit:
+    - Context API thường được sử dụng cho các ứng dụng nhỏ hoặc khi chỉ cần chia sẻ vài giá trị đơn giản. Nó dễ sử dụng và ít boilerplate.
+    - Redux Toolkit thích hợp cho các ứng dụng lớn hoặc khi bạn cần quản lý nhiều trạng thái và xử lý các side effects (ví dụ: gọi API, quản lý dữ liệu bất đồng bộ).
+- Khi nào sử dụng cái nào:
+    - Context: Khi bạn chỉ cần quản lý một vài trạng thái toàn cục hoặc chia sẻ dữ liệu giữa các component.
+    - Redux Toolkit: Khi ứng dụng của bạn lớn và có nhiều trạng thái cần quản lý, hoặc cần các tính năng phức tạp hơn như xử lý dữ liệu bất đồng bộ, caching, hoặc thay đổi trạng thái theo nhiều cách khác nhau.
+
+Hi vọng giải thích này giúp bạn dễ dàng hiểu và triển khai Context và Redux Toolkit! Nếu có câu hỏi nào, đừng ngần ngại hỏi thêm nhé!
+=========================================================
+React Route:
+là 1 cái để mà mình quản lý cái app của mình dựa vào những cái url, những cái trang trong dự án React của mình
+di chuyển giữa các page không phải load lại trang, giúp cải thiện trải nghiệm người dùng
+
+Redux toolkit: 
+sẽ hỗ trợ các function có sẵn giúp mình code redux nhanh hơn
+
+Redux nó sẽ quản lý các state, bạn không cần phải tạo state trong từng file mà có thể chỉ cần tạo trong 1 chỗ ở trong reducer
+và sử dụng nó ở mọi nơi
